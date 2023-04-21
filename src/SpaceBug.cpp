@@ -8,9 +8,6 @@
 SpaceBug::SpaceBug()
 {
     std::cout << "SpaceBug Constructor" << std::endl;
-
-    // spaceBugPos = glm::vec2(1000, 360); // for debugging : randomize
-    // spaceBugDirection = glm::vec2(-1, -1); // for debugging : randomize
 }
 
 SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{initPos}, spaceBugDirection{initDirection}
@@ -49,7 +46,6 @@ bool SpaceBug::CheckCollision(SDL_Rect other)
 {
     if (SDL_HasIntersection(&spaceBugRect, &other))
     {
-        std::cout << "SpaceBug is hit" << std::endl;
         return true;
     }
     return false;
@@ -57,6 +53,5 @@ bool SpaceBug::CheckCollision(SDL_Rect other)
 
 void SpaceBug::Destroy()
 {
-    std::cout << "SpaceBug is destroyed." << std::endl;
     delete this;
 }

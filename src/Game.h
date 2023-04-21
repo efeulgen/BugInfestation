@@ -21,9 +21,9 @@ private:
     SDL_Renderer *renderer;
 
     // sounds
-    Mix_Chunk *audio;
-    Mix_Chunk *bugSplashSound;
-    Mix_Chunk *bugScreamSound;
+    Mix_Chunk *audio = nullptr;
+    Mix_Chunk *bugSplashSound = nullptr;
+    Mix_Chunk *bugScreamSound = nullptr;
 
     // background
     const int backgroundWidth = 1280;
@@ -44,6 +44,8 @@ public:
     void UpdateGameAssets();
     void Render();
     void Destroy();
+
+    void GenerateSpaceBugs(int amount);
 };
 
 #endif

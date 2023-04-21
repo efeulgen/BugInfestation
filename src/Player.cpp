@@ -77,10 +77,11 @@ void Player::UpdateProjectiles()
     for (auto projectile : projArray)
     {
         projectile->UpdateProjectile();
-        if (projectile->GetProjectilePosition().x - playerPosition.x > 2500.0)
+        if (projectile->GetProjectilePosition().x - playerPosition.x > 1280.0)
         {
             projArray.erase(std::remove(projArray.begin(), projArray.end(), projectile), projArray.end());
             projectile->Destroy();
+            projectile = nullptr;
         }
     }
 }

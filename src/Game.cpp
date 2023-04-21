@@ -2,6 +2,8 @@
 #include "Game.h"
 
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
 #include "Player.h"
@@ -62,10 +64,11 @@ void Game::Display()
 void Game::SetupGameAssets()
 {
     // setup audio
+
     audio = Mix_LoadWAV("./audio/game_music.wav");
     bugSplashSound = Mix_LoadWAV("./audio/smash.wav");
     bugScreamSound = Mix_LoadWAV("./audio/scream.wav");
-    if (audio == NULL)
+    if (audio == NULL || bugSplashSound == NULL || bugScreamSound == NULL)
     {
         std::cout << "Failed to load audio : " << Mix_GetError() << std::endl;
     }
@@ -75,12 +78,7 @@ void Game::SetupGameAssets()
     mainPlayer = new Player();
 
     // setup spacebugs
-    SpaceBug *bug1 = new SpaceBug(glm::vec2(1000, 360), glm::vec2(-1, 1));
-    SpaceBug *bug2 = new SpaceBug(glm::vec2(1000, 300), glm::vec2(-1, -1));
-    SpaceBug *bug3 = new SpaceBug(glm::vec2(1000, 420), glm::vec2(1, 1));
-    bugs.push_back(bug1);
-    bugs.push_back(bug2);
-    bugs.push_back(bug3);
+    GenerateSpaceBugs(5);
 }
 
 void Game::ProcessInput()
@@ -167,7 +165,7 @@ void Game::UpdateGameAssets()
                 bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
                 bug->Destroy();
                 bug = nullptr;
-                mainPlayer->GetDamage(50.0);
+                mainPlayer->GetDamage(1.0);
                 break;
             }
         }
@@ -212,7 +210,7 @@ void Game::Render()
         mainPlayer->RenderPlayer(renderer);
     }
 
-    // render space bugs
+    // render spacebugs
     if (!bugs.empty())
     {
         for (auto bug : bugs)
@@ -233,9 +231,26 @@ void Game::Destroy()
     }
     Mix_FreeChunk(audio);
     Mix_FreeChunk(bugScreamSound);
-    Mix_FreeChunk(bugScreamSound);
+    Mix_FreeChunk(bugSplashSound);
+    audio = nullptr;
+    bugScreamSound = nullptr;
+    bugSplashSound = nullptr;
     Mix_CloseAudio();
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
+}
+
+void Game::GenerateSpaceBugs(int amount)
+{
+    int seed = 0;
+    for (int i = 0; i < amount; i++)
+    {
+        srand(seed);
+        int randomYPos = (rand() % 500) + 20;
+        int randomXDirection = (rand() % 2) + 2;
+        int randomYDirection = (rand() % 2) + 2;
+        bugs.push_back(new SpaceBug(glm::vec2(1000, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
+        seed++;
+    }
 }
