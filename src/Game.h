@@ -1,9 +1,11 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_mixer.h>
+#include <SDL2/SDL_ttf.h>
 #include <vector>
 #include "Player.h"
 #include "SpaceBug.h"
+#include "UIManager.h"
 
 #ifndef GAME_H
 #define GAME_H
@@ -33,6 +35,8 @@ private:
 
     Player *mainPlayer = nullptr;
     std::vector<SpaceBug *> bugs;
+
+    UIManager *uiManager = nullptr;
 
 public:
     Game();

@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <string>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
 #include "./Logger/Logger.h"
@@ -30,8 +31,10 @@ void Game::Init()
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
     {
-        Logger::Err("SDL_mixer init fails : "); //+ Mix_GetError()
+        Logger::Err("SDL_Mixer init fails.");
     }
+
+    TTF_Init();
 
     window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, backgroundWidth, backgroundHeight, SDL_WINDOW_BORDERLESS);
     if (!window)
@@ -65,15 +68,17 @@ void Game::Display()
 void Game::SetupGameAssets()
 {
     // setup audio
-
     audio = Mix_LoadWAV("./audio/game_music.wav");
     bugSplashSound = Mix_LoadWAV("./audio/smash.wav");
     bugScreamSound = Mix_LoadWAV("./audio/scream.wav");
     if (audio == NULL || bugSplashSound == NULL || bugScreamSound == NULL)
     {
-        std::cout << "Failed to load audio : " << Mix_GetError() << std::endl;
+        Logger::Err("Failed to load audio.");
     }
     Mix_PlayChannel(-1, audio, -1);
+
+    // managers
+    uiManager = new UIManager();
 
     // setup player
     mainPlayer = new Player();
@@ -152,6 +157,7 @@ void Game::UpdateGameAssets()
                     mainPlayer->EraseElementFromProjarray(projectile);
                     projectile->Destroy();
                     projectile = nullptr;
+                    mainPlayer->IncrementScore();
                     break;
                 }
             }
@@ -221,6 +227,8 @@ void Game::Render()
         }
     }
 
+    uiManager->RenderUI(renderer, mainPlayer->GetScore());
+
     SDL_RenderPresent(renderer);
 }
 
@@ -231,6 +239,7 @@ void Game::Destroy()
         delete mainPlayer;
         mainPlayer = nullptr;
     }
+    delete uiManager;
     Mix_FreeChunk(audio);
     Mix_FreeChunk(bugScreamSound);
     Mix_FreeChunk(bugSplashSound);

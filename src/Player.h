@@ -15,6 +15,7 @@ private:
     double fireCounter = 100.0;
     double fireRate = 100.0;
     bool isDead;
+    int score;
 
     glm::vec2 playerPosition;
     glm::vec2 playerSpeed;
@@ -40,6 +41,9 @@ public:
     std::vector<PlayerProjectile *> GetProjectileArray() { return projArray; }
     SDL_Rect GetPlayerRect() { return playerRect; }
     bool GetIsDead() { return isDead; }
+
+    int GetScore() { return score; }
+    void IncrementScore() { score++; }
 };
 
 #endif
