@@ -6,43 +6,44 @@
 #include <ctime>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
+#include "./Logger/Logger.h"
 #include "Player.h"
 #include "SpaceBug.h"
 
 Game::Game()
 {
-    std::cout << "Game Constructor" << std::endl;
+    Logger::Log("Game Constructor");
 }
 
 Game::~Game()
 {
-    std::cout << "Game Destructor" << std::endl;
+    Logger::Log("Game Destructor");
 }
 
 void Game::Init()
 {
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-        std::cerr << "SDL_Init fails." << std::endl;
+        Logger::Err("SDL_Init fails.");
         return;
     }
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
     {
-        std::cout << "SDL_mixer init fails : " << Mix_GetError() << std::endl;
+        Logger::Err("SDL_mixer init fails : "); //+ Mix_GetError()
     }
 
     window = SDL_CreateWindow(NULL, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, backgroundWidth, backgroundHeight, SDL_WINDOW_BORDERLESS);
     if (!window)
     {
-        std::cerr << "SDL_Window creation fails." << std::endl;
+        Logger::Err("SDL_Window creation fails.");
         return;
     }
 
     renderer = SDL_CreateRenderer(window, -1, 0);
     if (!renderer)
     {
-        std::cerr << "SDL_Renderer creation fails." << std::endl;
+        Logger::Err("SDL_Renderer creation fails.");
         return;
     }
 
@@ -96,19 +97,20 @@ void Game::ProcessInput()
             {
                 isRunning = false;
             }
-            if (gameEvent.key.keysym.sym == SDLK_w && mainPlayer)
-            {
-                mainPlayer->MoveUp();
-            }
-            if (gameEvent.key.keysym.sym == SDLK_s && mainPlayer)
-            {
-                mainPlayer->MoveDown();
-            }
             if (gameEvent.key.keysym.sym == SDLK_RETURN && mainPlayer)
             {
                 mainPlayer->Fire();
             }
         }
+    }
+    const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
+    if (keyboardState[SDL_SCANCODE_S])
+    {
+        mainPlayer->MoveDown();
+    }
+    if (keyboardState[SDL_SCANCODE_W])
+    {
+        mainPlayer->MoveUp();
     }
 }
 
