@@ -22,6 +22,12 @@ private:
     SDL_Window *window;
     SDL_Renderer *renderer;
 
+    bool isGameOver = false;
+    bool isWaveComplete = false;
+    const int spaceBugInitAmount = 5;
+    int spaceBugAmount = 5;
+    int score;
+
     // sounds
     Mix_Chunk *audio = nullptr;
     Mix_Chunk *bugSplashSound = nullptr;
@@ -33,9 +39,9 @@ private:
     int bg1_xPos = 0.0;
     int bg2_xPos = 1280.0;
 
+    // game objects
     Player *mainPlayer = nullptr;
     std::vector<SpaceBug *> bugs;
-
     UIManager *uiManager = nullptr;
 
 public:
@@ -50,6 +56,11 @@ public:
     void Destroy();
 
     void GenerateSpaceBugs(int amount);
+    void ResetGame();
+    void BringNextWave();
+
+    int GetScore() { return score; }
+    void IncrementScore() { score++; }
 };
 
 #endif

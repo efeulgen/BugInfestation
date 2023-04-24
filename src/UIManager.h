@@ -5,13 +5,16 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 #include <string>
+#include <glm/glm.hpp>
+#include "Player.h"
 
 class UIManager
 {
 public:
     UIManager();
     ~UIManager();
-    void RenderUI(SDL_Renderer *renderer, int score);
+    void RenderText(SDL_Renderer *renderer, const std::string &text, glm::vec2 textPos);
+    void RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, size_t sizeOfBugs);
 
 private:
     TTF_Font *font = TTF_OpenFont("./assets/font/LazenbyCompSmooth.ttf", 32);

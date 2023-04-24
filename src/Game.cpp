@@ -52,6 +52,7 @@ void Game::Init()
 
     SDL_SetWindowFullscreen(window, SDL_WINDOW_FULLSCREEN);
     isRunning = true;
+    SDL_ShowCursor(0);
 }
 
 void Game::Display()
@@ -84,7 +85,7 @@ void Game::SetupGameAssets()
     mainPlayer = new Player();
 
     // setup spacebugs
-    GenerateSpaceBugs(5);
+    GenerateSpaceBugs(spaceBugAmount);
 }
 
 void Game::ProcessInput()
@@ -105,6 +106,22 @@ void Game::ProcessInput()
             if (gameEvent.key.keysym.sym == SDLK_RETURN && mainPlayer)
             {
                 mainPlayer->Fire();
+            }
+            if (isGameOver && gameEvent.key.keysym.sym == SDLK_y)
+            {
+                ResetGame();
+            }
+            if (isGameOver && gameEvent.key.keysym.sym == SDLK_n)
+            {
+                isRunning = false;
+            }
+            if (isWaveComplete && gameEvent.key.keysym.sym == SDLK_y)
+            {
+                BringNextWave();
+            }
+            if (isWaveComplete && gameEvent.key.keysym.sym == SDLK_n)
+            {
+                isRunning = false;
             }
         }
     }
@@ -157,7 +174,7 @@ void Game::UpdateGameAssets()
                     mainPlayer->EraseElementFromProjarray(projectile);
                     projectile->Destroy();
                     projectile = nullptr;
-                    mainPlayer->IncrementScore();
+                    IncrementScore();
                     break;
                 }
             }
@@ -173,7 +190,7 @@ void Game::UpdateGameAssets()
                 bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
                 bug->Destroy();
                 bug = nullptr;
-                mainPlayer->GetDamage(1.0);
+                mainPlayer->GetDamage(50.0);
                 break;
             }
         }
@@ -185,6 +202,7 @@ void Game::UpdateGameAssets()
         mainPlayer->Update();
         if (mainPlayer->GetIsDead())
         {
+            isGameOver = true;
             delete mainPlayer;
             mainPlayer = nullptr;
         }
@@ -194,6 +212,10 @@ void Game::UpdateGameAssets()
     for (auto bug : bugs)
     {
         bug->UpdateSpaceBug();
+    }
+    if (bugs.size() <= 0)
+    {
+        isWaveComplete = true;
     }
 }
 
@@ -227,7 +249,7 @@ void Game::Render()
         }
     }
 
-    uiManager->RenderUI(renderer, mainPlayer->GetScore());
+    uiManager->RenderUI(renderer, mainPlayer, score, bugs.size());
 
     SDL_RenderPresent(renderer);
 }
@@ -264,4 +286,26 @@ void Game::GenerateSpaceBugs(int amount)
         bugs.push_back(new SpaceBug(glm::vec2(1000, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
         seed++;
     }
+}
+
+void Game::ResetGame()
+{
+    for (auto bug : bugs)
+    {
+        bug->Destroy();
+        // bug = nullptr;
+    }
+    bugs.clear();
+    spaceBugAmount = spaceBugInitAmount;
+    GenerateSpaceBugs(spaceBugAmount);
+    isGameOver = false;
+    score = 0;
+    mainPlayer = new Player();
+}
+
+void Game::BringNextWave()
+{
+    bugs.clear();
+    spaceBugAmount++;
+    GenerateSpaceBugs(spaceBugAmount);
 }
