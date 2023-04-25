@@ -16,7 +16,7 @@ public:
     SpaceBug();
     SpaceBug(glm::vec2 initPos, glm::vec2 initDirection);
     ~SpaceBug();
-    void UpdateSpaceBug();
+    void UpdateSpaceBug(double deltaTime);
     void RenderSpaceBug(SDL_Renderer *gameRenderer);
     bool CheckCollision(SDL_Rect other);
     void Destroy();

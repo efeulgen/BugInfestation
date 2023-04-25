@@ -19,9 +19,10 @@ SpaceBug::~SpaceBug()
     std::cout << "SpaceBug Destructor" << std::endl;
 }
 
-void SpaceBug::UpdateSpaceBug()
+void SpaceBug::UpdateSpaceBug(double deltaTime)
 {
-    spaceBugPos += spaceBugDirection;
+    spaceBugPos.x += spaceBugDirection.x * deltaTime;
+    spaceBugPos.y += spaceBugDirection.y * deltaTime;
     if (spaceBugPos.x <= 0 || spaceBugPos.x >= (1280 - 64))
     {
         spaceBugDirection.x *= -1;

@@ -14,7 +14,7 @@ public:
     UIManager();
     ~UIManager();
     void RenderText(SDL_Renderer *renderer, const std::string &text, glm::vec2 textPos);
-    void RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, size_t sizeOfBugs);
+    void RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, bool isGameStarted, bool isWaveComplete);
 
 private:
     TTF_Font *font = TTF_OpenFont("./assets/font/LazenbyCompSmooth.ttf", 32);

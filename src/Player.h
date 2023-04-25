@@ -12,8 +12,8 @@ class Player
 private:
     double health;
     // const double maxHealth = 100.0;
-    double fireCounter = 100.0;
-    double fireRate = 100.0;
+    double fireCounter = 5.0;
+    double fireRate = 5.0;
     bool isDead;
 
     glm::vec2 playerPosition;
@@ -27,19 +27,22 @@ public:
     Player();
     ~Player();
 
-    void Update();
+    void Update(double deltaTime);
     void RenderPlayer(SDL_Renderer *gameRenderer);
-    void MoveUp();
-    void MoveDown();
+    void MoveUp(double deltaTime);
+    void MoveDown(double deltaTime);
     void Fire();
-    void UpdateProjectiles();
+    void UpdateProjectiles(double deltaTime);
     void EraseElementFromProjarray(PlayerProjectile *proj);
+    void ClearProjArray();
     void GetDamage(double amount);
 
     // *************** getters & setters ***************
     std::vector<PlayerProjectile *> GetProjectileArray() { return projArray; }
     SDL_Rect GetPlayerRect() { return playerRect; }
+
     bool GetIsDead() { return isDead; }
+
     double GetHealth() { return health; }
 };
 

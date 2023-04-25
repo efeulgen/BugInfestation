@@ -12,21 +12,29 @@
 
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
+const int SPACE_BUG_INIT_AMOUNT = 5;
+const int SPACE_BUG_INIT_MIN_SPEED = 100;
+const int SPACE_BUG_INIT_MAX_SPEED = 150;
 
 class Game
 {
 private:
     bool isRunning;
     int millisecsPreviousFrame = 0;
+    double deltaTime = 0.0;
 
     SDL_Window *window;
     SDL_Renderer *renderer;
 
     bool isGameOver = false;
     bool isWaveComplete = false;
-    const int spaceBugInitAmount = 5;
+    bool isGameStarted = false;
+
     int spaceBugAmount = 5;
-    int score;
+    int spaceBugMinSpeed;
+    int spaceBugMaxSpeed;
+    int score = 0;
+    int wave = 0;
 
     // sounds
     Mix_Chunk *audio = nullptr;
@@ -36,8 +44,9 @@ private:
     // background
     const int backgroundWidth = 1280;
     const int backgroundHeight = 720;
-    int bg1_xPos = 0.0;
-    int bg2_xPos = 1280.0;
+    double bg1_xPos = 0.0;
+    double bg2_xPos = 1280.0;
+    double bgSpeed = 120.0;
 
     // game objects
     Player *mainPlayer = nullptr;
@@ -55,7 +64,8 @@ public:
     void Render();
     void Destroy();
 
-    void GenerateSpaceBugs(int amount);
+    void StartGame();
+    void GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed);
     void ResetGame();
     void BringNextWave();
 

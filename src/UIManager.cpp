@@ -24,7 +24,7 @@ void UIManager::RenderText(SDL_Renderer *renderer, const std::string &text, glm:
     SDL_DestroyTexture(textTexture);
 }
 
-void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, size_t sizeOfBugs)
+void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, bool isGameStarted, bool isWaveComplete)
 {
     // score
     std::string scoreStr = "Score : " + std::to_string(score);
@@ -42,9 +42,17 @@ void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, 
         RenderText(renderer, gameOverStr, glm::vec2(400, 300));
     }
 
-    if (sizeOfBugs <= 0)
+    // start game text
+    if (!isGameStarted)
+    {
+        std::string startGamestr = "Press 'Space' to start the game";
+        RenderText(renderer, startGamestr, glm::vec2(300, 300));
+    }
+
+    // next wave text
+    if (isWaveComplete)
     {
         std::string nextWaveStr = "Wave of Space Bugs defeated. Ready for next wave (Y/N)?";
-        RenderText(renderer, nextWaveStr, glm::vec2(250, 300));
+        RenderText(renderer, nextWaveStr, glm::vec2(150, 300));
     }
 }

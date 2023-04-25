@@ -18,7 +18,7 @@ public:
     PlayerProjectile();
     ~PlayerProjectile();
     void RenderPlayerProjectile(SDL_Renderer *gameRenderer);
-    void UpdateProjectile(); // update in Player
+    void UpdateProjectile(double deltaTime); // update in Player
     void Destroy();
 
     inline glm::vec2 GetProjectileOffset() { return projectileOffset; }

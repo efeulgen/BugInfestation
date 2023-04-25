@@ -9,7 +9,7 @@ PlayerProjectile::PlayerProjectile()
     std::cout << "PlayerProjectile Constructor" << std::endl;
 
     projectilePosition = glm::vec2(0.0, 0.0);
-    projectileSpeed = glm::vec2(20.0, 0.0);
+    projectileSpeed = glm::vec2(1000.0, 0.0);
     projectileOffset = glm::vec2(105.0, 64.0);
 }
 
@@ -28,9 +28,10 @@ void PlayerProjectile::RenderPlayerProjectile(SDL_Renderer *gameRenderer)
     SDL_DestroyTexture(projectileTexture);
 }
 
-void PlayerProjectile::UpdateProjectile()
+void PlayerProjectile::UpdateProjectile(double deltaTime)
 {
-    projectilePosition += projectileSpeed;
+    projectilePosition.x += projectileSpeed.x * deltaTime;
+    projectilePosition.y += projectileSpeed.y * deltaTime;
 }
 
 void PlayerProjectile::Destroy()

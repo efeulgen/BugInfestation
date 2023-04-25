@@ -11,7 +11,7 @@
 #include "Player.h"
 #include "SpaceBug.h"
 
-Game::Game()
+Game::Game() : spaceBugMinSpeed{SPACE_BUG_INIT_MIN_SPEED}, spaceBugMaxSpeed{SPACE_BUG_INIT_MAX_SPEED}
 {
     Logger::Log("Game Constructor");
 }
@@ -83,9 +83,6 @@ void Game::SetupGameAssets()
 
     // setup player
     mainPlayer = new Player();
-
-    // setup spacebugs
-    GenerateSpaceBugs(spaceBugAmount);
 }
 
 void Game::ProcessInput()
@@ -107,32 +104,35 @@ void Game::ProcessInput()
             {
                 mainPlayer->Fire();
             }
-            if (isGameOver && gameEvent.key.keysym.sym == SDLK_y)
+            if (gameEvent.key.keysym.sym == SDLK_y)
             {
-                ResetGame();
+                if (isGameOver)
+                {
+                    ResetGame();
+                }
+                else if (isWaveComplete)
+                {
+                    BringNextWave();
+                }
             }
-            if (isGameOver && gameEvent.key.keysym.sym == SDLK_n)
+            if ((isGameOver || isWaveComplete) && gameEvent.key.keysym.sym == SDLK_n)
             {
                 isRunning = false;
             }
-            if (isWaveComplete && gameEvent.key.keysym.sym == SDLK_y)
+            if (!isGameStarted && gameEvent.key.keysym.sym == SDLK_SPACE)
             {
-                BringNextWave();
-            }
-            if (isWaveComplete && gameEvent.key.keysym.sym == SDLK_n)
-            {
-                isRunning = false;
+                StartGame();
             }
         }
     }
     const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
-    if (keyboardState[SDL_SCANCODE_S])
+    if (keyboardState[SDL_SCANCODE_S] && mainPlayer)
     {
-        mainPlayer->MoveDown();
+        mainPlayer->MoveDown(deltaTime);
     }
-    if (keyboardState[SDL_SCANCODE_W])
+    if (keyboardState[SDL_SCANCODE_W] && mainPlayer)
     {
-        mainPlayer->MoveUp();
+        mainPlayer->MoveUp(deltaTime);
     }
 }
 
@@ -143,18 +143,19 @@ void Game::UpdateGameAssets()
     {
         SDL_Delay(timeToWait);
     }
+    deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
     millisecsPreviousFrame = SDL_GetTicks();
 
     // *************** update background ******************************
-    bg1_xPos--;
-    bg2_xPos--;
-    if (bg1_xPos <= -1280.0f)
+    bg1_xPos -= deltaTime * bgSpeed;
+    bg2_xPos -= deltaTime * bgSpeed;
+    if (bg1_xPos <= -1280.0)
     {
-        bg1_xPos = 1280.0f;
+        bg1_xPos = 1280.0;
     }
-    if (bg2_xPos <= -1280.0f)
+    if (bg2_xPos <= -1280.0)
     {
-        bg2_xPos = 1280.0f;
+        bg2_xPos = 1280.0;
     }
 
     // *************** check hit ******************************
@@ -164,7 +165,7 @@ void Game::UpdateGameAssets()
         {
             for (auto projectile : mainPlayer->GetProjectileArray())
             {
-                if (bug->CheckCollision(projectile->GetProjectileRect()))
+                if (bug->CheckCollision(projectile->GetProjectileRect()) && !isGameOver && !isWaveComplete)
                 {
                     Mix_PlayChannel(-1, bugScreamSound, 0);
                     Mix_PlayChannel(-1, bugSplashSound, 0);
@@ -185,7 +186,7 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            if (bug->CheckCollision(mainPlayer->GetPlayerRect()))
+            if (bug->CheckCollision(mainPlayer->GetPlayerRect()) && !isGameOver && !isWaveComplete)
             {
                 bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
                 bug->Destroy();
@@ -199,23 +200,28 @@ void Game::UpdateGameAssets()
     // *************** update main player ******************************
     if (mainPlayer)
     {
-        mainPlayer->Update();
+        mainPlayer->Update(deltaTime);
         if (mainPlayer->GetIsDead())
         {
             isGameOver = true;
+            isWaveComplete = false;
             delete mainPlayer;
             mainPlayer = nullptr;
         }
     }
 
     // *************** update space bugs ******************************
-    for (auto bug : bugs)
-    {
-        bug->UpdateSpaceBug();
-    }
-    if (bugs.size() <= 0)
+
+    if (bugs.size() <= 0 && !isWaveComplete && isGameStarted && !isGameOver)
     {
         isWaveComplete = true;
+    }
+    else
+    {
+        for (auto bug : bugs)
+        {
+            bug->UpdateSpaceBug(deltaTime);
+        }
     }
 }
 
@@ -228,8 +234,8 @@ void Game::Render()
     SDL_Surface *backgroundSurface = IMG_Load("./assets/deep_space_bg_1280x720.png");
     SDL_Texture *backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_FreeSurface(backgroundSurface);
-    SDL_Rect bgRect_1 = {bg1_xPos, 0, 1280, 720};
-    SDL_Rect bgRect_2 = {bg2_xPos, 0, 1280, 720};
+    SDL_Rect bgRect_1 = {static_cast<int>(bg1_xPos), 0, 1280, 720};
+    SDL_Rect bgRect_2 = {static_cast<int>(bg2_xPos), 0, 1280, 720};
     SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect_1);
     SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect_2);
     SDL_DestroyTexture(backgroundTexture);
@@ -249,7 +255,7 @@ void Game::Render()
         }
     }
 
-    uiManager->RenderUI(renderer, mainPlayer, score, bugs.size());
+    uiManager->RenderUI(renderer, mainPlayer, score, isGameStarted, isWaveComplete);
 
     SDL_RenderPresent(renderer);
 }
@@ -274,38 +280,62 @@ void Game::Destroy()
     SDL_Quit();
 }
 
-void Game::GenerateSpaceBugs(int amount)
+void Game::StartGame()
+{
+    GenerateSpaceBugs(SPACE_BUG_INIT_AMOUNT, spaceBugMinSpeed, spaceBugMaxSpeed);
+    isGameStarted = true;
+}
+
+void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
 {
     int seed = 0;
     for (int i = 0; i < amount; i++)
     {
         srand(seed);
-        int randomYPos = (rand() % 500) + 20;
-        int randomXDirection = (rand() % 2) + 2;
-        int randomYDirection = (rand() % 2) + 2;
-        bugs.push_back(new SpaceBug(glm::vec2(1000, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
+        double randomYPos = 20.0 + static_cast<double>(rand() % 500);
+        double randomXDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
+        double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
+        bugs.push_back(new SpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
         seed++;
     }
 }
 
 void Game::ResetGame()
 {
-    for (auto bug : bugs)
+    if (bugs.size() > 0)
     {
-        bug->Destroy();
-        // bug = nullptr;
+        for (auto bug : bugs)
+        {
+            bug->Destroy();
+            bug = nullptr;
+        }
+        bugs.clear();
     }
-    bugs.clear();
-    spaceBugAmount = spaceBugInitAmount;
-    GenerateSpaceBugs(spaceBugAmount);
-    isGameOver = false;
+    spaceBugAmount = SPACE_BUG_INIT_AMOUNT;
+    spaceBugMinSpeed = SPACE_BUG_INIT_MIN_SPEED;
+    spaceBugMaxSpeed = SPACE_BUG_INIT_MAX_SPEED;
+    GenerateSpaceBugs(spaceBugAmount, spaceBugMinSpeed, spaceBugMaxSpeed);
     score = 0;
+    wave = 0;
     mainPlayer = new Player();
+    isGameOver = false;
+    isWaveComplete = false;
 }
 
 void Game::BringNextWave()
 {
-    bugs.clear();
+    if (mainPlayer->GetProjectileArray().size() > 0)
+    {
+        mainPlayer->ClearProjArray();
+    }
     spaceBugAmount++;
-    GenerateSpaceBugs(spaceBugAmount);
+    wave++;
+    if (wave % 3 == 0)
+    {
+        spaceBugMinSpeed += 50;
+        spaceBugMaxSpeed += 50;
+    }
+    bugs.clear();
+    GenerateSpaceBugs(spaceBugAmount, spaceBugMinSpeed, spaceBugMaxSpeed);
+    isWaveComplete = false;
 }

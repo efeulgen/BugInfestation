@@ -5,13 +5,14 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <glm/glm.hpp>
+#include "./Logger/Logger.h"
 
 Player::Player() : health{100.0}, isDead{false}
 {
     std::cout << "Player Constructor" << std::endl;
 
     playerPosition = glm::vec2(40.0, 40.0);
-    playerSpeed = glm::vec2(0, 5.0);
+    playerSpeed = glm::vec2(0.0, 500.0);
 }
 
 Player::~Player()
@@ -19,11 +20,11 @@ Player::~Player()
     std::cout << "Player Destructor" << std::endl;
 }
 
-void Player::Update()
+void Player::Update(double deltaTime)
 {
     if (fireCounter < fireRate)
     {
-        fireCounter++;
+        fireCounter += deltaTime;
     }
     if (fireCounter > fireRate)
     {
@@ -32,7 +33,7 @@ void Player::Update()
 
     if (!projArray.empty())
     {
-        UpdateProjectiles();
+        UpdateProjectiles(deltaTime);
     }
 }
 
@@ -51,14 +52,16 @@ void Player::RenderPlayer(SDL_Renderer *gameRenderer)
     }
 }
 
-void Player::MoveUp()
+void Player::MoveUp(double deltaTime)
 {
-    playerPosition -= playerSpeed;
+    playerPosition.x -= playerSpeed.x * deltaTime;
+    playerPosition.y -= playerSpeed.y * deltaTime;
 }
 
-void Player::MoveDown()
+void Player::MoveDown(double deltaTime)
 {
-    playerPosition += playerSpeed;
+    playerPosition.x += playerSpeed.x * deltaTime;
+    playerPosition.y += playerSpeed.y * deltaTime;
 }
 
 void Player::Fire()
@@ -70,13 +73,13 @@ void Player::Fire()
     fireCounter = 0.0;
 }
 
-void Player::UpdateProjectiles()
+void Player::UpdateProjectiles(double deltaTime)
 {
     if (projArray.empty())
         return;
     for (auto projectile : projArray)
     {
-        projectile->UpdateProjectile();
+        projectile->UpdateProjectile(deltaTime);
         if (projectile->GetProjectilePosition().x - playerPosition.x > 1280.0)
         {
             projArray.erase(std::remove(projArray.begin(), projArray.end(), projectile), projArray.end());
@@ -91,12 +94,23 @@ void Player::EraseElementFromProjarray(PlayerProjectile *proj)
     projArray.erase(std::remove(projArray.begin(), projArray.end(), proj), projArray.end());
 }
 
+void Player::ClearProjArray()
+{
+    for (auto proj : projArray)
+    {
+        proj->Destroy();
+        proj = nullptr;
+    }
+    projArray.clear();
+}
+
 void Player::GetDamage(double amount)
 {
     health -= amount;
+    Logger::Err("Player gets damage.");
     if (health <= 0.0)
     {
-        std::cout << "Player is dead." << std::endl;
+        Logger::Err("Player is dead.");
         isDead = true;
     }
 }
