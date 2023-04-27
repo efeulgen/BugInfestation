@@ -46,13 +46,13 @@ void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, 
     if (!isGameStarted)
     {
         std::string startGamestr = "Press 'Space' to start the game";
-        RenderText(renderer, startGamestr, glm::vec2(300, 300));
+        RenderText(renderer, startGamestr, glm::vec2(350, 300));
     }
 
     // next wave text
     if (isWaveComplete)
     {
         std::string nextWaveStr = "Wave of Space Bugs defeated. Ready for next wave (Y/N)?";
-        RenderText(renderer, nextWaveStr, glm::vec2(150, 300));
+        RenderText(renderer, nextWaveStr, glm::vec2(200, 300));
     }
 }

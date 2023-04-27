@@ -100,7 +100,7 @@ void Game::ProcessInput()
             {
                 isRunning = false;
             }
-            if (gameEvent.key.keysym.sym == SDLK_RETURN && mainPlayer)
+            if (gameEvent.key.keysym.sym == SDLK_RETURN && mainPlayer && mainPlayer->GetCanFire())
             {
                 mainPlayer->Fire();
             }
@@ -211,7 +211,6 @@ void Game::UpdateGameAssets()
     }
 
     // *************** update space bugs ******************************
-
     if (bugs.size() <= 0 && !isWaveComplete && isGameStarted && !isGameOver)
     {
         isWaveComplete = true;

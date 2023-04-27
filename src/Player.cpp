@@ -7,7 +7,7 @@
 #include <glm/glm.hpp>
 #include "./Logger/Logger.h"
 
-Player::Player() : health{100.0}, isDead{false}
+Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}
 {
     std::cout << "Player Constructor" << std::endl;
 
@@ -22,13 +22,14 @@ Player::~Player()
 
 void Player::Update(double deltaTime)
 {
-    if (fireCounter < fireRate)
+    if (fireCounter < FIRE_RATE)
     {
         fireCounter += deltaTime;
     }
-    if (fireCounter > fireRate)
+    if (fireCounter > FIRE_RATE)
     {
-        fireCounter = fireRate;
+        fireCounter = FIRE_RATE;
+        canFire = true;
     }
 
     if (!projArray.empty())
@@ -70,6 +71,7 @@ void Player::Fire()
     newProjectile->SetProjectilePosition(playerPosition + newProjectile->GetProjectileOffset());
     projArray.push_back(newProjectile);
 
+    canFire = false;
     fireCounter = 0.0;
 }
 

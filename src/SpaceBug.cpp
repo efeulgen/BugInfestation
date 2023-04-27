@@ -2,6 +2,7 @@
 #include "SpaceBug.h"
 
 #include <iostream>
+#include <cmath>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 
@@ -31,11 +32,24 @@ void SpaceBug::UpdateSpaceBug(double deltaTime)
     {
         spaceBugDirection.y *= -1;
     }
+
+    animCounter += deltaTime * ANIM_SPEED;
 }
 
 void SpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 {
-    SDL_Surface *spaceBugSurface = IMG_Load("./assets/space_bug.png");
+    if (static_cast<int>(animCounter) % 3 == 0)
+    {
+        spaceBugSurface = IMG_Load("./assets/space_bug.png");
+    }
+    else if (static_cast<int>(animCounter) % 3 == 1)
+    {
+        spaceBugSurface = IMG_Load("./assets/space_bug_1.png");
+    }
+    else
+    {
+        spaceBugSurface = IMG_Load("./assets/space_bug_2.png");
+    }
     SDL_Texture *spaceBugTexture = SDL_CreateTextureFromSurface(gameRenderer, spaceBugSurface);
     SDL_FreeSurface(spaceBugSurface);
     spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};

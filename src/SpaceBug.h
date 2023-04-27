@@ -5,12 +5,16 @@
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
 
+const double ANIM_SPEED = 10.0;
+
 class SpaceBug
 {
 private:
     glm::vec2 spaceBugPos;
     glm::vec2 spaceBugDirection;
+    SDL_Surface *spaceBugSurface = nullptr;
     SDL_Rect spaceBugRect;
+    double animCounter = 0;
 
 public:
     SpaceBug();
