@@ -5,6 +5,7 @@
 #include <vector>
 #include "Player.h"
 #include "SpaceBug.h"
+#include "HeavySpaceBug.h"
 #include "UIManager.h"
 
 #ifndef GAME_H
@@ -12,7 +13,7 @@
 
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
-const int SPACE_BUG_INIT_AMOUNT = 5;
+const int SPACE_BUG_INIT_AMOUNT = 1;
 const int SPACE_BUG_INIT_MIN_SPEED = 100;
 const int SPACE_BUG_INIT_MAX_SPEED = 150;
 
@@ -50,7 +51,7 @@ private:
 
     // game objects
     Player *mainPlayer = nullptr;
-    std::vector<SpaceBug *> bugs;
+    std::vector<HeavySpaceBug *> bugs;
     UIManager *uiManager = nullptr;
 
 public:

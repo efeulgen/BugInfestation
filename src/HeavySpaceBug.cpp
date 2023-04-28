@@ -20,9 +20,32 @@ void HeavySpaceBug::GetDamage()
       }
 }
 
-void HeavySpaceBug::ShootProjectile()
+void HeavySpaceBug::ShootProjectile(glm::vec2 playerPos)
 {
-      std::cout << "Shoot projectile." << std::endl;
+      glm::vec2 playerDirection = glm::normalize(playerPos - spaceBugPos);
+      Projectile *newProjectile = new Projectile(playerDirection, 800.0);
+      newProjectile->SetProjectilePosition(spaceBugPos);
+      projArray.push_back(newProjectile);
+}
+
+void HeavySpaceBug::UpdateSpaceBug(double deltaTime, glm::vec2 playerPos)
+{
+      SpaceBug::UpdateSpaceBug(deltaTime);
+
+      if (fireCounter < BUG_FIRE_RATE)
+      {
+            fireCounter += deltaTime;
+      }
+      else
+      {
+            ShootProjectile(playerPos);
+            fireCounter = 0.0;
+      }
+
+      for (auto proj : projArray)
+      {
+            proj->UpdateProjectile(deltaTime);
+      }
 }
 
 void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
@@ -33,4 +56,9 @@ void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
       spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};
       SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
       SDL_DestroyTexture(tex);
+
+      for (auto proj : projArray)
+      {
+            proj->RenderProjectile(gameRenderer);
+      }
 }

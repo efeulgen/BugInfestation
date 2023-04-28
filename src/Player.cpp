@@ -13,6 +13,7 @@ Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}
 
     playerPosition = glm::vec2(40.0, 40.0);
     playerSpeed = glm::vec2(0.0, 500.0);
+    firePos = glm::vec2(105.0, 64.0);
 }
 
 Player::~Player()
@@ -49,7 +50,7 @@ void Player::RenderPlayer(SDL_Renderer *gameRenderer)
 
     for (auto projectile : projArray)
     {
-        projectile->RenderPlayerProjectile(gameRenderer);
+        projectile->RenderProjectile(gameRenderer);
     }
 }
 
@@ -67,8 +68,8 @@ void Player::MoveDown(double deltaTime)
 
 void Player::Fire()
 {
-    PlayerProjectile *newProjectile = new PlayerProjectile();
-    newProjectile->SetProjectilePosition(playerPosition + newProjectile->GetProjectileOffset());
+    Projectile *newProjectile = new Projectile(glm::vec2(1, 0), 1000.0);
+    newProjectile->SetProjectilePosition(playerPosition + firePos);
     projArray.push_back(newProjectile);
 
     canFire = false;
@@ -91,7 +92,7 @@ void Player::UpdateProjectiles(double deltaTime)
     }
 }
 
-void Player::EraseElementFromProjarray(PlayerProjectile *proj)
+void Player::EraseElementFromProjarray(Projectile *proj)
 {
     projArray.erase(std::remove(projArray.begin(), projArray.end(), proj), projArray.end());
 }

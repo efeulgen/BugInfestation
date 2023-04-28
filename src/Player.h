@@ -5,7 +5,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
-#include "PlayerProjectile.h"
+#include "Projectile.h"
 
 const double FIRE_RATE = 0.25;
 const double MAX_HEALTH = 100.0;
@@ -20,10 +20,11 @@ private:
 
     glm::vec2 playerPosition;
     glm::vec2 playerSpeed;
+    glm::vec2 firePos;
 
     SDL_Rect playerRect;
 
-    std::vector<PlayerProjectile *> projArray;
+    std::vector<Projectile *> projArray;
 
 public:
     Player();
@@ -35,15 +36,16 @@ public:
     void MoveDown(double deltaTime);
     void Fire();
     void UpdateProjectiles(double deltaTime);
-    void EraseElementFromProjarray(PlayerProjectile *proj);
+    void EraseElementFromProjarray(Projectile *proj);
     void ClearProjArray();
     void GetDamage(double amount);
     void UseJetPack();
 
     // **********************************************************************************************
     // *************** getters & setters ************************************************************
-    std::vector<PlayerProjectile *> GetProjectileArray() { return projArray; }
+    std::vector<Projectile *> GetProjectileArray() { return projArray; }
     SDL_Rect GetPlayerRect() { return playerRect; }
+    glm::vec2 GetPlayerPos() { return playerPosition; }
 
     bool GetCanFire() { return canFire; }
     bool GetIsDead() { return isDead; }

@@ -220,7 +220,7 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            bug->UpdateSpaceBug(deltaTime);
+            bug->UpdateSpaceBug(deltaTime, mainPlayer->GetPlayerPos());
         }
     }
 }
