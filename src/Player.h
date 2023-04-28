@@ -38,6 +38,7 @@ public:
     void EraseElementFromProjarray(PlayerProjectile *proj);
     void ClearProjArray();
     void GetDamage(double amount);
+    void UseJetPack();
 
     // **********************************************************************************************
     // *************** getters & setters ************************************************************

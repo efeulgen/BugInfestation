@@ -5,6 +5,7 @@
 #include <cmath>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include "Logger/Logger.h"
 
 SpaceBug::SpaceBug()
 {
@@ -38,17 +39,21 @@ void SpaceBug::UpdateSpaceBug(double deltaTime)
 
 void SpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 {
-    if (static_cast<int>(animCounter) % 3 == 0)
+    if (static_cast<int>(animCounter) % BUG_SPRITESHEET_SIZE == 0)
     {
-        spaceBugSurface = IMG_Load("./assets/space_bug.png");
+        spaceBugSurface = IMG_Load(bugSpriteSheet[0]);
     }
-    else if (static_cast<int>(animCounter) % 3 == 1)
+    else if (static_cast<int>(animCounter) % BUG_SPRITESHEET_SIZE == 1)
     {
-        spaceBugSurface = IMG_Load("./assets/space_bug_1.png");
+        spaceBugSurface = IMG_Load(bugSpriteSheet[1]);
+    }
+    else if (static_cast<int>(animCounter) % BUG_SPRITESHEET_SIZE == 2)
+    {
+        spaceBugSurface = IMG_Load(bugSpriteSheet[2]);
     }
     else
     {
-        spaceBugSurface = IMG_Load("./assets/space_bug_2.png");
+        spaceBugSurface = IMG_Load(bugSpriteSheet[3]);
     }
     SDL_Texture *spaceBugTexture = SDL_CreateTextureFromSurface(gameRenderer, spaceBugSurface);
     SDL_FreeSurface(spaceBugSurface);
