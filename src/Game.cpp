@@ -10,6 +10,7 @@
 #include "./Logger/Logger.h"
 #include "Player.h"
 #include "SpaceBug.h"
+#include "HeavySpaceBug.h"
 
 Game::Game() : spaceBugMinSpeed{SPACE_BUG_INIT_MIN_SPEED}, spaceBugMaxSpeed{SPACE_BUG_INIT_MAX_SPEED}
 {
@@ -294,7 +295,7 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
         double randomYPos = 20.0 + static_cast<double>(rand() % 500);
         double randomXDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
         double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
-        bugs.push_back(new SpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
+        bugs.push_back(new HeavySpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection))); // HeavySpaceBug for testing
         seed++;
     }
 }

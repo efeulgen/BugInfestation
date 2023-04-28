@@ -62,7 +62,7 @@ void SpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
     SDL_DestroyTexture(spaceBugTexture);
 }
 
-bool SpaceBug::CheckCollision(SDL_Rect other)
+bool SpaceBug::CheckCollision(SDL_Rect other) const
 {
     if (SDL_HasIntersection(&spaceBugRect, &other))
     {

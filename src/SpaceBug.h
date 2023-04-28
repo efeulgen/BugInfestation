@@ -11,23 +11,25 @@ const int BUG_SPRITESHEET_SIZE = 4;
 class SpaceBug
 {
 private:
-    glm::vec2 spaceBugPos;
-    glm::vec2 spaceBugDirection;
     SDL_Surface *spaceBugSurface = nullptr;
     const char *bugSpriteSheet[BUG_SPRITESHEET_SIZE] = {"./assets/space_bug_2.png", "./assets/space_bug.png", "./assets/space_bug_1.png", "./assets/space_bug.png"};
-    SDL_Rect spaceBugRect;
     double animCounter = 0;
+
+protected:
+    glm::vec2 spaceBugPos;
+    glm::vec2 spaceBugDirection;
+    SDL_Rect spaceBugRect;
 
 public:
     SpaceBug();
     SpaceBug(glm::vec2 initPos, glm::vec2 initDirection);
-    ~SpaceBug();
+    virtual ~SpaceBug();
     void UpdateSpaceBug(double deltaTime);
-    void RenderSpaceBug(SDL_Renderer *gameRenderer);
-    bool CheckCollision(SDL_Rect other);
+    virtual void RenderSpaceBug(SDL_Renderer *gameRenderer);
+    bool CheckCollision(SDL_Rect other) const;
     void Destroy();
 
-    inline SDL_Rect GetSpaceBugRect() { return spaceBugRect; }
+    SDL_Rect GetSpaceBugRect() const { return spaceBugRect; }
 };
 
 #endif
