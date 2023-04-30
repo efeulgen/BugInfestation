@@ -4,6 +4,7 @@
 
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
+#include "Player.h"
 
 const double ANIM_SPEED = 10.0;
 const int BUG_SPRITESHEET_SIZE = 4;
@@ -26,7 +27,7 @@ public:
     SpaceBug();
     SpaceBug(glm::vec2 initPos, glm::vec2 initDirection);
     virtual ~SpaceBug();
-    void UpdateSpaceBug(double deltaTime);
+    virtual void UpdateSpaceBug(double deltaTime, Player *player = nullptr);
     virtual void RenderSpaceBug(SDL_Renderer *gameRenderer);
     bool CheckCollision(SDL_Rect other) const;
     void Destroy();

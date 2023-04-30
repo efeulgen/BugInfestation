@@ -21,7 +21,7 @@ SpaceBug::~SpaceBug()
     std::cout << "SpaceBug Destructor" << std::endl;
 }
 
-void SpaceBug::UpdateSpaceBug(double deltaTime)
+void SpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
 {
     spaceBugPos.x += spaceBugDirection.x * deltaTime;
     spaceBugPos.y += spaceBugDirection.y * deltaTime;

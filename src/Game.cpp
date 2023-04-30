@@ -67,6 +67,10 @@ void Game::Display()
     }
 }
 
+// ************************************************************************************************************************
+// *************** SETUP **************************************************************************************************
+// ************************************************************************************************************************
+
 void Game::SetupGameAssets()
 {
     // setup audio
@@ -136,6 +140,10 @@ void Game::ProcessInput()
         mainPlayer->MoveUp(deltaTime);
     }
 }
+
+// ************************************************************************************************************************
+// *************** UPDATE *************************************************************************************************
+// ************************************************************************************************************************
 
 void Game::UpdateGameAssets()
 {
@@ -220,17 +228,20 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            bug->UpdateSpaceBug(deltaTime); // , mainPlayer->GetPlayerPos()
+            bug->UpdateSpaceBug(deltaTime, mainPlayer);
         }
     }
 }
+// ************************************************************************************************************************
+// *************** RENDER *************************************************************************************************
+// ************************************************************************************************************************
 
 void Game::Render()
 {
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
-    // background
+    // *************** render background ******************************
     SDL_Surface *backgroundSurface = IMG_Load("./assets/deep_space_bg_1280x720.png");
     SDL_Texture *backgroundTexture = SDL_CreateTextureFromSurface(renderer, backgroundSurface);
     SDL_FreeSurface(backgroundSurface);
@@ -240,13 +251,13 @@ void Game::Render()
     SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect_2);
     SDL_DestroyTexture(backgroundTexture);
 
-    // render player
+    // *************** render player ******************************
     if (mainPlayer)
     {
         mainPlayer->RenderPlayer(renderer);
     }
 
-    // render spacebugs
+    // *************** render spacebugs ******************************
     if (!bugs.empty())
     {
         for (auto bug : bugs)
@@ -295,7 +306,14 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
         double randomYPos = 20.0 + static_cast<double>(rand() % 500);
         double randomXDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
         double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
-        bugs.push_back(new SpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection))); // HeavySpaceBug for testing
+        if (i == (amount - 1))
+        {
+            bugs.push_back(new HeavySpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
+        }
+        else
+        {
+            bugs.push_back(new SpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
+        }
         seed++;
     }
 }
