@@ -50,7 +50,7 @@ void Player::RenderPlayer(SDL_Renderer *gameRenderer)
 
     for (auto projectile : projArray)
     {
-        projectile->RenderProjectile(gameRenderer);
+        projectile->RenderProjectile(gameRenderer, playerProjectileSpriteSheet, PLAYER_PROJECTILE_SPRITESHEET_SIZE);
     }
 }
 

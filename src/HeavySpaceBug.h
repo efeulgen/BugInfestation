@@ -7,6 +7,7 @@
 #include <vector>
 
 const double BUG_FIRE_RATE = 1.0;
+const int BUG_PROJECTILE_SPRITESHEET_SIZE = 4;
 
 class HeavySpaceBug : public SpaceBug
 {
@@ -14,6 +15,8 @@ private:
       int health = 3;
       std::vector<Projectile *> projArray;
       double fireCounter = 0.0;
+
+      const char *bugProjectileSpritesheet[BUG_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/heavyBug_projectile_1.png", "./assets/heavyBug_projectile_2.png", "./assets/heavyBug_projectile_3.png", "./assets/heavyBug_projectile_4.png"};
 
 public:
       HeavySpaceBug();

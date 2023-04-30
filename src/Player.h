@@ -9,6 +9,7 @@
 
 const double FIRE_RATE = 0.25;
 const double MAX_HEALTH = 100.0;
+const int PLAYER_PROJECTILE_SPRITESHEET_SIZE = 1;
 
 class Player
 {
@@ -21,6 +22,8 @@ private:
     glm::vec2 playerPosition;
     glm::vec2 playerSpeed;
     glm::vec2 firePos;
+
+    const char *playerProjectileSpriteSheet[PLAYER_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/PlayerProjectile.png"};
 
     SDL_Rect playerRect;
 

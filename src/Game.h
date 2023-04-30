@@ -51,7 +51,7 @@ private:
 
     // game objects
     Player *mainPlayer = nullptr;
-    std::vector<HeavySpaceBug *> bugs;
+    std::vector<SpaceBug *> bugs;
     UIManager *uiManager = nullptr;
 
 public:

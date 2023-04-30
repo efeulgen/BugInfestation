@@ -23,7 +23,7 @@ void HeavySpaceBug::GetDamage()
 void HeavySpaceBug::ShootProjectile(glm::vec2 playerPos)
 {
       glm::vec2 playerDirection = glm::normalize(playerPos - spaceBugPos);
-      Projectile *newProjectile = new Projectile(playerDirection, 800.0);
+      Projectile *newProjectile = new Projectile(playerDirection, 300.0);
       newProjectile->SetProjectilePosition(spaceBugPos);
       projArray.push_back(newProjectile);
 }
@@ -59,6 +59,6 @@ void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 
       for (auto proj : projArray)
       {
-            proj->RenderProjectile(gameRenderer);
+            proj->RenderProjectile(gameRenderer, bugProjectileSpritesheet, BUG_PROJECTILE_SPRITESHEET_SIZE);
       }
 }

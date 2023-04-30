@@ -220,7 +220,7 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            bug->UpdateSpaceBug(deltaTime, mainPlayer->GetPlayerPos());
+            bug->UpdateSpaceBug(deltaTime); // , mainPlayer->GetPlayerPos()
         }
     }
 }
@@ -295,7 +295,7 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
         double randomYPos = 20.0 + static_cast<double>(rand() % 500);
         double randomXDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
         double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
-        bugs.push_back(new HeavySpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection))); // HeavySpaceBug for testing
+        bugs.push_back(new SpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection))); // HeavySpaceBug for testing
         seed++;
     }
 }
