@@ -52,11 +52,18 @@ void HeavySpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
                   proj = nullptr;
             }
       }
+
+      animCounter += deltaTime * 10.0;
 }
 
 void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 {
-      SDL_Surface *surf = IMG_Load("./assets/heavy_space_bug.png");
+      SDL_Surface *surf = IMG_Load(heavyBugSpriteSheet[spriteSheetIndex]);
+      if (static_cast<int>(animCounter) % HEAVY_BUG_SPRITESHEET_SIZE == modCounter)
+      {
+            spriteSheetIndex = spriteSheetIndex >= (HEAVY_BUG_SPRITESHEET_SIZE - 1) ? 0 : spriteSheetIndex + 1;
+            modCounter = modCounter >= (HEAVY_BUG_SPRITESHEET_SIZE - 1) ? 0 : modCounter + 1;
+      }
       SDL_Texture *tex = SDL_CreateTextureFromSurface(gameRenderer, surf);
       SDL_FreeSurface(surf);
       spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};
