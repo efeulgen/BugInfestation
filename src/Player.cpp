@@ -117,3 +117,17 @@ void Player::GetDamage(double amount)
         isDead = true;
     }
 }
+
+void Player::UseJetPack()
+{
+    std::cout << "Player uses jet-pack." << std::endl;
+}
+
+bool Player::CheckCollision(SDL_Rect other) const
+{
+    if (SDL_HasIntersection(&playerRect, &other))
+    {
+        return true;
+    }
+    return false;
+}

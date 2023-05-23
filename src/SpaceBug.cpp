@@ -14,6 +14,8 @@ SpaceBug::SpaceBug()
 
 SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{initPos}, spaceBugDirection{initDirection}
 {
+    health = 1;
+    isDestructible = false;
 }
 
 SpaceBug::~SpaceBug()
@@ -52,6 +54,15 @@ void SpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
     SDL_DestroyTexture(spaceBugTexture);
 }
 
+void SpaceBug::GetDamage()
+{
+    health--;
+    if (health <= 0)
+    {
+        isDestructible = true;
+    }
+}
+
 bool SpaceBug::CheckCollision(SDL_Rect other) const
 {
     if (SDL_HasIntersection(&spaceBugRect, &other))
@@ -64,4 +75,9 @@ bool SpaceBug::CheckCollision(SDL_Rect other) const
 void SpaceBug::Destroy()
 {
     delete this;
+}
+
+void SpaceBug::EraseElementFromProjarray(Projectile *proj)
+{
+    projArray.erase(std::remove(projArray.begin(), projArray.end(), proj), projArray.end());
 }

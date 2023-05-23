@@ -9,6 +9,8 @@ HeavySpaceBug::HeavySpaceBug()
 
 HeavySpaceBug::HeavySpaceBug(glm::vec2 pos, glm::vec2 dir) : SpaceBug(pos, dir), fireCounter(BUG_FIRE_RATE)
 {
+      health = 3;
+      isDestructible = false;
 }
 
 void HeavySpaceBug::GetDamage()
@@ -16,7 +18,13 @@ void HeavySpaceBug::GetDamage()
       health--;
       if (health <= 0)
       {
-            Destroy();
+            isDead = true;
+            spaceBugRect.w = 0;
+            spaceBugRect.h = 0;
+            if (projArray.empty())
+            {
+                  isDestructible = true;
+            }
       }
 }
 
@@ -30,6 +38,23 @@ void HeavySpaceBug::ShootProjectile(Player *player)
 
 void HeavySpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
 {
+      for (auto proj : projArray)
+      {
+            proj->UpdateProjectile(deltaTime);
+            if (proj->GetProjectilePosition().x <= -10 || proj->GetProjectilePosition().x >= 1300 || proj->GetProjectilePosition().y <= -100 || proj->GetProjectilePosition().y >= 900)
+            {
+                  projArray.erase(std::remove(projArray.begin(), projArray.end(), proj), projArray.end());
+                  proj->Destroy();
+                  proj = nullptr;
+            }
+      }
+      if (isDead && projArray.empty())
+      {
+            isDestructible = true;
+      }
+      if (isDead)
+            return;
+
       SpaceBug::UpdateSpaceBug(deltaTime, player);
 
       if (fireCounter < BUG_FIRE_RATE)
@@ -42,22 +67,18 @@ void HeavySpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
             fireCounter = 0.0;
       }
 
-      for (auto proj : projArray)
-      {
-            proj->UpdateProjectile(deltaTime);
-            if (proj->GetProjectilePosition().x <= -10 || proj->GetProjectilePosition().x >= 1300 || proj->GetProjectilePosition().y <= -100 || proj->GetProjectilePosition().y >= 900)
-            {
-                  projArray.erase(std::remove(projArray.begin(), projArray.end(), proj), projArray.end());
-                  proj->Destroy();
-                  proj = nullptr;
-            }
-      }
-
       animCounter += deltaTime * 10.0;
 }
 
 void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 {
+      for (auto proj : projArray)
+      {
+            proj->RenderProjectile(gameRenderer, bugProjectileSpritesheet, BUG_PROJECTILE_SPRITESHEET_SIZE);
+      }
+      if (isDead)
+            return;
+
       SDL_Surface *surf = IMG_Load(heavyBugSpriteSheet[spriteSheetIndex]);
       if (static_cast<int>(animCounter) % HEAVY_BUG_SPRITESHEET_SIZE == modCounter)
       {
@@ -69,9 +90,4 @@ void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
       spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};
       SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
       SDL_DestroyTexture(tex);
-
-      for (auto proj : projArray)
-      {
-            proj->RenderProjectile(gameRenderer, bugProjectileSpritesheet, BUG_PROJECTILE_SPRITESHEET_SIZE);
-      }
 }

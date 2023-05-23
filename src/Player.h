@@ -43,6 +43,7 @@ public:
     void ClearProjArray();
     void GetDamage(double amount);
     void UseJetPack();
+    bool CheckCollision(SDL_Rect other) const;
 
     // **********************************************************************************************
     // *************** getters & setters ************************************************************

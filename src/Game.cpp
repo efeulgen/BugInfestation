@@ -155,7 +155,7 @@ void Game::UpdateGameAssets()
     deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
     millisecsPreviousFrame = SDL_GetTicks();
 
-    // *************** update background ******************************
+    // *************** update background ******************************************************************************************
     bg1_xPos -= deltaTime * bgSpeed;
     bg2_xPos -= deltaTime * bgSpeed;
     if (bg1_xPos <= -1280.0)
@@ -167,7 +167,7 @@ void Game::UpdateGameAssets()
         bg2_xPos = 1280.0;
     }
 
-    // *************** check hit ******************************
+    // *************** check hit ******************************************************************************************
     if (mainPlayer && (!bugs.empty() || !mainPlayer->GetProjectileArray().empty()))
     {
         for (auto bug : bugs)
@@ -178,9 +178,8 @@ void Game::UpdateGameAssets()
                 {
                     Mix_PlayChannel(-1, bugScreamSound, 0);
                     Mix_PlayChannel(-1, bugSplashSound, 0);
-                    bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
-                    bug->Destroy();
-                    bug = nullptr;
+
+                    bug->GetDamage();
                     mainPlayer->EraseElementFromProjarray(projectile);
                     projectile->Destroy();
                     projectile = nullptr;
@@ -203,10 +202,20 @@ void Game::UpdateGameAssets()
                 mainPlayer->GetDamage(50.0);
                 break;
             }
+
+            for (auto proj : bug->GetBugProjArraj())
+            {
+                if (mainPlayer->CheckCollision(proj->GetProjectileRect()))
+                {
+                    bug->EraseElementFromProjarray(proj);
+                    proj->Destroy();
+                    proj = nullptr;
+                }
+            }
         }
     }
 
-    // *************** update main player ******************************
+    // *************** update main player ************************************************************
     if (mainPlayer)
     {
         mainPlayer->Update(deltaTime);
@@ -219,7 +228,7 @@ void Game::UpdateGameAssets()
         }
     }
 
-    // *************** update space bugs ******************************
+    // *************** update space bugs ************************************************************
     if (bugs.size() <= 0 && !isWaveComplete && isGameStarted && !isGameOver)
     {
         isWaveComplete = true;
@@ -228,7 +237,16 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            bug->UpdateSpaceBug(deltaTime, mainPlayer);
+            if (bug->GetIsDestructible())
+            {
+                bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
+                bug->Destroy();
+                bug = nullptr;
+            }
+            else
+            {
+                bug->UpdateSpaceBug(deltaTime, mainPlayer);
+            }
         }
     }
 }
@@ -251,13 +269,13 @@ void Game::Render()
     SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect_2);
     SDL_DestroyTexture(backgroundTexture);
 
-    // *************** render player ******************************
+    // *************** render player ******************************************************************************************
     if (mainPlayer)
     {
         mainPlayer->RenderPlayer(renderer);
     }
 
-    // *************** render spacebugs ******************************
+    // *************** render spacebugs ******************************************************************************************
     if (!bugs.empty())
     {
         for (auto bug : bugs)

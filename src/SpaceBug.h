@@ -4,7 +4,9 @@
 
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
+#include <vector>
 #include "Player.h"
+#include "Projectile.h"
 
 const double ANIM_SPEED = 10.0;
 const int BUG_SPRITESHEET_SIZE = 4;
@@ -14,14 +16,18 @@ class SpaceBug
 private:
     SDL_Surface *spaceBugSurface = nullptr;
     const char *bugSpriteSheet[BUG_SPRITESHEET_SIZE] = {"./assets/space_bug_2.png", "./assets/space_bug.png", "./assets/space_bug_1.png", "./assets/space_bug.png"};
-    double animCounter = 0;
-    int spriteSheetIndex = 0;
-    int modCounter = 0;
 
 protected:
     glm::vec2 spaceBugPos;
     glm::vec2 spaceBugDirection;
     SDL_Rect spaceBugRect;
+    std::vector<Projectile *> projArray;
+
+    int health;
+    bool isDestructible;
+    double animCounter = 0;
+    int spriteSheetIndex = 0;
+    int modCounter = 0;
 
 public:
     SpaceBug();
@@ -29,10 +35,18 @@ public:
     virtual ~SpaceBug();
     virtual void UpdateSpaceBug(double deltaTime, Player *player = nullptr);
     virtual void RenderSpaceBug(SDL_Renderer *gameRenderer);
+    virtual void GetDamage();
     bool CheckCollision(SDL_Rect other) const;
     void Destroy();
+    void EraseElementFromProjarray(Projectile *proj);
 
-    SDL_Rect GetSpaceBugRect() const { return spaceBugRect; }
+    SDL_Rect
+    GetSpaceBugRect() const
+    {
+        return spaceBugRect;
+    }
+    bool GetIsDestructible() const { return isDestructible; }
+    std::vector<Projectile *> GetBugProjArraj() const { return projArray; }
 };
 
 #endif
