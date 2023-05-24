@@ -37,6 +37,8 @@ public:
     void RenderPlayer(SDL_Renderer *gameRenderer);
     void MoveUp(double deltaTime);
     void MoveDown(double deltaTime);
+    void MoveRight(double deltaTime);
+    void MoveLeft(double deltaTime);
     void Fire();
     void UpdateProjectiles(double deltaTime);
     void EraseElementFromProjarray(Projectile *proj);

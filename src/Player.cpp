@@ -12,7 +12,7 @@ Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}
     std::cout << "Player Constructor" << std::endl;
 
     playerPosition = glm::vec2(40.0, 40.0);
-    playerSpeed = glm::vec2(0.0, 500.0);
+    playerSpeed = glm::vec2(500.0, 500.0);
     firePos = glm::vec2(105.0, 64.0);
 }
 
@@ -37,6 +37,24 @@ void Player::Update(double deltaTime)
     {
         UpdateProjectiles(deltaTime);
     }
+
+    // *************** bound checking ***************
+    if (playerPosition.y <= 0.0)
+    {
+        playerPosition.y = 0.0;
+    }
+    if (playerPosition.y >= 720.0)
+    {
+        playerPosition.y = 720.0;
+    }
+    if (playerPosition.x <= 0.0)
+    {
+        playerPosition.x = 0.0;
+    }
+    if (playerPosition.x >= 200.0)
+    {
+        playerPosition.x = 200.0;
+    }
 }
 
 void Player::RenderPlayer(SDL_Renderer *gameRenderer)
@@ -56,14 +74,25 @@ void Player::RenderPlayer(SDL_Renderer *gameRenderer)
 
 void Player::MoveUp(double deltaTime)
 {
-    playerPosition.x -= playerSpeed.x * deltaTime;
+    // playerPosition.x -= playerSpeed.x * deltaTime;
     playerPosition.y -= playerSpeed.y * deltaTime;
 }
 
 void Player::MoveDown(double deltaTime)
 {
-    playerPosition.x += playerSpeed.x * deltaTime;
+    // playerPosition.x += playerSpeed.x * deltaTime;
     playerPosition.y += playerSpeed.y * deltaTime;
+}
+
+void Player::MoveRight(double deltaTime)
+{
+    playerPosition.x += playerSpeed.x * deltaTime;
+    // playerPosition.y += playerSpeed.y * deltaTime;
+}
+void Player::MoveLeft(double deltaTime)
+{
+    playerPosition.x -= playerSpeed.x * deltaTime;
+    // playerPosition.y -= playerSpeed.y * deltaTime;
 }
 
 void Player::Fire()

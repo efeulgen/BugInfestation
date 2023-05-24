@@ -6,7 +6,7 @@
 #include "Player.h"
 #include <vector>
 
-const double BUG_FIRE_RATE = 0.5; // 3.0
+const double BUG_FIRE_RATE = 3.0;
 const int BUG_PROJECTILE_SPRITESHEET_SIZE = 4;
 const int HEAVY_BUG_SPRITESHEET_SIZE = 4;
 

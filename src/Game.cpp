@@ -139,6 +139,18 @@ void Game::ProcessInput()
     {
         mainPlayer->MoveUp(deltaTime);
     }
+    if (keyboardState[SDL_SCANCODE_D] && mainPlayer)
+    {
+        mainPlayer->MoveRight(deltaTime);
+    }
+    if (keyboardState[SDL_SCANCODE_A] && mainPlayer)
+    {
+        mainPlayer->MoveLeft(deltaTime);
+    }
+    if (keyboardState[SDL_SCANCODE_SPACE] && isGameStarted && mainPlayer)
+    {
+        mainPlayer->UseJetPack();
+    }
 }
 
 // ************************************************************************************************************************
