@@ -7,12 +7,12 @@
 #include <glm/glm.hpp>
 #include "./Logger/Logger.h"
 
-Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}
+Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gravityFactor{GRAVITY}, isUsingJetPack{false}, isFlipped{false}
 {
     std::cout << "Player Constructor" << std::endl;
 
     playerPosition = glm::vec2(40.0, 40.0);
-    playerSpeed = glm::vec2(500.0, 500.0);
+    playerSpeed = glm::vec2(300.0, 350.0);
     firePos = glm::vec2(105.0, 64.0);
 }
 
@@ -38,7 +38,7 @@ void Player::Update(double deltaTime)
         UpdateProjectiles(deltaTime);
     }
 
-    // *************** bound checking ***************
+    // *************** bound checking ******************************
     if (playerPosition.y <= 0.0)
     {
         playerPosition.y = 0.0;
@@ -51,19 +51,36 @@ void Player::Update(double deltaTime)
     {
         playerPosition.x = 0.0;
     }
-    if (playerPosition.x >= 200.0)
+    if (playerPosition.x >= 1152.0)
     {
-        playerPosition.x = 200.0;
+        playerPosition.x = 1152.0;
+    }
+
+    // *************** apply gravity ******************************
+    if (!isUsingJetPack)
+    {
+        gravityFactor += (gravityIncrement * deltaTime);
+        playerPosition.y += (gravityFactor * deltaTime);
     }
 }
 
 void Player::RenderPlayer(SDL_Renderer *gameRenderer)
 {
+
     SDL_Surface *playerSurface = IMG_Load("./assets/astro-K-47.png");
     SDL_Texture *playertexture = SDL_CreateTextureFromSurface(gameRenderer, playerSurface);
     SDL_FreeSurface(playerSurface);
     playerRect = {static_cast<int>(playerPosition.x), static_cast<int>(playerPosition.y), 128, 128};
-    SDL_RenderCopy(gameRenderer, playertexture, NULL, &playerRect);
+
+    if (isFlipped)
+    {
+        SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+        SDL_RenderCopyEx(gameRenderer, playertexture, NULL, &playerRect, 0.0, NULL, flip);
+    }
+    else
+    {
+        SDL_RenderCopy(gameRenderer, playertexture, NULL, &playerRect);
+    }
     SDL_DestroyTexture(playertexture);
 
     for (auto projectile : projArray)
@@ -72,32 +89,22 @@ void Player::RenderPlayer(SDL_Renderer *gameRenderer)
     }
 }
 
-void Player::MoveUp(double deltaTime)
-{
-    // playerPosition.x -= playerSpeed.x * deltaTime;
-    playerPosition.y -= playerSpeed.y * deltaTime;
-}
-
-void Player::MoveDown(double deltaTime)
-{
-    // playerPosition.x += playerSpeed.x * deltaTime;
-    playerPosition.y += playerSpeed.y * deltaTime;
-}
-
 void Player::MoveRight(double deltaTime)
 {
     playerPosition.x += playerSpeed.x * deltaTime;
-    // playerPosition.y += playerSpeed.y * deltaTime;
+    SetIsFlipped(false);
 }
 void Player::MoveLeft(double deltaTime)
 {
     playerPosition.x -= playerSpeed.x * deltaTime;
-    // playerPosition.y -= playerSpeed.y * deltaTime;
+    SetIsFlipped(true);
 }
 
 void Player::Fire()
 {
-    Projectile *newProjectile = new Projectile(glm::vec2(1, 0), 1000.0);
+    double projSpeed = isFlipped ? -1000.0 : 1000.0;
+    firePos = isFlipped ? glm::vec2(-40.0, 64.0) : glm::vec2(105.0, 64.0);
+    Projectile *newProjectile = new Projectile(glm::vec2(1, 0), projSpeed);
     newProjectile->SetProjectilePosition(playerPosition + firePos);
     projArray.push_back(newProjectile);
 
@@ -147,9 +154,11 @@ void Player::GetDamage(double amount)
     }
 }
 
-void Player::UseJetPack()
+void Player::UseJetPack(double deltaTime)
 {
-    std::cout << "Player uses jet-pack." << std::endl;
+    isUsingJetPack = true;
+    gravityFactor = GRAVITY;
+    playerPosition.y -= playerSpeed.y * deltaTime;
 }
 
 bool Player::CheckCollision(SDL_Rect other) const

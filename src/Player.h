@@ -9,6 +9,7 @@
 
 const double FIRE_RATE = 0.25;
 const double MAX_HEALTH = 100.0;
+const double GRAVITY = 200.0;
 const int PLAYER_PROJECTILE_SPRITESHEET_SIZE = 1;
 
 class Player
@@ -18,6 +19,10 @@ private:
     double fireCounter;
     bool isDead;
     bool canFire = true;
+    double gravityFactor;
+    double gravityIncrement = 100.0;
+    bool isUsingJetPack;
+    bool isFlipped;
 
     glm::vec2 playerPosition;
     glm::vec2 playerSpeed;
@@ -35,8 +40,6 @@ public:
 
     void Update(double deltaTime);
     void RenderPlayer(SDL_Renderer *gameRenderer);
-    void MoveUp(double deltaTime);
-    void MoveDown(double deltaTime);
     void MoveRight(double deltaTime);
     void MoveLeft(double deltaTime);
     void Fire();
@@ -44,8 +47,9 @@ public:
     void EraseElementFromProjarray(Projectile *proj);
     void ClearProjArray();
     void GetDamage(double amount);
-    void UseJetPack();
+    void UseJetPack(double deltaTime);
     bool CheckCollision(SDL_Rect other) const;
+    void FlipPlayer();
 
     // **********************************************************************************************
     // *************** getters & setters ************************************************************
@@ -56,6 +60,12 @@ public:
     bool GetCanFire() { return canFire; }
     bool GetIsDead() { return isDead; }
     double GetHealth() { return health; }
+
+    bool GetIsUsingJetPack() const { return isUsingJetPack; }
+    void SetIsUsingJetPack(bool value) { isUsingJetPack = value; }
+
+    bool GetIsFlipped() const { return isFlipped; }
+    void SetIsFlipped(bool val) { isFlipped = val; }
 };
 
 #endif

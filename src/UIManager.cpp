@@ -36,7 +36,7 @@ void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, 
     RenderText(renderer, healthStr, glm::vec2(1000, 30));
 
     // game over text
-    if (!mainPlayer)
+    if (!mainPlayer && isGameStarted)
     {
         std::string gameOverStr = "Game Over. Play Again (Y/N)?";
         RenderText(renderer, gameOverStr, glm::vec2(400, 300));

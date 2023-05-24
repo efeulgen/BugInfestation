@@ -85,9 +85,6 @@ void Game::SetupGameAssets()
 
     // managers
     uiManager = new UIManager();
-
-    // setup player
-    mainPlayer = new Player();
 }
 
 void Game::ProcessInput()
@@ -131,14 +128,6 @@ void Game::ProcessInput()
         }
     }
     const Uint8 *keyboardState = SDL_GetKeyboardState(NULL);
-    if (keyboardState[SDL_SCANCODE_S] && mainPlayer)
-    {
-        mainPlayer->MoveDown(deltaTime);
-    }
-    if (keyboardState[SDL_SCANCODE_W] && mainPlayer)
-    {
-        mainPlayer->MoveUp(deltaTime);
-    }
     if (keyboardState[SDL_SCANCODE_D] && mainPlayer)
     {
         mainPlayer->MoveRight(deltaTime);
@@ -147,9 +136,13 @@ void Game::ProcessInput()
     {
         mainPlayer->MoveLeft(deltaTime);
     }
-    if (keyboardState[SDL_SCANCODE_SPACE] && isGameStarted && mainPlayer)
+    if (keyboardState[SDL_SCANCODE_W] && isGameStarted && mainPlayer) // keycode space?
     {
-        mainPlayer->UseJetPack();
+        mainPlayer->UseJetPack(deltaTime);
+    }
+    if (!keyboardState[SDL_SCANCODE_W] && isGameStarted && mainPlayer)
+    {
+        mainPlayer->SetIsUsingJetPack(false);
     }
 }
 
@@ -323,6 +316,7 @@ void Game::Destroy()
 
 void Game::StartGame()
 {
+    mainPlayer = new Player();
     GenerateSpaceBugs(SPACE_BUG_INIT_AMOUNT, spaceBugMinSpeed, spaceBugMaxSpeed);
     isGameStarted = true;
 }
