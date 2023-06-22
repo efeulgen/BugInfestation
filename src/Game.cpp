@@ -136,11 +136,11 @@ void Game::ProcessInput()
     {
         mainPlayer->MoveLeft(deltaTime);
     }
-    if (keyboardState[SDL_SCANCODE_W] && isGameStarted && mainPlayer) // keycode space?
+    if (keyboardState[SDL_SCANCODE_SPACE] && isGameStarted && mainPlayer)
     {
         mainPlayer->UseJetPack(deltaTime);
     }
-    if (!keyboardState[SDL_SCANCODE_W] && isGameStarted && mainPlayer)
+    if (!keyboardState[SDL_SCANCODE_SPACE] && isGameStarted && mainPlayer)
     {
         mainPlayer->SetIsUsingJetPack(false);
     }
@@ -289,7 +289,7 @@ void Game::Render()
         }
     }
 
-    uiManager->RenderUI(renderer, mainPlayer, score, isGameStarted, isWaveComplete);
+    uiManager->RenderUI(renderer, mainPlayer, score, wave, isGameStarted, isWaveComplete);
 
     SDL_RenderPresent(renderer);
 }

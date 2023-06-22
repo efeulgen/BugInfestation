@@ -24,11 +24,15 @@ void UIManager::RenderText(SDL_Renderer *renderer, const std::string &text, glm:
     SDL_DestroyTexture(textTexture);
 }
 
-void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, bool isGameStarted, bool isWaveComplete)
+void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, int wave, bool isGameStarted, bool isWaveComplete)
 {
     // score
     std::string scoreStr = "Score : " + std::to_string(score);
     RenderText(renderer, scoreStr, glm::vec2(30, 30));
+
+    // wave
+    std::string waveStr = "Wave : " + std::to_string(wave);
+    RenderText(renderer, waveStr, glm::vec2(30, 80));
 
     // health
     int playerHealth = mainPlayer ? mainPlayer->GetHealth() : 0.0;

@@ -1,5 +1,6 @@
 audio/
 pyxel/
+Makefile
 
 todo.txt
 *.exe

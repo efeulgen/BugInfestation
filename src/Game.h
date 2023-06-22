@@ -72,6 +72,8 @@ public:
 
     int GetScore() { return score; }
     void IncrementScore() { score++; }
+
+    int GetWave() { return wave; }
 };
 
 #endif
