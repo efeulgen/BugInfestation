@@ -14,6 +14,9 @@ Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gr
     playerPosition = glm::vec2(40.0, 40.0);
     playerSpeed = glm::vec2(300.0, 350.0);
     firePos = glm::vec2(105.0, 64.0);
+
+    extraLives = 0;
+    rocketAmount = 0;
 }
 
 Player::~Player()
@@ -38,7 +41,7 @@ void Player::Update(double deltaTime)
         UpdateProjectiles(deltaTime);
     }
 
-    // *************** bound checking ******************************
+    // *************** bound checking *********************************************
     if (playerPosition.y <= 0.0)
     {
         playerPosition.y = 0.0;
@@ -56,11 +59,22 @@ void Player::Update(double deltaTime)
         playerPosition.x = 1152.0;
     }
 
-    // *************** apply gravity ******************************
+    // *************** apply gravity *********************************************
     if (!isUsingJetPack)
     {
         gravityFactor += (gravityIncrement * deltaTime);
         playerPosition.y += (gravityFactor * deltaTime);
+    }
+
+    // *************** speed boost *********************************************
+    if (isSpeedBoostActive)
+    {
+        speedBoostDuration += deltaTime;
+        if (speedBoostDuration >= 10.0)
+        {
+            DeactivateSpeedBoost();
+            speedBoostDuration = 0.0;
+        }
     }
 }
 
@@ -187,5 +201,12 @@ void Player::GainRokcet()
 
 void Player::ActivateSpeedBoost()
 {
-    std::cout << "Speed boost activated" << std::endl;
+    playerSpeed.x *= 2.0;
+    isSpeedBoostActive = true;
+}
+
+void Player::DeactivateSpeedBoost()
+{
+    playerSpeed.x /= 2.0;
+    isSpeedBoostActive = false;
 }

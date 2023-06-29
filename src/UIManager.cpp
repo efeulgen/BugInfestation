@@ -1,6 +1,5 @@
 
 #include "UIManager.h"
-#include <iostream>
 #include "Player.h"
 
 UIManager::UIManager()
@@ -22,6 +21,16 @@ void UIManager::RenderText(SDL_Renderer *renderer, const std::string &text, glm:
     SDL_FreeSurface(textSurface);
     SDL_RenderCopy(renderer, textTexture, NULL, &textRect);
     SDL_DestroyTexture(textTexture);
+}
+
+void UIManager::RenderImage(SDL_Renderer *renderer, const char *imgPath, glm::vec2 imgPos, int imgSize)
+{
+    SDL_Surface *surf = IMG_Load(imgPath);
+    SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_FreeSurface(surf);
+    SDL_Rect rect = {static_cast<int>(imgPos.x), static_cast<int>(imgPos.y), imgSize, imgSize};
+    SDL_RenderCopy(renderer, tex, NULL, &rect);
+    SDL_DestroyTexture(tex);
 }
 
 void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, int wave, bool isGameStarted, bool isWaveComplete)
@@ -58,5 +67,28 @@ void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, 
     {
         std::string nextWaveStr = "Wave of Space Bugs defeated. Ready for next wave (Y/N)?";
         RenderText(renderer, nextWaveStr, glm::vec2(200, 300));
+    }
+
+    // display images
+    if (mainPlayer)
+    {
+        DisplayExtraLives(renderer, mainPlayer->GetExtraLives(), 50);
+        DisplayRocketAmount(renderer, mainPlayer->GetRocketAmount(), 50);
+    }
+}
+
+void UIManager::DisplayExtraLives(SDL_Renderer *renderer, int amount, int size)
+{
+    for (int i = 0; i < amount; i++)
+    {
+        RenderImage(renderer, "./assets/sprites/pickups/extra_life.png", glm::vec2(300 + (size + 10) * i, 5), size);
+    }
+}
+
+void UIManager::DisplayRocketAmount(SDL_Renderer *renderer, int amount, int size)
+{
+    for (int i = 0; i < amount; i++)
+    {
+        RenderImage(renderer, "./assets/sprites/pickups/extra_rocket.png", glm::vec2(300 + (size + 10) * i, 60), size);
     }
 }

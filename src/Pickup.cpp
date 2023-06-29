@@ -1,7 +1,7 @@
 
 #include "Pickup.h"
 
-Pickup::Pickup(PickupType pickupType, glm::vec2 initPos, glm::vec2 initSpeed, int seed) : type{pickupType}, pos{initPos}, speed{initSpeed}
+Pickup::Pickup(glm::vec2 initPos, glm::vec2 initSpeed, int seed) : pos{initPos}, speed{initSpeed}
 {
       std::cout << "Pickup Constructor" << std::endl;
 
@@ -10,20 +10,20 @@ Pickup::Pickup(PickupType pickupType, glm::vec2 initPos, glm::vec2 initSpeed, in
       switch (typeIndex)
       {
       case 1:
-            pickupType = PickupType::ExtraLifePickup;
-            imgPath = "./assets/sprites/extra_life.png";
+            type = PickupType::ExtraLifePickup;
+            imgPath = "./assets/sprites/pickups/extra_life.png";
             break;
       case 2:
-            pickupType = PickupType::HealthPickup;
-            imgPath = "./assets/sprites/extra_life.png";
+            type = PickupType::HealthPickup;
+            imgPath = "./assets/sprites/pickups/extra_life.png";
             break;
       case 3:
-            pickupType = PickupType::RocketPickup;
-            imgPath = "./assets/sprites/extra_life.png";
+            type = PickupType::RocketPickup;
+            imgPath = "./assets/sprites/pickups/extra_rocket.png";
             break;
       case 4:
-            pickupType = PickupType::SpeedBoostPickup;
-            imgPath = "./assets/sprites/extra_life.png";
+            type = PickupType::SpeedBoostPickup;
+            imgPath = "./assets/sprites/pickups/speed_boost.png";
             break;
 
       default:

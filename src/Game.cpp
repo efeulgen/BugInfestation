@@ -229,7 +229,7 @@ void Game::UpdateGameAssets()
                 pickups.erase(std::remove(pickups.begin(), pickups.end(), pickup), pickups.end());
                 pickup->DestroyPickup();
                 pickup = nullptr;
-                // break;
+                break;
             }
         }
     }
@@ -392,7 +392,7 @@ void Game::GeneratePickups(double deltaTime)
         glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
         glm::vec2 direction = glm::normalize(glm::vec2(640, 360) - initPos);
 
-        Pickup *newPickup = new Pickup(PickupType::HealthPickup, initPos, direction, spawnSeed);
+        Pickup *newPickup = new Pickup(initPos, direction, spawnSeed);
         pickups.push_back(newPickup);
         pickupSpawnCounter = 0.0;
     }

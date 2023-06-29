@@ -24,8 +24,10 @@ private:
     bool isUsingJetPack;
     bool isFlipped;
 
-    int extraLives = 0;
-    int rocketAmount = 0;
+    int extraLives;
+    int rocketAmount;
+    bool isSpeedBoostActive = false;
+    double speedBoostDuration = 0.0;
 
     glm::vec2 playerPosition;
     glm::vec2 playerSpeed;
@@ -57,9 +59,11 @@ public:
     void GainExtraLife();
     void GainRokcet();
     void ActivateSpeedBoost();
+    void DeactivateSpeedBoost();
 
     // **********************************************************************************************
     // *************** getters & setters ************************************************************
+
     std::vector<Projectile *> GetProjectileArray() { return projArray; }
     SDL_Rect GetPlayerRect() { return playerRect; }
     glm::vec2 GetPlayerPos() { return playerPosition; }
@@ -73,6 +77,9 @@ public:
 
     bool GetIsFlipped() const { return isFlipped; }
     void SetIsFlipped(bool val) { isFlipped = val; }
+
+    int GetExtraLives() const { return extraLives; }
+    int GetRocketAmount() const { return rocketAmount; }
 };
 
 #endif

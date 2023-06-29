@@ -28,7 +28,7 @@ private:
       glm::vec2 speed;
 
 public:
-      Pickup(PickupType pickupType, glm::vec2 initPos, glm::vec2 initSpeed, int seed);
+      Pickup(glm::vec2 initPos, glm::vec2 initSpeed, int seed);
       ~Pickup();
 
       void Update(double deltaTime);
