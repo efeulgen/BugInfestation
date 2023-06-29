@@ -146,9 +146,9 @@ void Game::ProcessInput()
     }
 }
 
-// ************************************************************************************************************************
-// *************** UPDATE *************************************************************************************************
-// ************************************************************************************************************************
+// *********************************************************************************************************************************************************************
+// *************** UPDATE **********************************************************************************************************************************************
+// *********************************************************************************************************************************************************************
 
 void Game::UpdateGameAssets()
 {
@@ -220,7 +220,21 @@ void Game::UpdateGameAssets()
         }
     }
 
-    // *************** update main player ************************************************************
+    if (!pickups.empty() && mainPlayer)
+    {
+        for (auto pickup : pickups)
+        {
+            if (pickup->CheckCollisionWithPlayer(mainPlayer->GetPlayerRect(), mainPlayer))
+            {
+                pickups.erase(std::remove(pickups.begin(), pickups.end(), pickup), pickups.end());
+                pickup->DestroyPickup();
+                pickup = nullptr;
+                // break;
+            }
+        }
+    }
+
+    // *************** update main player *********************************************************************************************************
     if (mainPlayer)
     {
         mainPlayer->Update(deltaTime);
@@ -233,7 +247,7 @@ void Game::UpdateGameAssets()
         }
     }
 
-    // *************** update space bugs ************************************************************
+    // *************** update space bugs *********************************************************************************************************
     if (bugs.size() <= 0 && !isWaveComplete && isGameStarted && !isGameOver)
     {
         isWaveComplete = true;
@@ -254,10 +268,19 @@ void Game::UpdateGameAssets()
             }
         }
     }
+    // *************** update pickups **********************************************************************************************************************************
+
+    for (auto pickup : pickups)
+    {
+        pickup->Update(deltaTime);
+    }
+
+    // ***** generate pickups *****
+    GeneratePickups(deltaTime);
 }
-// ************************************************************************************************************************
-// *************** RENDER *************************************************************************************************
-// ************************************************************************************************************************
+// *********************************************************************************************************************************************************************
+// *************** RENDER **********************************************************************************************************************************************
+// *********************************************************************************************************************************************************************
 
 void Game::Render()
 {
@@ -274,13 +297,13 @@ void Game::Render()
     SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect_2);
     SDL_DestroyTexture(backgroundTexture);
 
-    // *************** render player ******************************************************************************************
+    // *************** render player ***************************************************************************************************************************************
     if (mainPlayer)
     {
         mainPlayer->RenderPlayer(renderer);
     }
 
-    // *************** render spacebugs ******************************************************************************************
+    // *************** render spacebugs ***************************************************************************************************************************************
     if (!bugs.empty())
     {
         for (auto bug : bugs)
@@ -289,10 +312,25 @@ void Game::Render()
         }
     }
 
+    // *************** render pickups ***************************************************************************************************************************************
+
+    if (!pickups.empty())
+    {
+        for (auto pickup : pickups)
+        {
+            pickup->Render(renderer);
+        }
+    }
+
+    // *************** render UI ***************************************************************************************************************************************
     uiManager->RenderUI(renderer, mainPlayer, score, wave, isGameStarted, isWaveComplete);
 
     SDL_RenderPresent(renderer);
 }
+
+// *********************************************************************************************************************************************************************
+// *********************************************************************************************************************************************************************
+// *********************************************************************************************************************************************************************
 
 void Game::Destroy()
 {
@@ -323,10 +361,9 @@ void Game::StartGame()
 
 void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
 {
-    int seed = 0;
     for (int i = 0; i < amount; i++)
     {
-        srand(seed);
+        srand(spawnSeed);
         double randomYPos = 20.0 + static_cast<double>(rand() % 500);
         double randomXDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
         double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
@@ -338,7 +375,26 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
         {
             bugs.push_back(new SpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
         }
-        seed++;
+        spawnSeed++;
+    }
+}
+
+void Game::GeneratePickups(double deltaTime)
+{
+    pickupSpawnCounter += deltaTime;
+    if (pickupSpawnCounter >= 10.0)
+    {
+        srand(spawnSeed);
+        double randomXPos = 1380 + static_cast<double>(rand() % 1580);
+        double randomYPos = -100 + static_cast<double>(rand() % 820);
+        spawnSeed++;
+
+        glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
+        glm::vec2 direction = glm::normalize(glm::vec2(640, 360) - initPos);
+
+        Pickup *newPickup = new Pickup(PickupType::HealthPickup, initPos, direction, spawnSeed);
+        pickups.push_back(newPickup);
+        pickupSpawnCounter = 0.0;
     }
 }
 

@@ -24,11 +24,14 @@ private:
     bool isUsingJetPack;
     bool isFlipped;
 
+    int extraLives = 0;
+    int rocketAmount = 0;
+
     glm::vec2 playerPosition;
     glm::vec2 playerSpeed;
     glm::vec2 firePos;
 
-    const char *playerProjectileSpriteSheet[PLAYER_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/PlayerProjectile.png"};
+    const char *playerProjectileSpriteSheet[PLAYER_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/sprites/PlayerProjectile.png"};
 
     SDL_Rect playerRect;
 
@@ -49,7 +52,11 @@ public:
     void GetDamage(double amount);
     void UseJetPack(double deltaTime);
     bool CheckCollision(SDL_Rect other) const;
-    void FlipPlayer();
+
+    void HealPlayer();
+    void GainExtraLife();
+    void GainRokcet();
+    void ActivateSpeedBoost();
 
     // **********************************************************************************************
     // *************** getters & setters ************************************************************

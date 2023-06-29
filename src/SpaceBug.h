@@ -15,7 +15,7 @@ class SpaceBug
 {
 private:
     SDL_Surface *spaceBugSurface = nullptr;
-    const char *bugSpriteSheet[BUG_SPRITESHEET_SIZE] = {"./assets/space_bug_2.png", "./assets/space_bug.png", "./assets/space_bug_1.png", "./assets/space_bug.png"};
+    const char *bugSpriteSheet[BUG_SPRITESHEET_SIZE] = {"./assets/sprites/space_bug_2.png", "./assets/sprites/space_bug.png", "./assets/sprites/space_bug_1.png", "./assets/sprites/space_bug.png"};
 
 protected:
     glm::vec2 spaceBugPos;

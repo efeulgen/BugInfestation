@@ -67,7 +67,7 @@ void Player::Update(double deltaTime)
 void Player::RenderPlayer(SDL_Renderer *gameRenderer)
 {
 
-    SDL_Surface *playerSurface = IMG_Load("./assets/astro-K-47.png");
+    SDL_Surface *playerSurface = IMG_Load("./assets/sprites/astro-K-47.png");
     SDL_Texture *playertexture = SDL_CreateTextureFromSurface(gameRenderer, playerSurface);
     SDL_FreeSurface(playerSurface);
     playerRect = {static_cast<int>(playerPosition.x), static_cast<int>(playerPosition.y), 128, 128};
@@ -168,4 +168,24 @@ bool Player::CheckCollision(SDL_Rect other) const
         return true;
     }
     return false;
+}
+
+void Player::HealPlayer()
+{
+    health = health + 10.0 > 100.0 ? 100.0 : health + 10.0;
+}
+
+void Player::GainExtraLife()
+{
+    extraLives = extraLives + 1 > 5 ? 5 : extraLives + 1;
+}
+
+void Player::GainRokcet()
+{
+    rocketAmount++;
+}
+
+void Player::ActivateSpeedBoost()
+{
+    std::cout << "Speed boost activated" << std::endl;
 }

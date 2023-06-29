@@ -5,6 +5,7 @@
 #include <vector>
 #include "Player.h"
 #include "SpaceBug.h"
+#include "Pickup.h"
 #include "HeavySpaceBug.h"
 #include "UIManager.h"
 
@@ -31,11 +32,14 @@ private:
     bool isWaveComplete = false;
     bool isGameStarted = false;
 
+    int spawnSeed = 0;
     int spaceBugAmount = 5;
     int spaceBugMinSpeed;
     int spaceBugMaxSpeed;
     int score = 0;
     int wave = 0;
+
+    double pickupSpawnCounter = 0.0;
 
     // sounds
     Mix_Chunk *audio = nullptr;
@@ -52,6 +56,7 @@ private:
     // game objects
     Player *mainPlayer = nullptr;
     std::vector<SpaceBug *> bugs;
+    std::vector<Pickup *> pickups;
     UIManager *uiManager = nullptr;
 
 public:
@@ -67,6 +72,7 @@ public:
 
     void StartGame();
     void GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed);
+    void GeneratePickups(double deltaTime);
     void ResetGame();
     void BringNextWave();
 

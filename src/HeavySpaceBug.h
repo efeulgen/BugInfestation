@@ -16,8 +16,8 @@ private:
       double fireCounter;
       bool isDead = false;
 
-      const char *heavyBugSpriteSheet[HEAVY_BUG_SPRITESHEET_SIZE] = {"./assets/heavy_space_bug_2.png", "./assets/heavy_space_bug.png", "./assets/heavy_space_bug_1.png", "./assets/heavy_space_bug.png"};
-      const char *bugProjectileSpritesheet[BUG_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/heavyBug_projectile_1.png", "./assets/heavyBug_projectile_2.png", "./assets/heavyBug_projectile_3.png", "./assets/heavyBug_projectile_4.png"};
+      const char *heavyBugSpriteSheet[HEAVY_BUG_SPRITESHEET_SIZE] = {"./assets/sprites/heavy_space_bug_2.png", "./assets/sprites/heavy_space_bug.png", "./assets/sprites/heavy_space_bug_1.png", "./assets/sprites/heavy_space_bug.png"};
+      const char *bugProjectileSpritesheet[BUG_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/sprites/heavyBug_projectile_1.png", "./assets/sprites/heavyBug_projectile_2.png", "./assets/sprites/heavyBug_projectile_3.png", "./assets/sprites/heavyBug_projectile_4.png"};
 
 public:
       HeavySpaceBug();
