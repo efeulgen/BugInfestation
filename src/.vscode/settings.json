@@ -2,6 +2,7 @@
   "C_Cpp.errorSquiggles": "disabled",
   "files.associations": {
     "string": "cpp",
-    "iosfwd": "cpp"
+    "iosfwd": "cpp",
+    "ostream": "cpp"
   }
 }

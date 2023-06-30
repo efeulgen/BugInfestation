@@ -34,8 +34,9 @@ public:
       void Update(double deltaTime);
       void Render(SDL_Renderer *gameRenderer);
       void DestroyPickup();
-
       bool CheckCollisionWithPlayer(SDL_Rect playerRect, Player *mainPlayer);
+
+      glm::vec2 GetPickupPos() { return pos; }
 };
 
 #endif

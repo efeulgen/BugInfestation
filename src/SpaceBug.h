@@ -11,6 +11,14 @@
 const double ANIM_SPEED = 10.0;
 const int BUG_SPRITESHEET_SIZE = 4;
 
+enum BugType
+{
+    Regular,
+    Heavy,
+    Bladed
+
+};
+
 class SpaceBug
 {
 private:
@@ -22,6 +30,8 @@ protected:
     glm::vec2 spaceBugDirection;
     SDL_Rect spaceBugRect;
     std::vector<Projectile *> projArray;
+
+    BugType type;
 
     int health;
     bool isDestructible;
@@ -40,13 +50,11 @@ public:
     void Destroy();
     void EraseElementFromProjarray(Projectile *proj);
 
-    SDL_Rect
-    GetSpaceBugRect() const
-    {
-        return spaceBugRect;
-    }
+    SDL_Rect GetSpaceBugRect() const { return spaceBugRect; }
     bool GetIsDestructible() const { return isDestructible; }
     std::vector<Projectile *> GetBugProjArraj() const { return projArray; }
+
+    BugType GetBugType() { return type; }
 };
 
 #endif

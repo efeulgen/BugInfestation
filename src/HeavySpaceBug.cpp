@@ -11,6 +11,8 @@ HeavySpaceBug::HeavySpaceBug(glm::vec2 pos, glm::vec2 dir) : SpaceBug(pos, dir),
 {
       health = 3;
       isDestructible = false;
+
+      type = BugType::Heavy;
 }
 
 void HeavySpaceBug::GetDamage()

@@ -5,8 +5,9 @@
 #include <vector>
 #include "Player.h"
 #include "SpaceBug.h"
-#include "Pickup.h"
 #include "HeavySpaceBug.h"
+#include "BladedSpaceBug.h"
+#include "Pickup.h"
 #include "UIManager.h"
 
 #ifndef GAME_H

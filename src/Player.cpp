@@ -160,11 +160,17 @@ void Player::ClearProjArray()
 void Player::GetDamage(double amount)
 {
     health -= amount;
-    Logger::Err("Player gets damage.");
     if (health <= 0.0)
     {
-        Logger::Err("Player is dead.");
-        isDead = true;
+        if (extraLives > 0)
+        {
+            extraLives--;
+            health = MAX_HEALTH;
+        }
+        else
+        {
+            isDead = true;
+        }
     }
 }
 

@@ -201,10 +201,17 @@ void Game::UpdateGameAssets()
         {
             if (bug->CheckCollision(mainPlayer->GetPlayerRect()) && !isGameOver && !isWaveComplete)
             {
-                bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
-                bug->Destroy();
-                bug = nullptr;
-                mainPlayer->GetDamage(50.0);
+                if (bug->GetBugType() != BugType::Bladed)
+                {
+                    bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
+                    bug->Destroy();
+                    bug = nullptr;
+                }
+                else
+                {
+                    std::cout << "Collision with BladedSpaceBug" << std::endl;
+                }
+                mainPlayer->GetDamage(20.0);
                 break;
             }
 
@@ -273,10 +280,20 @@ void Game::UpdateGameAssets()
     for (auto pickup : pickups)
     {
         pickup->Update(deltaTime);
+        if (glm::distance(pickup->GetPickupPos(), mainPlayer->GetPlayerPos()) > 2000.0f)
+        {
+            pickups.erase(std::remove(pickups.begin(), pickups.end(), pickup), pickups.end());
+            pickup->DestroyPickup();
+            pickup = nullptr;
+            break;
+        }
     }
 
     // ***** generate pickups *****
-    GeneratePickups(deltaTime);
+    if (!isWaveComplete)
+    {
+        GeneratePickups(deltaTime);
+    }
 }
 // *********************************************************************************************************************************************************************
 // *************** RENDER **********************************************************************************************************************************************
@@ -361,21 +378,28 @@ void Game::StartGame()
 
 void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
 {
-    for (int i = 0; i < amount; i++)
+    if (wave > 0 && wave % 3 == 0)
     {
-        srand(spawnSeed);
-        double randomYPos = 20.0 + static_cast<double>(rand() % 500);
-        double randomXDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
-        double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
-        if (i == (amount - 1))
+        bugs.push_back(new BladedSpaceBug(glm::vec2(1300.0, 360), glm::vec2(-1, 0)));
+    }
+    else
+    {
+        for (int i = 0; i < amount; i++)
         {
-            bugs.push_back(new HeavySpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
+            srand(spawnSeed);
+            double randomYPos = 20.0 + static_cast<double>(rand() % 500);
+            double randomXDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
+            double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
+            if (i == (amount - 1))
+            {
+                bugs.push_back(new BladedSpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection))); // debug
+            }
+            else
+            {
+                bugs.push_back(new SpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
+            }
+            spawnSeed++;
         }
-        else
-        {
-            bugs.push_back(new SpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
-        }
-        spawnSeed++;
     }
 }
 
@@ -409,6 +433,14 @@ void Game::ResetGame()
         }
         bugs.clear();
     }
+
+    for (auto pickup : pickups)
+    {
+        pickup->DestroyPickup();
+        pickup = nullptr;
+    }
+    pickups.clear();
+
     spaceBugAmount = SPACE_BUG_INIT_AMOUNT;
     spaceBugMinSpeed = SPACE_BUG_INIT_MIN_SPEED;
     spaceBugMaxSpeed = SPACE_BUG_INIT_MAX_SPEED;
