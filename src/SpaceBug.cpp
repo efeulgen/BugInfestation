@@ -15,7 +15,7 @@ SpaceBug::SpaceBug()
 SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{initPos}, spaceBugDirection{initDirection}
 {
     health = 1;
-    isDestructible = false;
+    // isDestructible = false;
 
     type = BugType::Regular;
 }

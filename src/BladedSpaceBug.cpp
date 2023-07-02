@@ -6,7 +6,7 @@ BladedSpaceBug::BladedSpaceBug(glm::vec2 initPos, glm::vec2 initVelocity)
       std::cout << "BladedSpaceBug Constructor" << std::endl;
 
       spaceBugPos = initPos;
-      health = 40;
+      health = 5; // debug; 40
       type = BugType::Bladed;
 
       normalSpeed = 100.0;
@@ -61,6 +61,16 @@ void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
                   spaceBugDirection = glm::normalize(currentTarget - spaceBugPos);
                   spaceBugDirection.x *= normalSpeed;
                   spaceBugDirection.y *= normalSpeed;
+            }
+      }
+
+      if (!canDamagePlayer)
+      {
+            canDamagePlayerCounter += deltaTime;
+            if (canDamagePlayerCounter >= 2.0)
+            {
+                  canDamagePlayer = true;
+                  canDamagePlayerCounter = 0.0;
             }
       }
 }

@@ -28,6 +28,7 @@ private:
       glm::vec2 currentTarget;
       int pointsToFollowIndex = 0;
       double fillCounter = 0.0;
+      double canDamagePlayerCounter = 0.0;
 
       BladedSpaceBugState state = BladedSpaceBugState::Patroling;
 

@@ -67,9 +67,9 @@ void Game::Display()
     }
 }
 
-// ************************************************************************************************************************
-// *************** SETUP **************************************************************************************************
-// ************************************************************************************************************************
+// *********************************************************************************************************************************************************************
+// *************** SETUP ***********************************************************************************************************************************************
+// *********************************************************************************************************************************************************************
 
 void Game::SetupGameAssets()
 {
@@ -160,7 +160,7 @@ void Game::UpdateGameAssets()
     deltaTime = (SDL_GetTicks() - millisecsPreviousFrame) / 1000.0;
     millisecsPreviousFrame = SDL_GetTicks();
 
-    // *************** update background ******************************************************************************************
+    // *************** update background ******************************
     bg1_xPos -= deltaTime * bgSpeed;
     bg2_xPos -= deltaTime * bgSpeed;
     if (bg1_xPos <= -1280.0)
@@ -172,14 +172,17 @@ void Game::UpdateGameAssets()
         bg2_xPos = 1280.0;
     }
 
-    // *************** check hit ******************************************************************************************
-    if (mainPlayer && (!bugs.empty() || !mainPlayer->GetProjectileArray().empty()))
+    // ******************************************************************************************************************************
+    // *************** check hit ****************************************************************************************************
+
+    // *************** check if bugs collide with player projectile ******************************
+    if (mainPlayer && (!bugs.empty() || !mainPlayer->GetProjectileArray().empty()) && !isGameOver && !isWaveComplete && isGameStarted)
     {
         for (auto bug : bugs)
         {
             for (auto projectile : mainPlayer->GetProjectileArray())
             {
-                if (bug->CheckCollision(projectile->GetProjectileRect()) && !isGameOver && !isWaveComplete)
+                if (bug->CheckCollision(projectile->GetProjectileRect()))
                 {
                     Mix_PlayChannel(-1, bugScreamSound, 0);
                     Mix_PlayChannel(-1, bugSplashSound, 0);
@@ -195,39 +198,51 @@ void Game::UpdateGameAssets()
         }
     }
 
-    if (!bugs.empty() && mainPlayer)
+    // *************** check if bugs collide with player ******************************
+    if (!bugs.empty() && mainPlayer && !isGameOver && !isWaveComplete && isGameStarted)
     {
         for (auto bug : bugs)
         {
-            if (bug->CheckCollision(mainPlayer->GetPlayerRect()) && !isGameOver && !isWaveComplete)
+            if (bug->CheckCollision(mainPlayer->GetPlayerRect()))
             {
-                if (bug->GetBugType() != BugType::Bladed)
+                std::cout << "SpaceBug collides with player." << std::endl;
+
+                if (bug->GetBugType() == BugType::Bladed)
+                {
+                    if (bug->GetCanDamagePlayer())
+                    {
+                        mainPlayer->GetDamage(20.0);
+                        bug->SetCanDamagePlayer(false);
+                    }
+                }
+                else
                 {
                     bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
                     bug->Destroy();
                     bug = nullptr;
+
+                    mainPlayer->GetDamage(20.0);
                 }
-                else
-                {
-                    std::cout << "Collision with BladedSpaceBug" << std::endl;
-                }
-                mainPlayer->GetDamage(20.0);
                 break;
             }
 
-            for (auto proj : bug->GetBugProjArraj())
+            if (bug->GetBugType() == BugType::Heavy)
             {
-                if (mainPlayer->CheckCollision(proj->GetProjectileRect()))
+                for (auto proj : bug->GetBugProjArraj())
                 {
-                    bug->EraseElementFromProjarray(proj);
-                    proj->Destroy();
-                    proj = nullptr;
+                    if (mainPlayer->CheckCollision(proj->GetProjectileRect()))
+                    {
+                        bug->EraseElementFromProjarray(proj);
+                        proj->Destroy();
+                        proj = nullptr;
+                    }
                 }
             }
         }
     }
 
-    if (!pickups.empty() && mainPlayer)
+    // *************** check if pickups collide with player ******************************
+    if (!pickups.empty() && mainPlayer && !isGameOver && isGameStarted)
     {
         for (auto pickup : pickups)
         {
@@ -241,7 +256,7 @@ void Game::UpdateGameAssets()
         }
     }
 
-    // *************** update main player *********************************************************************************************************
+    // *************** update main player ******************************
     if (mainPlayer)
     {
         mainPlayer->Update(deltaTime);
@@ -254,7 +269,7 @@ void Game::UpdateGameAssets()
         }
     }
 
-    // *************** update space bugs *********************************************************************************************************
+    // *************** update space bugs ******************************
     if (bugs.size() <= 0 && !isWaveComplete && isGameStarted && !isGameOver)
     {
         isWaveComplete = true;
@@ -275,8 +290,8 @@ void Game::UpdateGameAssets()
             }
         }
     }
-    // *************** update pickups **********************************************************************************************************************************
 
+    // *************** update pickups ******************************
     for (auto pickup : pickups)
     {
         pickup->Update(deltaTime);
@@ -289,7 +304,7 @@ void Game::UpdateGameAssets()
         }
     }
 
-    // ***** generate pickups *****
+    // *************** generate pickups ******************************
     if (!isWaveComplete)
     {
         GeneratePickups(deltaTime);
@@ -314,13 +329,13 @@ void Game::Render()
     SDL_RenderCopy(renderer, backgroundTexture, NULL, &bgRect_2);
     SDL_DestroyTexture(backgroundTexture);
 
-    // *************** render player ***************************************************************************************************************************************
+    // *************** render player ******************************
     if (mainPlayer)
     {
         mainPlayer->RenderPlayer(renderer);
     }
 
-    // *************** render spacebugs ***************************************************************************************************************************************
+    // *************** render spacebugs ******************************
     if (!bugs.empty())
     {
         for (auto bug : bugs)
@@ -329,7 +344,7 @@ void Game::Render()
         }
     }
 
-    // *************** render pickups ***************************************************************************************************************************************
+    // *************** render pickups ******************************
 
     if (!pickups.empty())
     {
@@ -339,7 +354,7 @@ void Game::Render()
         }
     }
 
-    // *************** render UI ***************************************************************************************************************************************
+    // *************** render UI ******************************
     uiManager->RenderUI(renderer, mainPlayer, score, wave, isGameStarted, isWaveComplete);
 
     SDL_RenderPresent(renderer);
@@ -392,7 +407,7 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
             double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
             if (i == (amount - 1))
             {
-                bugs.push_back(new BladedSpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection))); // debug
+                bugs.push_back(new HeavySpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection))); // debug; HeavySpaceBug
             }
             else
             {
@@ -462,8 +477,8 @@ void Game::BringNextWave()
     wave++;
     if (wave % 3 == 0)
     {
-        spaceBugMinSpeed += 50;
-        spaceBugMaxSpeed += 50;
+        spaceBugMinSpeed += 20;
+        spaceBugMaxSpeed += 20;
     }
     bugs.clear();
     GenerateSpaceBugs(spaceBugAmount, spaceBugMinSpeed, spaceBugMaxSpeed);

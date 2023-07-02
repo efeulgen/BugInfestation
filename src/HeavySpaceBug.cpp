@@ -10,7 +10,7 @@ HeavySpaceBug::HeavySpaceBug()
 HeavySpaceBug::HeavySpaceBug(glm::vec2 pos, glm::vec2 dir) : SpaceBug(pos, dir), fireCounter(BUG_FIRE_RATE)
 {
       health = 3;
-      isDestructible = false;
+      // isDestructible = false;
 
       type = BugType::Heavy;
 }

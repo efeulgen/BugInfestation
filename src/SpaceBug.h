@@ -34,7 +34,8 @@ protected:
     BugType type;
 
     int health;
-    bool isDestructible;
+    bool isDestructible = false;
+    bool canDamagePlayer = true;
     double animCounter = 0;
     int spriteSheetIndex = 0;
     int modCounter = 0;
@@ -52,8 +53,11 @@ public:
 
     SDL_Rect GetSpaceBugRect() const { return spaceBugRect; }
     bool GetIsDestructible() const { return isDestructible; }
-    std::vector<Projectile *> GetBugProjArraj() const { return projArray; }
 
+    bool GetCanDamagePlayer() const { return canDamagePlayer; }
+    void SetCanDamagePlayer(bool value) { canDamagePlayer = value; }
+
+    std::vector<Projectile *> GetBugProjArraj() const { return projArray; }
     BugType GetBugType() { return type; }
 };
 
