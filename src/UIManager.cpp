@@ -52,24 +52,28 @@ void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, 
     if (!mainPlayer && isGameStarted)
     {
         std::string gameOverStr = "Game Over. Play Again (Y/N)?";
-        RenderText(renderer, gameOverStr, glm::vec2(400, 300));
+        RenderText(renderer, gameOverStr, glm::vec2(400, 650));
+
+        RenderImage(renderer, "./assets/game_over.png", glm::vec2(280, 50), 720);
     }
 
     // start game text
     if (!isGameStarted)
     {
         std::string startGamestr = "Press 'Space' to start the game";
-        RenderText(renderer, startGamestr, glm::vec2(350, 300));
+        RenderText(renderer, startGamestr, glm::vec2(380, 650));
+
+        RenderImage(renderer, "./assets/opening.png", glm::vec2(280, 80), 720);
     }
 
     // next wave text
     if (isWaveComplete)
     {
         std::string nextWaveStr = "Wave of Space Bugs defeated. Ready for next wave (Y/N)?";
-        RenderText(renderer, nextWaveStr, glm::vec2(200, 300));
+        RenderText(renderer, nextWaveStr, glm::vec2(180, 300));
     }
 
-    // display images
+    // *************** display images *********************************************
     if (mainPlayer)
     {
         DisplayExtraLives(renderer, mainPlayer->GetExtraLives(), 50);

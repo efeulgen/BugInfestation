@@ -203,17 +203,20 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            if (bug->CheckCollision(mainPlayer->GetPlayerRect()))
+            if (bug->GetIsDestructible())
             {
-                std::cout << "SpaceBug collides with player." << std::endl;
+                bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
+                bug->Destroy();
+                bug = nullptr;
+                break;
+            }
 
+            if (bug->CheckCollision(mainPlayer->GetPlayerRect()) && bug->GetCanDamagePlayer())
+            {
                 if (bug->GetBugType() == BugType::Bladed)
                 {
-                    if (bug->GetCanDamagePlayer())
-                    {
-                        mainPlayer->GetDamage(20.0);
-                        bug->SetCanDamagePlayer(false);
-                    }
+                    mainPlayer->GetDamage(20.0);
+                    bug->SetCanDamagePlayer(false);
                 }
                 else
                 {
@@ -235,6 +238,7 @@ void Game::UpdateGameAssets()
                         bug->EraseElementFromProjarray(proj);
                         proj->Destroy();
                         proj = nullptr;
+                        break;
                     }
                 }
             }
@@ -242,17 +246,12 @@ void Game::UpdateGameAssets()
     }
 
     // *************** check if pickups collide with player ******************************
-    if (!pickups.empty() && mainPlayer && !isGameOver && isGameStarted)
+    if (pickup && mainPlayer && !isGameOver && isGameStarted)
     {
-        for (auto pickup : pickups)
+        if (pickup->CheckCollisionWithPlayer(mainPlayer->GetPlayerRect(), mainPlayer))
         {
-            if (pickup->CheckCollisionWithPlayer(mainPlayer->GetPlayerRect(), mainPlayer))
-            {
-                pickups.erase(std::remove(pickups.begin(), pickups.end(), pickup), pickups.end());
-                pickup->DestroyPickup();
-                pickup = nullptr;
-                break;
-            }
+            pickup->DestroyPickup();
+            pickup = nullptr;
         }
     }
 
@@ -278,36 +277,27 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            if (bug->GetIsDestructible())
-            {
-                bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
-                bug->Destroy();
-                bug = nullptr;
-            }
-            else
-            {
-                bug->UpdateSpaceBug(deltaTime, mainPlayer);
-            }
+            bug->UpdateSpaceBug(deltaTime, mainPlayer);
         }
     }
 
-    // *************** update pickups ******************************
-    for (auto pickup : pickups)
+    // *************** update pickup ******************************
+    if (pickup)
     {
         pickup->Update(deltaTime);
-        if (glm::distance(pickup->GetPickupPos(), mainPlayer->GetPlayerPos()) > 2000.0f)
+
+        if (mainPlayer && (glm::distance(pickup->GetPickupPos(), mainPlayer->GetPlayerPos()) > 2000.0f || mainPlayer->GetIsDead()))
         {
-            pickups.erase(std::remove(pickups.begin(), pickups.end(), pickup), pickups.end());
             pickup->DestroyPickup();
             pickup = nullptr;
-            break;
         }
     }
-
-    // *************** generate pickups ******************************
-    if (!isWaveComplete)
+    else
     {
-        GeneratePickups(deltaTime);
+        if (!isWaveComplete && isGameStarted && !isGameOver)
+        {
+            // GeneratePickup();
+        }
     }
 }
 // *********************************************************************************************************************************************************************
@@ -344,14 +334,11 @@ void Game::Render()
         }
     }
 
-    // *************** render pickups ******************************
+    // *************** render pickup ******************************
 
-    if (!pickups.empty())
+    if (pickup)
     {
-        for (auto pickup : pickups)
-        {
-            pickup->Render(renderer);
-        }
+        pickup->Render(renderer);
     }
 
     // *************** render UI ******************************
@@ -418,23 +405,22 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
     }
 }
 
-void Game::GeneratePickups(double deltaTime)
+void Game::GeneratePickup()
 {
-    pickupSpawnCounter += deltaTime;
-    if (pickupSpawnCounter >= 10.0)
+    if (pickup)
     {
-        srand(spawnSeed);
-        double randomXPos = 1380 + static_cast<double>(rand() % 1580);
-        double randomYPos = -100 + static_cast<double>(rand() % 820);
-        spawnSeed++;
-
-        glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
-        glm::vec2 direction = glm::normalize(glm::vec2(640, 360) - initPos);
-
-        Pickup *newPickup = new Pickup(initPos, direction, spawnSeed);
-        pickups.push_back(newPickup);
-        pickupSpawnCounter = 0.0;
+        pickup->DestroyPickup();
+        pickup = nullptr;
     }
+
+    srand(spawnSeed);
+    double randomXPos = 1380 + static_cast<double>(rand() % 1580);
+    double randomYPos = -100 + static_cast<double>(rand() % 820);
+    spawnSeed++;
+
+    glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
+    glm::vec2 direction = glm::normalize(glm::vec2(640, 360) - initPos);
+    pickup = new Pickup(initPos, direction, spawnSeed);
 }
 
 void Game::ResetGame()
@@ -449,12 +435,11 @@ void Game::ResetGame()
         bugs.clear();
     }
 
-    for (auto pickup : pickups)
+    if (pickup)
     {
-        pickup->DestroyPickup();
+        delete pickup;
         pickup = nullptr;
     }
-    pickups.clear();
 
     spaceBugAmount = SPACE_BUG_INIT_AMOUNT;
     spaceBugMinSpeed = SPACE_BUG_INIT_MIN_SPEED;
@@ -473,14 +458,16 @@ void Game::BringNextWave()
     {
         mainPlayer->ClearProjArray();
     }
-    spaceBugAmount++;
+
     wave++;
-    if (wave % 3 == 0)
+
+    if (wave != 0 && wave % 3 == 0)
     {
-        spaceBugMinSpeed += 20;
-        spaceBugMaxSpeed += 20;
+        spaceBugAmount++;
+        spaceBugMinSpeed += 5;
+        spaceBugMaxSpeed += 5;
     }
-    bugs.clear();
+
     GenerateSpaceBugs(spaceBugAmount, spaceBugMinSpeed, spaceBugMaxSpeed);
     isWaveComplete = false;
 }

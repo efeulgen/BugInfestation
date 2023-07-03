@@ -10,8 +10,6 @@ HeavySpaceBug::HeavySpaceBug()
 HeavySpaceBug::HeavySpaceBug(glm::vec2 pos, glm::vec2 dir) : SpaceBug(pos, dir), fireCounter(BUG_FIRE_RATE)
 {
       health = 3;
-      // isDestructible = false;
-
       type = BugType::Heavy;
 }
 
@@ -21,6 +19,7 @@ void HeavySpaceBug::GetDamage()
       if (health <= 0)
       {
             isDead = true;
+            canDamagePlayer = false;
             spaceBugRect.w = 0;
             spaceBugRect.h = 0;
             if (projArray.empty())

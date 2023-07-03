@@ -101,6 +101,11 @@ void Player::RenderPlayer(SDL_Renderer *gameRenderer)
     {
         projectile->RenderProjectile(gameRenderer, playerProjectileSpriteSheet, PLAYER_PROJECTILE_SPRITESHEET_SIZE);
     }
+
+    if (isUsingJetPack)
+    {
+        RenderJetPackFire(gameRenderer);
+    }
 }
 
 void Player::MoveRight(double deltaTime)
@@ -215,4 +220,24 @@ void Player::DeactivateSpeedBoost()
 {
     playerSpeed.x /= 2.0;
     isSpeedBoostActive = false;
+}
+
+void Player::RenderJetPackFire(SDL_Renderer *renderer)
+{
+    SDL_Surface *surf = IMG_Load("./assets/sprites/player_jetpack_1.png");
+    SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_FreeSurface(surf);
+    SDL_Rect jetPackFireRect = {static_cast<int>(playerPosition.x), static_cast<int>(playerPosition.y), 128, 128};
+
+    if (!isFlipped)
+    {
+        SDL_RenderCopy(renderer, tex, NULL, &jetPackFireRect);
+    }
+    else
+    {
+        SDL_RendererFlip jpFlip = SDL_FLIP_HORIZONTAL;
+        SDL_RenderCopyEx(renderer, tex, NULL, &jetPackFireRect, 0.0, NULL, jpFlip);
+    }
+
+    SDL_DestroyTexture(tex);
 }

@@ -40,8 +40,6 @@ private:
     int score = 0;
     int wave = 0;
 
-    double pickupSpawnCounter = 0.0;
-
     // sounds
     Mix_Chunk *audio = nullptr;
     Mix_Chunk *bugSplashSound = nullptr;
@@ -57,7 +55,7 @@ private:
     // game objects
     Player *mainPlayer = nullptr;
     std::vector<SpaceBug *> bugs;
-    std::vector<Pickup *> pickups;
+    Pickup *pickup = nullptr;
     UIManager *uiManager = nullptr;
 
 public:
@@ -73,7 +71,7 @@ public:
 
     void StartGame();
     void GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed);
-    void GeneratePickups(double deltaTime);
+    void GeneratePickup();
     void ResetGame();
     void BringNextWave();
 

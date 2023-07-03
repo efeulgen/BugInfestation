@@ -54,16 +54,19 @@ public:
     void GetDamage(double amount);
     void UseJetPack(double deltaTime);
     bool CheckCollision(SDL_Rect other) const;
-
     void HealPlayer();
     void GainExtraLife();
     void GainRokcet();
     void ActivateSpeedBoost();
     void DeactivateSpeedBoost();
 
+private:
+    void RenderJetPackFire(SDL_Renderer *renderer);
+
     // **********************************************************************************************
     // *************** getters & setters ************************************************************
 
+public:
     std::vector<Projectile *> GetProjectileArray() { return projArray; }
     SDL_Rect GetPlayerRect() { return playerRect; }
     glm::vec2 GetPlayerPos() { return playerPosition; }

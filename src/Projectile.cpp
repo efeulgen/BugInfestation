@@ -6,14 +6,14 @@
 
 Projectile::Projectile(glm::vec2 direction, double speed) : projectileDirection{direction}, projectileSpeed{speed}
 {
-    std::cout << "Projectile Constructor" << std::endl;
+    // std::cout << "Projectile Constructor" << std::endl;
 
     projectilePosition = glm::vec2(0.0, 0.0);
 }
 
 Projectile::~Projectile()
 {
-    std::cout << "Projectile Destructor" << std::endl;
+    // std::cout << "Projectile Destructor" << std::endl;
 }
 
 void Projectile::RenderProjectile(SDL_Renderer *gameRenderer, const char *spriteSheet[], const int spriteSheetSize)

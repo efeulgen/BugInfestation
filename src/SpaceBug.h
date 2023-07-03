@@ -51,6 +51,7 @@ public:
     void Destroy();
     void EraseElementFromProjarray(Projectile *proj);
 
+    // getters & setters
     SDL_Rect GetSpaceBugRect() const { return spaceBugRect; }
     bool GetIsDestructible() const { return isDestructible; }
 

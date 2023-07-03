@@ -15,8 +15,6 @@ SpaceBug::SpaceBug()
 SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{initPos}, spaceBugDirection{initDirection}
 {
     health = 1;
-    // isDestructible = false;
-
     type = BugType::Regular;
 }
 
@@ -62,6 +60,7 @@ void SpaceBug::GetDamage()
     if (health <= 0)
     {
         isDestructible = true;
+        canDamagePlayer = false;
     }
 }
 
