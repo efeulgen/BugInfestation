@@ -208,7 +208,6 @@ void Game::UpdateGameAssets()
                 bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
                 bug->Destroy();
                 bug = nullptr;
-                std::cout << "Bug is destroyed." << std::endl;
                 break;
             }
 
@@ -226,7 +225,6 @@ void Game::UpdateGameAssets()
                     bug = nullptr;
 
                     mainPlayer->GetDamage(20.0);
-                    std::cout << "Bug collides with player." << std::endl;
                 }
                 break;
             }
@@ -240,6 +238,7 @@ void Game::UpdateGameAssets()
                         bug->EraseElementFromProjarray(proj);
                         proj->Destroy();
                         proj = nullptr;
+                        mainPlayer->GetDamage(5.0);
                         break;
                     }
                 }
@@ -288,18 +287,16 @@ void Game::UpdateGameAssets()
     {
         pickup->Update(deltaTime);
 
-        if (mainPlayer && (glm::distance(pickup->GetPickupPos(), mainPlayer->GetPlayerPos()) > 2000.0f || mainPlayer->GetIsDead()))
+        glm::vec2 pos = pickup->GetPickupPos();
+        if (pos.x > 1400 || pos.x < -100 || pos.y > 720 || pos.y < -200)
         {
             pickup->DestroyPickup();
             pickup = nullptr;
         }
     }
-    else
+    else if (!isWaveComplete && isGameStarted && !isGameOver)
     {
-        if (!isWaveComplete && isGameStarted && !isGameOver)
-        {
-            // GeneratePickup();
-        }
+        GeneratePickup();
     }
 }
 // *********************************************************************************************************************************************************************
@@ -337,7 +334,6 @@ void Game::Render()
     }
 
     // *************** render pickup ******************************
-
     if (pickup)
     {
         pickup->Render(renderer);
@@ -396,7 +392,7 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
             double randomYDirection = minSpeed + static_cast<double>(rand() % maxSpeed);
             if (i == (amount - 1))
             {
-                bugs.push_back(new HeavySpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection))); // debug; HeavySpaceBug
+                bugs.push_back(new HeavySpaceBug(glm::vec2(1000.0, randomYPos), glm::vec2(randomXDirection, randomYDirection)));
             }
             else
             {
@@ -409,14 +405,8 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
 
 void Game::GeneratePickup()
 {
-    if (pickup)
-    {
-        pickup->DestroyPickup();
-        pickup = nullptr;
-    }
-
     srand(spawnSeed);
-    double randomXPos = 1380 + static_cast<double>(rand() % 1580);
+    double randomXPos = 1380; // + static_cast<double>(rand() % 1580);
     double randomYPos = -100 + static_cast<double>(rand() % 820);
     spawnSeed++;
 

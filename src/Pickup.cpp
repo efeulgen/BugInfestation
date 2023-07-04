@@ -1,12 +1,12 @@
 
 #include "Pickup.h"
 
-Pickup::Pickup(glm::vec2 initPos, glm::vec2 initSpeed, int seed) : pos{initPos}, speed{initSpeed}
+Pickup::Pickup(glm::vec2 initPos, glm::vec2 initSpeed, int seed) : pos{initPos}, speed{initSpeed}, rect{0, 0, 0, 0}
 {
       std::cout << "Pickup Constructor" << std::endl;
 
       srand(seed);
-      int typeIndex = rand() % 5;
+      int typeIndex = 1 + (rand() % 5);
       switch (typeIndex)
       {
       case 1:
@@ -24,6 +24,10 @@ Pickup::Pickup(glm::vec2 initPos, glm::vec2 initSpeed, int seed) : pos{initPos},
       case 4:
             type = PickupType::SpeedBoostPickup;
             imgPath = "./assets/sprites/pickups/speed_boost.png";
+            break;
+      case 5:
+            type = PickupType::FireRateBoost;
+            imgPath = "./assets/sprites/pickups/speed_boost.png"; // TODO : change image
             break;
 
       default:
@@ -79,6 +83,10 @@ bool Pickup::CheckCollisionWithPlayer(SDL_Rect playerRect, Player *mainPlayer)
             else if (type == PickupType::SpeedBoostPickup)
             {
                   mainPlayer->ActivateSpeedBoost();
+            }
+            else if (type == PickupType::FireRateBoost)
+            {
+                  mainPlayer->ActivateFireRateBoost();
             }
 
             return true;

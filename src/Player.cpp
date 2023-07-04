@@ -26,13 +26,13 @@ Player::~Player()
 
 void Player::Update(double deltaTime)
 {
-    if (fireCounter < FIRE_RATE)
+    if (fireCounter < (FIRE_RATE - fireBoost))
     {
         fireCounter += deltaTime;
     }
-    if (fireCounter > FIRE_RATE)
+    if (fireCounter > (FIRE_RATE - fireBoost))
     {
-        fireCounter = FIRE_RATE;
+        fireCounter = (FIRE_RATE - fireBoost);
         canFire = true;
     }
 
@@ -66,7 +66,7 @@ void Player::Update(double deltaTime)
         playerPosition.y += (gravityFactor * deltaTime);
     }
 
-    // *************** speed boost *********************************************
+    // *************** boost *********************************************
     if (isSpeedBoostActive)
     {
         speedBoostDuration += deltaTime;
@@ -74,6 +74,16 @@ void Player::Update(double deltaTime)
         {
             DeactivateSpeedBoost();
             speedBoostDuration = 0.0;
+        }
+    }
+
+    if (isFireRateBoostActive)
+    {
+        fireRateBoostDuration += deltaTime;
+        if (fireRateBoostDuration >= 15.0)
+        {
+            DeactivateFireRateBoost();
+            fireRateBoostDuration = 0.0;
         }
     }
 
@@ -223,6 +233,18 @@ void Player::DeactivateSpeedBoost()
 {
     playerSpeed.x /= 2.0;
     isSpeedBoostActive = false;
+}
+
+void Player::ActivateFireRateBoost()
+{
+    fireBoost = 0.2;
+    isFireRateBoostActive = true;
+}
+
+void Player::DeactivateFireRateBoost()
+{
+    fireBoost = 0.0;
+    isFireRateBoostActive = false;
 }
 
 void Player::RenderJetPackFire(SDL_Renderer *renderer)

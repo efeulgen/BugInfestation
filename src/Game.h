@@ -75,10 +75,9 @@ public:
     void ResetGame();
     void BringNextWave();
 
+    int GetWave() { return wave; }
     int GetScore() { return score; }
     void IncrementScore() { score++; }
-
-    int GetWave() { return wave; }
 };
 
 #endif

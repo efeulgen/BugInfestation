@@ -30,6 +30,9 @@ private:
     int rocketAmount;
     bool isSpeedBoostActive = false;
     double speedBoostDuration = 0.0;
+    bool isFireRateBoostActive = false;
+    double fireRateBoostDuration = 0.0;
+    double fireBoost = 0.0;
 
     glm::vec2 playerPosition;
     glm::vec2 playerSpeed;
@@ -65,9 +68,12 @@ public:
     void GainRokcet();
     void ActivateSpeedBoost();
     void DeactivateSpeedBoost();
+    void ActivateFireRateBoost();
+    void DeactivateFireRateBoost();
 
 private:
-    void RenderJetPackFire(SDL_Renderer *renderer);
+    void
+    RenderJetPackFire(SDL_Renderer *renderer);
 
     // **********************************************************************************************
     // *************** getters & setters ************************************************************
