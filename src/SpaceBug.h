@@ -34,6 +34,7 @@ protected:
     BugType type;
 
     int health;
+    bool isFlipped = true;
     bool isDestructible = false;
     bool canDamagePlayer = true;
     double animCounter = 0;

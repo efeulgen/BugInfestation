@@ -44,7 +44,7 @@ void UIManager::RenderUI(SDL_Renderer *renderer, Player *mainPlayer, int score, 
     RenderText(renderer, waveStr, glm::vec2(30, 80));
 
     // health
-    int playerHealth = mainPlayer ? mainPlayer->GetHealth() : 0.0;
+    int playerHealth = mainPlayer ? mainPlayer->GetHealth() : 100.0;
     std::string healthStr = "Health : " + std::to_string(playerHealth);
     RenderText(renderer, healthStr, glm::vec2(1000, 30));
 

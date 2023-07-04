@@ -208,6 +208,7 @@ void Game::UpdateGameAssets()
                 bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
                 bug->Destroy();
                 bug = nullptr;
+                std::cout << "Bug is destroyed." << std::endl;
                 break;
             }
 
@@ -225,6 +226,7 @@ void Game::UpdateGameAssets()
                     bug = nullptr;
 
                     mainPlayer->GetDamage(20.0);
+                    std::cout << "Bug collides with player." << std::endl;
                 }
                 break;
             }

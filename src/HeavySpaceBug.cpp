@@ -20,8 +20,6 @@ void HeavySpaceBug::GetDamage()
       {
             isDead = true;
             canDamagePlayer = false;
-            spaceBugRect.w = 0;
-            spaceBugRect.h = 0;
             if (projArray.empty())
             {
                   isDestructible = true;
@@ -49,12 +47,15 @@ void HeavySpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
                   proj = nullptr;
             }
       }
-      if (isDead && projArray.empty())
-      {
-            isDestructible = true;
-      }
+
       if (isDead)
+      {
+            if (projArray.empty())
+            {
+                  isDestructible = true;
+            }
             return;
+      }
 
       SpaceBug::UpdateSpaceBug(deltaTime, player);
 
@@ -89,6 +90,16 @@ void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
       SDL_Texture *tex = SDL_CreateTextureFromSurface(gameRenderer, surf);
       SDL_FreeSurface(surf);
       spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};
-      SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
+
+      if (isFlipped)
+      {
+            SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+            SDL_RenderCopyEx(gameRenderer, tex, NULL, &spaceBugRect, 0.0, NULL, flip);
+      }
+      else
+      {
+            SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
+      }
+
       SDL_DestroyTexture(tex);
 }

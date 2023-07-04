@@ -76,6 +76,9 @@ void Player::Update(double deltaTime)
             speedBoostDuration = 0.0;
         }
     }
+
+    // update anima counters
+    jetPackAnimCounter += deltaTime * JETPACK_ANIM_SPEED;
 }
 
 void Player::RenderPlayer(SDL_Renderer *gameRenderer)
@@ -224,7 +227,12 @@ void Player::DeactivateSpeedBoost()
 
 void Player::RenderJetPackFire(SDL_Renderer *renderer)
 {
-    SDL_Surface *surf = IMG_Load("./assets/sprites/player_jetpack_1.png");
+    SDL_Surface *surf = IMG_Load(playerJetPackSpriteSheet[jetPackSpriteSheetIndex]);
+    if (static_cast<int>(jetPackAnimCounter) % PLAYER_JETPACK_SPRITESHEET_SIZE == jetPackModCounter)
+    {
+        jetPackSpriteSheetIndex = jetPackSpriteSheetIndex >= (PLAYER_JETPACK_SPRITESHEET_SIZE - 1) ? 0 : jetPackSpriteSheetIndex + 1;
+        jetPackModCounter = jetPackModCounter >= (PLAYER_JETPACK_SPRITESHEET_SIZE - 1) ? 0 : jetPackModCounter + 1;
+    }
     SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
     SDL_FreeSurface(surf);
     SDL_Rect jetPackFireRect = {static_cast<int>(playerPosition.x), static_cast<int>(playerPosition.y), 128, 128};

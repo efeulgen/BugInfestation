@@ -11,6 +11,8 @@ const double FIRE_RATE = 0.25;
 const double MAX_HEALTH = 100.0;
 const double GRAVITY = 200.0;
 const int PLAYER_PROJECTILE_SPRITESHEET_SIZE = 1;
+const int PLAYER_JETPACK_SPRITESHEET_SIZE = 3;
+const double JETPACK_ANIM_SPEED = 10.0;
 
 class Player
 {
@@ -35,8 +37,12 @@ private:
 
     const char *playerProjectileSpriteSheet[PLAYER_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/sprites/PlayerProjectile.png"};
 
-    SDL_Rect playerRect;
+    const char *playerJetPackSpriteSheet[PLAYER_JETPACK_SPRITESHEET_SIZE] = {"./assets/sprites/player_jetpack_1.png", "./assets/sprites/player_jetpack_2.png", "./assets/sprites/player_jetpack_3.png"};
+    double jetPackAnimCounter = 0.0;
+    int jetPackModCounter = 0;
+    int jetPackSpriteSheetIndex = 0;
 
+    SDL_Rect playerRect;
     std::vector<Projectile *> projArray;
 
 public:

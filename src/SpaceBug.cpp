@@ -12,7 +12,7 @@ SpaceBug::SpaceBug()
     std::cout << "SpaceBug Constructor" << std::endl;
 }
 
-SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{initPos}, spaceBugDirection{initDirection}
+SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{initPos}, spaceBugDirection{initDirection}, spaceBugRect{0, 0, 0, 0}
 {
     health = 1;
     type = BugType::Regular;
@@ -30,6 +30,7 @@ void SpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
     if (spaceBugPos.x <= 0 || spaceBugPos.x >= (1280 - 64))
     {
         spaceBugDirection.x *= -1;
+        isFlipped = !isFlipped;
     }
     if (spaceBugPos.y <= 0 || spaceBugPos.y >= (720 - 64))
     {
@@ -50,7 +51,16 @@ void SpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
     SDL_Texture *spaceBugTexture = SDL_CreateTextureFromSurface(gameRenderer, spaceBugSurface);
     SDL_FreeSurface(spaceBugSurface);
     spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};
-    SDL_RenderCopy(gameRenderer, spaceBugTexture, NULL, &spaceBugRect);
+
+    if (isFlipped)
+    {
+        SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+        SDL_RenderCopyEx(gameRenderer, spaceBugTexture, NULL, &spaceBugRect, 0.0, NULL, flip);
+    }
+    else
+    {
+        SDL_RenderCopy(gameRenderer, spaceBugTexture, NULL, &spaceBugRect);
+    }
     SDL_DestroyTexture(spaceBugTexture);
 }
 
@@ -66,7 +76,7 @@ void SpaceBug::GetDamage()
 
 bool SpaceBug::CheckCollision(SDL_Rect other) const
 {
-    if (SDL_HasIntersection(&spaceBugRect, &other))
+    if (SDL_HasIntersection(&spaceBugRect, &other) && canDamagePlayer)
     {
         return true;
     }
