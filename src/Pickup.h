@@ -38,7 +38,8 @@ public:
       bool CheckCollisionWithPlayer(SDL_Rect playerRect, Player *mainPlayer);
 
       // getters & setters
-      glm::vec2 GetPickupPos() { return pos; }
+      glm::vec2 GetPickupPos() const { return pos; }
+      PickupType GetPickupType() const { return type; }
 };
 
 #endif

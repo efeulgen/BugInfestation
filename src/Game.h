@@ -8,6 +8,7 @@
 #include "HeavySpaceBug.h"
 #include "BladedSpaceBug.h"
 #include "Pickup.h"
+#include "Drones/Drone.h"
 #include "UIManager.h"
 
 #ifndef GAME_H
@@ -15,9 +16,15 @@
 
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
-const int SPACE_BUG_INIT_AMOUNT = 1;
+const int SPACE_BUG_INIT_AMOUNT = 5;
 const int SPACE_BUG_INIT_MIN_SPEED = 100;
 const int SPACE_BUG_INIT_MAX_SPEED = 150;
+
+enum WaveType
+{
+    RegularWave,
+    MiniBossWave
+};
 
 class Game
 {
@@ -34,11 +41,12 @@ private:
     bool isGameStarted = false;
 
     int spawnSeed = 0;
-    int spaceBugAmount = 5;
+    int spaceBugAmount = 0;
     int spaceBugMinSpeed;
     int spaceBugMaxSpeed;
     int score = 0;
     int wave = 0;
+    WaveType waveType = WaveType::RegularWave;
 
     // sounds
     Mix_Chunk *audio = nullptr;
@@ -55,6 +63,7 @@ private:
     // game objects
     Player *mainPlayer = nullptr;
     std::vector<SpaceBug *> bugs;
+    std::vector<Drone *> drones;
     Pickup *pickup = nullptr;
     UIManager *uiManager = nullptr;
 

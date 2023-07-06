@@ -172,8 +172,8 @@ void Game::UpdateGameAssets()
         bg2_xPos = 1280.0;
     }
 
-    // ******************************************************************************************************************************
-    // *************** check hit ****************************************************************************************************
+    // *************************************************************************************************************************************
+    // *************** check collisions ****************************************************************************************************
 
     // *************** check if bugs collide with player projectile ******************************
     if (mainPlayer && (!bugs.empty() || !mainPlayer->GetProjectileArray().empty()) && !isGameOver && !isWaveComplete && isGameStarted)
@@ -251,10 +251,14 @@ void Game::UpdateGameAssets()
     {
         if (pickup->CheckCollisionWithPlayer(mainPlayer->GetPlayerRect(), mainPlayer))
         {
+            uiManager->ActivatePickupText(pickup->GetPickupType());
             pickup->DestroyPickup();
             pickup = nullptr;
         }
     }
+
+    // *************************************************************************************************************************************
+    // *************** end collisions ******************************************************************************************************
 
     // *************** update main player ******************************
     if (mainPlayer)
@@ -282,6 +286,12 @@ void Game::UpdateGameAssets()
         }
     }
 
+    // *************** update drones ******************************
+    for (auto drone : drones)
+    {
+        drone->UpdateDrone(deltaTime);
+    }
+
     // *************** update pickup ******************************
     if (pickup)
     {
@@ -294,7 +304,7 @@ void Game::UpdateGameAssets()
             pickup = nullptr;
         }
     }
-    else if (!isWaveComplete && isGameStarted && !isGameOver)
+    else if (!isWaveComplete && isGameStarted && !isGameOver && waveType == WaveType::RegularWave)
     {
         GeneratePickup();
     }
@@ -325,12 +335,15 @@ void Game::Render()
     }
 
     // *************** render spacebugs ******************************
-    if (!bugs.empty())
+    for (auto bug : bugs)
     {
-        for (auto bug : bugs)
-        {
-            bug->RenderSpaceBug(renderer);
-        }
+        bug->RenderSpaceBug(renderer);
+    }
+
+    // *************** render drones ******************************
+    for (auto drone : drones)
+    {
+        drone->RenderDrone(renderer);
     }
 
     // *************** render pickup ******************************
@@ -340,7 +353,7 @@ void Game::Render()
     }
 
     // *************** render UI ******************************
-    uiManager->RenderUI(renderer, mainPlayer, score, wave, isGameStarted, isWaveComplete);
+    uiManager->RenderUI(renderer, mainPlayer, score, wave, isGameStarted, isWaveComplete, isGameOver, deltaTime);
 
     SDL_RenderPresent(renderer);
 }
@@ -372,7 +385,8 @@ void Game::Destroy()
 void Game::StartGame()
 {
     mainPlayer = new Player();
-    GenerateSpaceBugs(SPACE_BUG_INIT_AMOUNT, spaceBugMinSpeed, spaceBugMaxSpeed);
+    spaceBugAmount = SPACE_BUG_INIT_AMOUNT;
+    GenerateSpaceBugs(spaceBugAmount, spaceBugMinSpeed, spaceBugMaxSpeed);
     isGameStarted = true;
 }
 
@@ -381,6 +395,7 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
     if (wave > 0 && wave % 3 == 0)
     {
         bugs.push_back(new BladedSpaceBug(glm::vec2(1300.0, 360), glm::vec2(-1, 0)));
+        waveType = WaveType::MiniBossWave;
     }
     else
     {
@@ -400,6 +415,7 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
             }
             spawnSeed++;
         }
+        waveType = WaveType::RegularWave;
     }
 }
 
