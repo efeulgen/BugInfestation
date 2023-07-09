@@ -26,6 +26,7 @@ public:
     void UpdateProjectile(double deltaTime);
     void Destroy();
 
+    // getters & setters
     SDL_Rect GetProjectileRect() { return projectileRect; }
     glm::vec2 GetProjectilePosition() { return projectilePosition; }
     void SetProjectilePosition(glm::vec2 pos) { projectilePosition = pos; }

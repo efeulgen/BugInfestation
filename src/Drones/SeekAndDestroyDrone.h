@@ -2,10 +2,12 @@
 #ifndef SEEKANDDESTROYDRONE_H
 #define SEEKANDDESTROYDRONE_H
 
-class SeekAndDestroyDrone
+#include "Drone.h"
+
+class SeekAndDestroyDrone : public Drone
 {
 public:
-      SeekAndDestroyDrone();
+      SeekAndDestroyDrone(glm::vec2 pos, glm::vec2 vel);
       ~SeekAndDestroyDrone();
 };
 

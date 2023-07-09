@@ -1,18 +1,28 @@
 
+#ifndef GAME_H
+#define GAME_H
+
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+#include <vector>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_mixer.h>
 #include <SDL2/SDL_ttf.h>
-#include <vector>
+#include <glm/glm.hpp>
+#include "./Logger/Logger.h"
 #include "Player.h"
 #include "SpaceBug.h"
 #include "HeavySpaceBug.h"
 #include "BladedSpaceBug.h"
 #include "Pickup.h"
-#include "Drones/Drone.h"
+#include "./Drones/Drone.h"
+#include "./Drones/FighterDrone.h"
+#include "./Drones/SeekAndDestroyDrone.h"
+#include "./Drones/TrippleLaserShootingDrone.h"
 #include "UIManager.h"
-
-#ifndef GAME_H
-#define GAME_H
 
 const int FPS = 60;
 const int MILLISECS_PER_FRAME = 1000 / FPS;
@@ -48,6 +58,8 @@ private:
     int wave = 0;
     WaveType waveType = WaveType::RegularWave;
 
+    double generateDroneCounter = 7.5;
+
     // sounds
     Mix_Chunk *audio = nullptr;
     Mix_Chunk *bugSplashSound = nullptr;
@@ -81,6 +93,7 @@ public:
     void StartGame();
     void GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed);
     void GeneratePickup();
+    void GenerateDrones();
     void ResetGame();
     void BringNextWave();
 

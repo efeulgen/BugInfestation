@@ -1,7 +1,7 @@
 
 #include "SeekAndDestroyDrone.h"
 
-SeekAndDestroyDrone::SeekAndDestroyDrone()
+SeekAndDestroyDrone::SeekAndDestroyDrone(glm::vec2 pos, glm::vec2 vel) : Drone(pos, vel)
 {
       std::cout << "SeekAndDestroyDrone Constructor" << std::endl;
 }

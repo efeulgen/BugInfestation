@@ -1,17 +1,6 @@
 
 #include "Game.h"
 
-#include <iostream>
-#include <cstdlib>
-#include <ctime>
-#include <string>
-#include <SDL2/SDL_image.h>
-#include <glm/glm.hpp>
-#include "./Logger/Logger.h"
-#include "Player.h"
-#include "SpaceBug.h"
-#include "HeavySpaceBug.h"
-
 Game::Game() : spaceBugMinSpeed{SPACE_BUG_INIT_MIN_SPEED}, spaceBugMaxSpeed{SPACE_BUG_INIT_MAX_SPEED}
 {
     Logger::Log("Game Constructor");
@@ -172,10 +161,35 @@ void Game::UpdateGameAssets()
         bg2_xPos = 1280.0;
     }
 
+    // ************************************************************************************************************************************************
+    // *************** garbage collect bugs/drones ****************************************************************************************************
+
+    for (auto bug : bugs)
+    {
+        if (bug->GetIsDestructible())
+        {
+            bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
+            bug->Destroy();
+            bug = nullptr;
+            break;
+        }
+    }
+
+    for (auto drone : drones)
+    {
+        if (drone->GetIsDestructible())
+        {
+            drones.erase(std::remove(drones.begin(), drones.end(), drone), drones.end());
+            drone->DestroyDrone();
+            drone = nullptr;
+            break;
+        }
+    }
+
     // *************************************************************************************************************************************
     // *************** check collisions ****************************************************************************************************
 
-    // *************** check if bugs collide with player projectile ******************************
+    // *************** check if bugs/drones collide with player projectile ******************************
     if (mainPlayer && (!bugs.empty() || !mainPlayer->GetProjectileArray().empty()) && !isGameOver && !isWaveComplete && isGameStarted)
     {
         for (auto bug : bugs)
@@ -196,6 +210,22 @@ void Game::UpdateGameAssets()
                 }
             }
         }
+
+        for (auto drone : drones)
+        {
+            for (auto projectile : mainPlayer->GetProjectileArray())
+            {
+                if (drone->CheckCollision(projectile->GetProjectileRect()))
+                {
+                    drone->GetDamage();
+                    mainPlayer->EraseElementFromProjarray(projectile);
+                    projectile->Destroy();
+                    projectile = nullptr;
+                    IncrementScore();
+                    break;
+                }
+            }
+        }
     }
 
     // *************** check if bugs collide with player ******************************
@@ -203,14 +233,6 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            if (bug->GetIsDestructible())
-            {
-                bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
-                bug->Destroy();
-                bug = nullptr;
-                break;
-            }
-
             if (bug->CheckCollision(mainPlayer->GetPlayerRect()) && bug->GetCanDamagePlayer())
             {
                 if (bug->GetBugType() == BugType::Bladed)
@@ -246,7 +268,7 @@ void Game::UpdateGameAssets()
         }
     }
 
-    // *************** check if pickups collide with player ******************************
+    // *************** check if pickup collide with player ******************************
     if (pickup && mainPlayer && !isGameOver && isGameStarted)
     {
         if (pickup->CheckCollisionWithPlayer(mainPlayer->GetPlayerRect(), mainPlayer))
@@ -307,6 +329,14 @@ void Game::UpdateGameAssets()
     else if (!isWaveComplete && isGameStarted && !isGameOver && waveType == WaveType::RegularWave)
     {
         GeneratePickup();
+    }
+
+    // *************** generate drones ******************************
+    generateDroneCounter -= deltaTime;
+    if (!isWaveComplete && isGameStarted && !isGameOver && generateDroneCounter <= 0.0)
+    {
+        GenerateDrones();
+        generateDroneCounter = 7.5;
     }
 }
 // *********************************************************************************************************************************************************************
@@ -429,6 +459,18 @@ void Game::GeneratePickup()
     glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
     glm::vec2 direction = glm::normalize(glm::vec2(640, 360) - initPos);
     pickup = new Pickup(initPos, direction, spawnSeed);
+}
+
+void Game::GenerateDrones()
+{
+    srand(spawnSeed);
+    double randomXPos = 1380; // + static_cast<double>(rand() % 1580);
+    double randomYPos = -100 + static_cast<double>(rand() % 820);
+    spawnSeed++;
+
+    glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
+    glm::vec2 direction = glm::vec2(-200.0, 0.0);
+    drones.push_back(new FighterDrone(initPos, direction));
 }
 
 void Game::ResetGame()

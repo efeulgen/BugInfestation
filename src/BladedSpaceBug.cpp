@@ -32,6 +32,11 @@ void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
       spaceBugPos.x += spaceBugDirection.x * deltaTime;
       spaceBugPos.y += spaceBugDirection.y * deltaTime;
 
+      if (!player)
+      {
+            return;
+      }
+
       if (state == BladedSpaceBugState::Patroling)
       {
             FillPointsToFollow(deltaTime, player);
