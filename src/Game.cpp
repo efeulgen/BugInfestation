@@ -452,8 +452,8 @@ void Game::GenerateSpaceBugs(int amount, int minSpeed, int maxSpeed)
 void Game::GeneratePickup()
 {
     srand(spawnSeed);
-    double randomXPos = 1380; // + static_cast<double>(rand() % 1580);
-    double randomYPos = -100 + static_cast<double>(rand() % 820);
+    double randomXPos = 1380.0; // + static_cast<double>(rand() % 1580);
+    double randomYPos = -100.0 + static_cast<double>(rand() % 820);
     spawnSeed++;
 
     glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
@@ -464,12 +464,12 @@ void Game::GeneratePickup()
 void Game::GenerateDrones()
 {
     srand(spawnSeed);
-    double randomXPos = 1380; // + static_cast<double>(rand() % 1580);
-    double randomYPos = -100 + static_cast<double>(rand() % 820);
+    double randomXPos = rand() % 5 >= 2 ? 1380.0 : -200.0;
+    double randomYPos = static_cast<double>(rand() % 600);
     spawnSeed++;
 
     glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
-    glm::vec2 direction = glm::vec2(-200.0, 0.0);
+    glm::vec2 direction = randomXPos == 1380.0 ? glm::vec2(-200.0, 0.0) : glm::vec2(200.0, 0.0);
     drones.push_back(new FighterDrone(initPos, direction));
 }
 

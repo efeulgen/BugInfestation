@@ -6,6 +6,9 @@ FighterDrone::FighterDrone(glm::vec2 pos, glm::vec2 vel) : Drone(pos, vel)
       std::cout << "FighterDrone Constructor" << std::endl;
 
       imgPath = "./assets/sprites/AlienFighterJet_body.png";
+      fireCounter = FIGHTERDRONE_FIRE_RATE - 0.5;
+      isRtoL = pos.x >= 1300.0 ? true : false;
+      isFlipped = isRtoL ? false : true;
 }
 
 FighterDrone::~FighterDrone()
@@ -23,6 +26,17 @@ void FighterDrone::UpdateDrone(double deltaTime)
       if (isDead)
       {
             return;
+      }
+
+      // fire
+      if (fireCounter < FIGHTERDRONE_FIRE_RATE)
+      {
+            fireCounter += deltaTime;
+      }
+      else
+      {
+            ShootLaser();
+            fireCounter = 0.0;
       }
 
       Drone::UpdateDrone(deltaTime);
@@ -49,5 +63,8 @@ void FighterDrone::RenderDrone(SDL_Renderer *renderer)
 
 void FighterDrone::ShootLaser()
 {
-      projectiles.push_back(new Projectile(glm::vec2(-1, 0), 200.0));
+      Projectile *newProj = isRtoL ? new Projectile(glm::vec2(-1, 0), 1000.0) : new Projectile(glm::vec2(1, 0), 1000.0);
+      glm::vec2 fireOffset = isRtoL ? glm::vec2(0.0, 75.0) : glm::vec2(150.0, 75.0);
+      newProj->SetProjectilePosition(position + fireOffset);
+      projectiles.push_back(newProj);
 }

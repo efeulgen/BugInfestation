@@ -23,7 +23,15 @@ void Drone::RenderDrone(SDL_Renderer *renderer)
       SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
       SDL_FreeSurface(surf);
       droneRect = {static_cast<int>(position.x), static_cast<int>(position.y), 150, 150};
-      SDL_RenderCopy(renderer, tex, NULL, &droneRect);
+      if (isFlipped)
+      {
+            SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+            SDL_RenderCopyEx(renderer, tex, NULL, &droneRect, 0.0, NULL, flip);
+      }
+      else
+      {
+            SDL_RenderCopy(renderer, tex, NULL, &droneRect);
+      }
       SDL_DestroyTexture(tex);
 }
 

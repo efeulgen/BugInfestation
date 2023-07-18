@@ -18,6 +18,7 @@ protected:
       int health = 3;
       bool isDead = false;
       bool isDestructible = false;
+      bool isFlipped = false;
 
 public:
       Drone(glm::vec2 pos, glm::vec2 vel);
