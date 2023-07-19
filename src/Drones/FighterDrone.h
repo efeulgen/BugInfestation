@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <vector>
+#include <cstdlib>
+#include <SDL2/SDL_mixer.h>
 #include "Drone.h"
 #include "../Projectile.h"
 
@@ -17,6 +19,8 @@ private:
       const char *spritesheet[FIGHTERDRONE_PROJ_SPRITESHEET_SIZE] = {"./assets/sprites/PlayerProjectile.png"}; // for debug: change later
       double fireCounter;
       bool isRtoL;
+
+      Mix_Chunk *laserSound = nullptr;
 
 public:
       FighterDrone(glm::vec2 pos, glm::vec2 vel);

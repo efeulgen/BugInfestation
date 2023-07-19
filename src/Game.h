@@ -62,8 +62,11 @@ private:
 
     // sounds
     Mix_Chunk *audio = nullptr;
+    Mix_Chunk *gameOverSound = nullptr;
     Mix_Chunk *bugSplashSound = nullptr;
     Mix_Chunk *bugScreamSound = nullptr;
+    Mix_Chunk *explosionSound = nullptr;
+    Mix_Chunk *playerHurtSound = nullptr;
 
     // background
     const int backgroundWidth = 1280;

@@ -1,12 +1,6 @@
 
 #include "Player.h"
 
-#include <iostream>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <glm/glm.hpp>
-#include "./Logger/Logger.h"
-
 Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gravityFactor{GRAVITY}, isUsingJetPack{false}, isFlipped{false}
 {
     std::cout << "Player Constructor" << std::endl;
@@ -17,6 +11,12 @@ Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gr
 
     extraLives = 0;
     rocketAmount = 0;
+
+    laserSound = Mix_LoadWAV("./audio/player_laser.wav");
+    if (laserSound == NULL)
+    {
+        Logger::Err("Laser sound isn't loaded.");
+    }
 }
 
 Player::~Player()
@@ -134,6 +134,7 @@ void Player::MoveLeft(double deltaTime)
 
 void Player::Fire()
 {
+    Mix_PlayChannel(-1, laserSound, 0);
     double projSpeed = isFlipped ? -1000.0 : 1000.0;
     firePos = isFlipped ? glm::vec2(-40.0, 64.0) : glm::vec2(105.0, 64.0);
     Projectile *newProjectile = new Projectile(glm::vec2(1, 0), projSpeed);
@@ -151,7 +152,7 @@ void Player::UpdateProjectiles(double deltaTime)
     for (auto projectile : projArray)
     {
         projectile->UpdateProjectile(deltaTime);
-        if (projectile->GetProjectilePosition().x - playerPosition.x > 1280.0)
+        if (std::abs(projectile->GetProjectilePosition().x - playerPosition.x) > 1400.0)
         {
             projArray.erase(std::remove(projArray.begin(), projArray.end(), projectile), projArray.end());
             projectile->Destroy();

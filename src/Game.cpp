@@ -64,9 +64,12 @@ void Game::SetupGameAssets()
 {
     // setup audio
     audio = Mix_LoadWAV("./audio/game_music.wav");
+    gameOverSound = Mix_LoadWAV("./audio/game_over_1.wav");
     bugSplashSound = Mix_LoadWAV("./audio/smash.wav");
     bugScreamSound = Mix_LoadWAV("./audio/scream.wav");
-    if (audio == NULL || bugSplashSound == NULL || bugScreamSound == NULL)
+    explosionSound = Mix_LoadWAV("./audio/Minor_Explosion.wav");
+    playerHurtSound = Mix_LoadWAV("./audio/player_hurt.wav");
+    if (audio == NULL || gameOverSound == NULL || bugSplashSound == NULL || bugScreamSound == NULL || explosionSound == NULL || playerHurtSound == nullptr)
     {
         Logger::Err("Failed to load audio.");
     }
@@ -217,6 +220,8 @@ void Game::UpdateGameAssets()
             {
                 if (drone->CheckCollision(projectile->GetProjectileRect()))
                 {
+                    Mix_PlayChannel(-1, explosionSound, 0);
+
                     drone->GetDamage();
                     mainPlayer->EraseElementFromProjarray(projectile);
                     projectile->Destroy();
@@ -237,6 +242,7 @@ void Game::UpdateGameAssets()
             {
                 if (bug->GetBugType() == BugType::Bladed)
                 {
+                    Mix_PlayChannel(-1, playerHurtSound, 0);
                     mainPlayer->GetDamage(20.0);
                     bug->SetCanDamagePlayer(false);
                 }
@@ -246,6 +252,7 @@ void Game::UpdateGameAssets()
                     bug->Destroy();
                     bug = nullptr;
 
+                    Mix_PlayChannel(-1, playerHurtSound, 0);
                     mainPlayer->GetDamage(20.0);
                 }
                 break;
@@ -260,6 +267,7 @@ void Game::UpdateGameAssets()
                         bug->EraseElementFromProjarray(proj);
                         proj->Destroy();
                         proj = nullptr;
+                        Mix_PlayChannel(-1, playerHurtSound, 0);
                         mainPlayer->GetDamage(5.0);
                         break;
                     }
@@ -288,6 +296,7 @@ void Game::UpdateGameAssets()
         mainPlayer->Update(deltaTime);
         if (mainPlayer->GetIsDead())
         {
+            Mix_PlayChannel(-1, gameOverSound, 0);
             isGameOver = true;
             isWaveComplete = false;
             delete mainPlayer;

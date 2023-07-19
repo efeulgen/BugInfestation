@@ -2,11 +2,15 @@
 #ifndef SPACEBUG_H
 #define SPACEBUG_H
 
-#include <SDL2/SDL.h>
-#include <glm/glm.hpp>
+#include <iostream>
 #include <vector>
+#include <cmath>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <glm/glm.hpp>
 #include "Player.h"
 #include "Projectile.h"
+#include "Logger/Logger.h"
 
 const double ANIM_SPEED = 10.0;
 const int BUG_SPRITESHEET_SIZE = 4;
@@ -16,7 +20,6 @@ enum BugType
     Regular,
     Heavy,
     Bladed
-
 };
 
 class SpaceBug

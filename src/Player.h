@@ -2,10 +2,16 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
+#include <iostream>
 #include <vector>
+#include <cstdlib>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
+#include <glm/glm.hpp>
 #include <glm/glm.hpp>
 #include "Projectile.h"
+#include "./Logger/Logger.h"
 
 const double FIRE_RATE = 0.25;
 const double MAX_HEALTH = 100.0;
@@ -47,6 +53,9 @@ private:
 
     SDL_Rect playerRect;
     std::vector<Projectile *> projArray;
+
+    // audio
+    Mix_Chunk *laserSound = nullptr;
 
 public:
     Player();
