@@ -3,7 +3,7 @@
 
 Pickup::Pickup(glm::vec2 initPos, glm::vec2 initSpeed, int seed) : pos{initPos}, speed{initSpeed}, rect{0, 0, 0, 0}
 {
-      std::cout << "Pickup Constructor" << std::endl;
+      // std::cout << "Pickup Constructor" << std::endl;
 
       srand(seed);
       int typeIndex = 1 + (rand() % 5);
@@ -40,7 +40,7 @@ Pickup::Pickup(glm::vec2 initPos, glm::vec2 initSpeed, int seed) : pos{initPos},
 
 Pickup::~Pickup()
 {
-      std::cout << "Pickup Destructor" << std::endl;
+      // std::cout << "Pickup Destructor" << std::endl;
 }
 
 void Pickup::Update(double deltaTime)

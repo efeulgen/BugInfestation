@@ -45,6 +45,7 @@ private:
 
     SDL_Window *window;
     SDL_Renderer *renderer;
+    int windowWidth, windowHeight;
 
     bool isGameOver = false;
     bool isWaveComplete = false;

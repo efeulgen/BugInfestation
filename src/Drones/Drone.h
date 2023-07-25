@@ -15,6 +15,7 @@ protected:
       glm::vec2 velocity;
       const char *imgPath;
       SDL_Rect droneRect;
+      int droneRectSize;
 
       int health = 3;
       bool isDead = false;

@@ -14,7 +14,7 @@ BladedSpaceBug::BladedSpaceBug(glm::vec2 initPos, glm::vec2 initVelocity)
       attackDuration = 1.0;
       patrolDuration = 7.5; // TODO : randomize
 
-      pointsToFollow.push_back(glm::vec2(640, 360));
+      pointsToFollow.push_back(glm::vec2(640, 360)); // update these values
       currentTarget = pointsToFollow[pointsToFollowIndex];
 
       spaceBugDirection = glm::normalize(currentTarget - spaceBugPos);
