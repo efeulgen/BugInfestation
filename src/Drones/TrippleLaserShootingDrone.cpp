@@ -12,10 +12,10 @@ TrippleLaserShootingDrone::TrippleLaserShootingDrone(glm::vec2 pos, glm::vec2 ve
       fireIntervalCounter = 0.0;
       fireIntervalSetBackCounter = 0.0;
 
-      rectCenter = glm::vec2((static_cast<double>(position.x + droneRectSize)) / 2.0, (static_cast<double>(position.y + droneRectSize)) / 2.0);
-      fireDirCtoUp = glm::normalize(glm::vec2((static_cast<double>(position.x + droneRectSize)) / 2.0, position.y) - rectCenter);
-      // fireDirCtoBottomL = glm::normalize(glm::vec2(droneRect.x, droneRect.y + droneRect.h) - rectCenter);
-      // fireDirCtoBottomR = glm::normalize(glm::vec2((droneRect.x + droneRect.w), droneRect.y + droneRect.h) - rectCenter);
+      rectCenter = glm::vec2(pos.x + static_cast<double>(droneRectSize) / 2.0, pos.y + static_cast<double>(droneRectSize) / 2.0);
+      up = glm::normalize(glm::vec2(0, -1));
+      bottomL = glm::normalize(glm::vec2(-1, 1));
+      bottomR = glm::normalize(glm::vec2(1, 1));
 }
 
 TrippleLaserShootingDrone::~TrippleLaserShootingDrone()
@@ -28,16 +28,18 @@ void TrippleLaserShootingDrone::UpdateDrone(double deltaTime)
       for (auto proj : projectiles)
       {
             proj->UpdateProjectile(deltaTime);
-            if (std::abs(proj->GetProjectilePosition().x - position.x) > 1400.0)
+            if ((std::abs(proj->GetProjectilePosition().x - position.x) > 1400.0 || std::abs(proj->GetProjectilePosition().y - position.y) > 1400.0))
             {
                   projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), proj), projectiles.end());
                   proj->Destroy();
                   proj = nullptr;
+                  break;
             }
       }
 
       if (isDead)
       {
+            canFire = false;
             if (projectiles.empty())
             {
                   isDestructible = true;
@@ -74,13 +76,13 @@ void TrippleLaserShootingDrone::UpdateDrone(double deltaTime)
       // bound check
       if (position.x < -300.0 || position.x > 1500.0 || position.y < -300.0 || position.y > 1500.0)
       {
-            isDestructible = true;
+            isDead = true;
       }
 
       // rotate
       angle += (deltaTime * rotationSpeed);
 
-      UpdateLaserFirePoints(rectCenter, fireDirCtoUp, fireDirCtoBottomL, fireDirCtoBottomR, deltaTime);
+      // UpdateLaserFirePoints(rectCenter, up, bottomL, bottomR, deltaTime); TODO : debug
 
       Drone::UpdateDrone(deltaTime);
 }
@@ -101,37 +103,34 @@ void TrippleLaserShootingDrone::RenderDrone(SDL_Renderer *renderer)
       SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
       SDL_FreeSurface(surf);
       droneRect = {static_cast<int>(position.x), static_cast<int>(position.y), droneRectSize, droneRectSize};
+      rectCenter = glm::vec2(position.x + static_cast<double>(droneRectSize) / 2.0, position.y + static_cast<double>(droneRectSize) / 2.0);
       SDL_RenderCopyEx(renderer, tex, NULL, &droneRect, angle, NULL, SDL_FLIP_NONE);
       SDL_DestroyTexture(tex);
 }
 
 void TrippleLaserShootingDrone::ShootLaser()
 {
-      Projectile *newProj1 = new Projectile(fireDirCtoUp, 1000.0);
+      Projectile *newProj1 = new Projectile(up, 1000.0, 5);
       newProj1->SetProjectilePosition(rectCenter);
       projectiles.push_back(newProj1);
 
-      /*
-      Projectile *newProj2 = new Projectile(fireDirCtoBottomL, 1000.0);
+      Projectile *newProj2 = new Projectile(bottomL, 1000.0, 5);
       newProj2->SetProjectilePosition(rectCenter);
       projectiles.push_back(newProj2);
 
-      Projectile *newProj3 = new Projectile(fireDirCtoBottomR, 1000.0);
+      Projectile *newProj3 = new Projectile(bottomR, 1000.0, 5);
       newProj3->SetProjectilePosition(rectCenter);
-      projectiles.push_back(newProj3);*/
+      projectiles.push_back(newProj3);
 }
 
 void TrippleLaserShootingDrone::UpdateLaserFirePoints(glm::vec2 rectCenter, glm::vec2 cToUp, glm::vec2 cToBottomL, glm::vec2 cToBottomR, double deltaTime)
 {
+      /*
       // update position
-      rectCenter.x += velocity.x * deltaTime;
-      rectCenter.y += velocity.y * deltaTime;
-
       cToUp.x += velocity.x * deltaTime;
       cToUp.y += velocity.y * deltaTime;
       cToUp = glm::normalize(cToUp);
 
-      /*
       cToBottomL.x += velocity.x * deltaTime;
       cToBottomL.y += velocity.y * deltaTime;
       cToBottomL = glm::normalize(cToBottomL);
@@ -139,7 +138,6 @@ void TrippleLaserShootingDrone::UpdateLaserFirePoints(glm::vec2 rectCenter, glm:
       cToBottomR.x += velocity.x * deltaTime;
       cToBottomR.y += velocity.y * deltaTime;
       cToBottomR = glm::normalize(cToBottomR);
-      */
 
       // update rotation
       float angleRadians = glm::radians(angle);
@@ -149,7 +147,8 @@ void TrippleLaserShootingDrone::UpdateLaserFirePoints(glm::vec2 rectCenter, glm:
       cToUp = cToUp - rectCenter;
       cToUp = rotationMatrix * cToUp;
       cToUp += rectCenter;
-      /*
+
       cToBottomL = rotationMatrix * cToBottomL;
-      cToBottomR = rotationMatrix * cToBottomR;*/
+      cToBottomR = rotationMatrix * cToBottomR;
+      */
 }

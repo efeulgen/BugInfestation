@@ -4,11 +4,12 @@
 #include <iostream>
 #include <SDL2/SDL_image.h>
 
-Projectile::Projectile(glm::vec2 direction, double speed) : projectileDirection{direction}, projectileSpeed{speed}
+Projectile::Projectile(glm::vec2 direction, double speed, int size) : projectileDirection{direction}, projectileSpeed{speed}
 {
     // std::cout << "Projectile Constructor" << std::endl;
 
     projectilePosition = glm::vec2(0.0, 0.0);
+    projSize = size;
 }
 
 Projectile::~Projectile()
@@ -34,7 +35,7 @@ void Projectile::RenderProjectile(SDL_Renderer *gameRenderer, const char *sprite
 
     SDL_Texture *projectileTexture = SDL_CreateTextureFromSurface(gameRenderer, projectileSurface);
     SDL_FreeSurface(projectileSurface);
-    projectileRect = {static_cast<int>(projectilePosition.x), static_cast<int>(projectilePosition.y), 20, 20};
+    projectileRect = {static_cast<int>(projectilePosition.x), static_cast<int>(projectilePosition.y), projSize, projSize};
     SDL_RenderCopy(gameRenderer, projectileTexture, NULL, &projectileRect);
     SDL_DestroyTexture(projectileTexture);
 }

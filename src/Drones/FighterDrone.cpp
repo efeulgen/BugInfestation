@@ -20,6 +20,8 @@ FighterDrone::FighterDrone(glm::vec2 pos, glm::vec2 vel) : Drone(pos, vel)
 FighterDrone::~FighterDrone()
 {
       std::cout << "FighterDrone Destructor" << std::endl;
+
+      Mix_FreeChunk(laserSound);
 }
 
 void FighterDrone::UpdateDrone(double deltaTime)
@@ -32,6 +34,7 @@ void FighterDrone::UpdateDrone(double deltaTime)
                   projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), proj), projectiles.end());
                   proj->Destroy();
                   proj = nullptr;
+                  break;
             }
       }
 
@@ -58,7 +61,7 @@ void FighterDrone::UpdateDrone(double deltaTime)
       // bound check
       if ((isRtoL && position.x < -200.0) || (!isRtoL && position.x > 1300.0))
       {
-            isDestructible = true;
+            isDead = true;
       }
 
       Drone::UpdateDrone(deltaTime);

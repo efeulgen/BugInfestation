@@ -17,10 +17,12 @@ private:
     int modCounter = 0;
     SDL_Surface *projectileSurface = nullptr;
 
+    int projSize;
+
     SDL_Rect projectileRect;
 
 public:
-    Projectile(glm::vec2 direction, double speed);
+    Projectile(glm::vec2 direction, double speed, int size = 20);
     ~Projectile();
     void RenderProjectile(SDL_Renderer *gameRenderer, const char *spriteSheet[], const int spriteSheetSize);
     void UpdateProjectile(double deltaTime);

@@ -45,6 +45,7 @@ void HeavySpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
                   projArray.erase(std::remove(projArray.begin(), projArray.end(), proj), projArray.end());
                   proj->Destroy();
                   proj = nullptr;
+                  break;
             }
       }
 

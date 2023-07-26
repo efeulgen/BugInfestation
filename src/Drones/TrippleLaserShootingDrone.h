@@ -7,14 +7,14 @@
 #include "../Projectile.h"
 
 const int TRIPPLELASERSHOOTINGDRONE_PROJ_SPRITESHEET_SIZE = 1;
-const double TRIPPLELASERSHOOTINGDRONE_FIRE_RATE = 0.5;
-const double TRIPPLELASERSHOOTINGDRONE_FIRE_INTERVAL = 3.0;
+const double TRIPPLELASERSHOOTINGDRONE_FIRE_RATE = 0.075;
+const double TRIPPLELASERSHOOTINGDRONE_FIRE_INTERVAL = 5.0;
 
 class TrippleLaserShootingDrone : public Drone
 {
 private:
       std::vector<Projectile *> projectiles;
-      const char *spritesheet[TRIPPLELASERSHOOTINGDRONE_PROJ_SPRITESHEET_SIZE] = {"./assets/sprites/PlayerProjectile.png"}; // for debug: change later
+      const char *spritesheet[TRIPPLELASERSHOOTINGDRONE_PROJ_SPRITESHEET_SIZE] = {"./assets/sprites/TrippleLaserDroneLaser.png"}; // for debug: change later
       double fireCounter;
       double fireIntervalCounter;
       double fireIntervalSetBackCounter;
@@ -24,10 +24,9 @@ private:
       double rotationSpeed = 10.0;
 
       glm::vec2 rectCenter;
-      glm::vec2 fireDirCtoUp;
-      glm::vec2 fireDirCtoBottomL;
-      glm::vec2 fireDirCtoBottomR;
-      // int fireVectorIndex = 0;
+      glm::vec2 up;
+      glm::vec2 bottomL;
+      glm::vec2 bottomR;
 
 public:
       TrippleLaserShootingDrone(glm::vec2 pos, glm::vec2 vel);

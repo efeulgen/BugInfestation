@@ -343,7 +343,7 @@ void Game::UpdateGameAssets()
 
     // *************** generate drones ******************************
     generateDroneCounter -= deltaTime;
-    if (!isWaveComplete && isGameStarted && !isGameOver && generateDroneCounter <= 0.0)
+    if (!isWaveComplete && isGameStarted && !isGameOver && generateDroneCounter <= 0.0 && !bugs.empty())
     {
         GenerateDrones();
         generateDroneCounter = 10.0;
@@ -483,8 +483,15 @@ void Game::GenerateDrones()
     spawnSeed++;
     srand(spawnSeed);
 
-    int randomDroneSelector = rand() % 2 + 1; // + 1 for debugging
+    int randomDroneSelector = rand() % 2;
 
+    // *************** debug ******************************************************************************************
+    glm::vec2 dir = glm::normalize(glm::vec2(windowWidth / 2, windowHeight / 2) - glm::vec2(randomXPos, randomYPos));
+    dir *= 120.0;
+    drones.push_back(new TrippleLaserShootingDrone(glm::vec2(randomXPos, randomYPos), dir));
+    // *************** debug ******************************************************************************************
+
+    /*
     if (randomDroneSelector == 0)
     {
         glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
@@ -494,10 +501,10 @@ void Game::GenerateDrones()
     else if (randomDroneSelector == 1)
     {
         glm::vec2 dir = glm::normalize(glm::vec2(windowWidth / 2, windowHeight / 2) - glm::vec2(randomXPos, randomYPos));
-        dir.x *= 200.0;
-        dir.y *= 200.0;
+        dir *= 120.0;
         drones.push_back(new TrippleLaserShootingDrone(glm::vec2(randomXPos, randomYPos), dir));
     }
+    */
 }
 
 void Game::ResetGame()
