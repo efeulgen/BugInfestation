@@ -23,12 +23,15 @@ private:
       Mix_Chunk *laserSound = nullptr;
 
 public:
-      FighterDrone(glm::vec2 pos, glm::vec2 vel);
+      FighterDrone(glm::vec2 pos, glm::vec2 dir);
       ~FighterDrone();
 
       void UpdateDrone(double deltaTime) override;
       void RenderDrone(SDL_Renderer *renderer) override;
       void ShootLaser();
+
+      // getters & setters
+      std::vector<Projectile *> GetProjectiles() { return projectiles; }
 };
 
 #endif

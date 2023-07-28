@@ -1,12 +1,14 @@
 
 #include "TrippleLaserShootingDrone.h"
 
-TrippleLaserShootingDrone::TrippleLaserShootingDrone(glm::vec2 pos, glm::vec2 vel) : Drone(pos, vel)
+TrippleLaserShootingDrone::TrippleLaserShootingDrone(glm::vec2 pos, glm::vec2 dir) : Drone(pos, dir)
 {
       std::cout << "TrippleLaserShootingDrone Constructor" << std::endl;
 
       imgPath = "./assets/sprites/TrippleLaserDrone.png";
       droneRectSize = 64;
+      droneType = DroneType::DT_TrippleLaserShootingDrone;
+      droneSpeed = 120.0;
 
       fireCounter = TRIPPLELASERSHOOTINGDRONE_FIRE_RATE;
       fireIntervalCounter = 0.0;
@@ -81,8 +83,7 @@ void TrippleLaserShootingDrone::UpdateDrone(double deltaTime)
 
       // rotate
       angle += (deltaTime * rotationSpeed);
-
-      // UpdateLaserFirePoints(rectCenter, up, bottomL, bottomR, deltaTime); TODO : debug
+      UpdateLaserFirePoints(); // TODO : debug
 
       Drone::UpdateDrone(deltaTime);
 }
@@ -123,32 +124,18 @@ void TrippleLaserShootingDrone::ShootLaser()
       projectiles.push_back(newProj3);
 }
 
-void TrippleLaserShootingDrone::UpdateLaserFirePoints(glm::vec2 rectCenter, glm::vec2 cToUp, glm::vec2 cToBottomL, glm::vec2 cToBottomR, double deltaTime)
+void TrippleLaserShootingDrone::UpdateLaserFirePoints()
 {
-      /*
-      // update position
-      cToUp.x += velocity.x * deltaTime;
-      cToUp.y += velocity.y * deltaTime;
-      cToUp = glm::normalize(cToUp);
-
-      cToBottomL.x += velocity.x * deltaTime;
-      cToBottomL.y += velocity.y * deltaTime;
-      cToBottomL = glm::normalize(cToBottomL);
-
-      cToBottomR.x += velocity.x * deltaTime;
-      cToBottomR.y += velocity.y * deltaTime;
-      cToBottomR = glm::normalize(cToBottomR);
-
-      // update rotation
-      float angleRadians = glm::radians(angle);
+      float angleRadians = glm::radians(1.0f);
       glm::mat2 rotationMatrix(cos(angleRadians), -sin(angleRadians),
                                sin(angleRadians), cos(angleRadians));
 
-      cToUp = cToUp - rectCenter;
-      cToUp = rotationMatrix * cToUp;
-      cToUp += rectCenter;
+      up = rotationMatrix * up;
+      up = glm::normalize(up);
 
-      cToBottomL = rotationMatrix * cToBottomL;
-      cToBottomR = rotationMatrix * cToBottomR;
-      */
+      bottomL = rotationMatrix * bottomL;
+      bottomL = glm::normalize(bottomL);
+
+      bottomR = rotationMatrix * bottomR;
+      bottomR = glm::normalize(bottomR);
 }

@@ -1,7 +1,7 @@
 
 #include "Drone.h"
 
-Drone::Drone(glm::vec2 pos, glm::vec2 vel) : position{pos}, velocity{vel}, droneRect{0, 0, 0, 0}
+Drone::Drone(glm::vec2 pos, glm::vec2 dir) : position{pos}, direction{dir}, droneRect{0, 0, 0, 0}
 {
       std::cout << "Drone Constructor" << std::endl;
 }
@@ -13,8 +13,8 @@ Drone::~Drone()
 
 void Drone::UpdateDrone(double deltaTime)
 {
-      position.x += velocity.x * deltaTime;
-      position.y += velocity.y * deltaTime;
+      position.x += direction.x * deltaTime * droneSpeed;
+      position.y += direction.y * deltaTime * droneSpeed;
 }
 
 void Drone::RenderDrone(SDL_Renderer *renderer)

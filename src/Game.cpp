@@ -234,7 +234,7 @@ void Game::UpdateGameAssets()
         }
     }
 
-    // *************** check if bugs collide with player ******************************
+    // *************** check if player gets damage ******************************
     if (!bugs.empty() && mainPlayer && !isGameOver && !isWaveComplete && isGameStarted)
     {
         for (auto bug : bugs)
@@ -483,26 +483,27 @@ void Game::GenerateDrones()
     spawnSeed++;
     srand(spawnSeed);
 
-    int randomDroneSelector = rand() % 2;
+    int randomDroneSelector = rand() % 3;
 
     // *************** debug ******************************************************************************************
-    glm::vec2 dir = glm::normalize(glm::vec2(windowWidth / 2, windowHeight / 2) - glm::vec2(randomXPos, randomYPos));
-    dir *= 120.0;
-    drones.push_back(new TrippleLaserShootingDrone(glm::vec2(randomXPos, randomYPos), dir));
+    drones.push_back(new SeekAndDestroyDrone(glm::vec2(0.0, 0.0), glm::vec2(1.0, 0.0), mainPlayer));
     // *************** debug ******************************************************************************************
 
     /*
     if (randomDroneSelector == 0)
     {
         glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
-        glm::vec2 direction = randomXPos == 1380.0 ? glm::vec2(-200.0, 0.0) : glm::vec2(200.0, 0.0);
+        glm::vec2 direction = randomXPos == 1380.0 ? glm::vec2(-1.0, 0.0) : glm::vec2(1.0, 0.0);
         drones.push_back(new FighterDrone(initPos, direction));
     }
     else if (randomDroneSelector == 1)
     {
         glm::vec2 dir = glm::normalize(glm::vec2(windowWidth / 2, windowHeight / 2) - glm::vec2(randomXPos, randomYPos));
-        dir *= 120.0;
         drones.push_back(new TrippleLaserShootingDrone(glm::vec2(randomXPos, randomYPos), dir));
+    }
+    else if (randomDroneSelector == 3)
+    {
+        drones.push_back(new SeekAndDestroyDrone(glm::vec2(0.0, 0.0), glm::vec2(1.0, 0.0), mainPlayer));
     }
     */
 }
