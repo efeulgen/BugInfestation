@@ -31,17 +31,18 @@ void SpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
         spaceBugDirection.y *= -1;
     }
 
-    animCounter += deltaTime * ANIM_SPEED;
+    // update anim index
+    spriteSheetIndex += deltaTime * ANIM_SPEED;
 }
 
 void SpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 {
-    spaceBugSurface = IMG_Load(bugSpriteSheet[spriteSheetIndex]);
-    if (static_cast<int>(animCounter) % BUG_SPRITESHEET_SIZE == modCounter)
+    if (static_cast<int>(spriteSheetIndex) > 3)
     {
-        spriteSheetIndex = spriteSheetIndex >= (BUG_SPRITESHEET_SIZE - 1) ? 0 : spriteSheetIndex + 1;
-        modCounter = modCounter >= (BUG_SPRITESHEET_SIZE - 1) ? 0 : modCounter + 1;
+        spriteSheetIndex = 0.0;
     }
+
+    spaceBugSurface = IMG_Load(bugSpriteSheet[static_cast<int>(spriteSheetIndex)]);
     SDL_Texture *spaceBugTexture = SDL_CreateTextureFromSurface(gameRenderer, spaceBugSurface);
     SDL_FreeSurface(spaceBugSurface);
     spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};

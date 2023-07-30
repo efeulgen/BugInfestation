@@ -12,12 +12,10 @@ private:
     glm::vec2 projectileDirection;
     double projectileSpeed;
 
-    double animCounter = 0.0;
-    int spriteSheetIndex = 0;
-    int modCounter = 0;
+    double spriteSheetIndex = 0.0;
     SDL_Surface *projectileSurface = nullptr;
 
-    int projSize;
+    int projRectSize;
 
     SDL_Rect projectileRect;
 

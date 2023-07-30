@@ -9,7 +9,7 @@ Projectile::Projectile(glm::vec2 direction, double speed, int size) : projectile
     // std::cout << "Projectile Constructor" << std::endl;
 
     projectilePosition = glm::vec2(0.0, 0.0);
-    projSize = size;
+    projRectSize = size;
 }
 
 Projectile::~Projectile()
@@ -25,17 +25,16 @@ void Projectile::RenderProjectile(SDL_Renderer *gameRenderer, const char *sprite
     }
     else
     {
-        projectileSurface = IMG_Load(spriteSheet[spriteSheetIndex]);
-        if (static_cast<int>(animCounter) % spriteSheetSize == modCounter)
+        if (static_cast<int>(spriteSheetIndex) > spriteSheetSize - 1)
         {
-            spriteSheetIndex = spriteSheetIndex >= (spriteSheetSize - 1) ? 0 : spriteSheetIndex + 1;
-            modCounter = modCounter >= (spriteSheetSize - 1) ? 0 : modCounter + 1;
+            spriteSheetIndex = 0.0;
         }
+        projectileSurface = IMG_Load(spriteSheet[static_cast<int>(spriteSheetIndex)]);
     }
 
     SDL_Texture *projectileTexture = SDL_CreateTextureFromSurface(gameRenderer, projectileSurface);
     SDL_FreeSurface(projectileSurface);
-    projectileRect = {static_cast<int>(projectilePosition.x), static_cast<int>(projectilePosition.y), projSize, projSize};
+    projectileRect = {static_cast<int>(projectilePosition.x), static_cast<int>(projectilePosition.y), projRectSize, projRectSize};
     SDL_RenderCopy(gameRenderer, projectileTexture, NULL, &projectileRect);
     SDL_DestroyTexture(projectileTexture);
 }
@@ -44,11 +43,7 @@ void Projectile::UpdateProjectile(double deltaTime)
 {
     projectilePosition += (projectileDirection * static_cast<float>(projectileSpeed)) * static_cast<float>(deltaTime);
 
-    animCounter += deltaTime * 10.0;
-    if (animCounter >= 1000.0)
-    {
-        animCounter = 0.0;
-    }
+    spriteSheetIndex += deltaTime * 10.0;
 }
 
 void Projectile::Destroy()

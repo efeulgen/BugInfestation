@@ -241,7 +241,7 @@ void Game::UpdateGameAssets()
     {
         for (auto bug : bugs)
         {
-            if (bug->CheckCollision(mainPlayer->GetPlayerRect()) && bug->GetCanDamagePlayer())
+            if (mainPlayer->CheckCollision(bug->GetSpaceBugRect()) && bug->GetCanDamagePlayer())
             {
                 if (bug->GetBugType() == BugType::Bladed)
                 {
@@ -282,7 +282,7 @@ void Game::UpdateGameAssets()
 
         for (auto drone : drones)
         {
-            if (drone->CheckCollision(mainPlayer->GetPlayerRect()))
+            if (mainPlayer->CheckCollision(drone->GetDroneRect()))
             {
                 Mix_PlayChannel(-1, playerHurtSound, 0);
                 Mix_PlayMusic(majorExplosionSound, 0);

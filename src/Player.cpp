@@ -17,11 +17,16 @@ Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gr
     {
         Logger::Err("Laser sound isn't loaded.");
     }
+
+    collisionRect = new SDL_Rect();
 }
 
 Player::~Player()
 {
     std::cout << "Player Destructor" << std::endl;
+
+    delete collisionRect;
+    collisionRect = nullptr;
 }
 
 void Player::Update(double deltaTime)
@@ -87,8 +92,15 @@ void Player::Update(double deltaTime)
         }
     }
 
-    // update anima counters
-    jetPackAnimCounter += deltaTime * JETPACK_ANIM_SPEED;
+    // update sprite sheet index
+    if (isUsingJetPack)
+    {
+        jetPackSpriteSheetIndex += deltaTime * JETPACK_ANIM_SPEED;
+    }
+    if (isRenderingBloodSplash)
+    {
+        bloodSplashSpriteSheetIndex += deltaTime * 10.0;
+    }
 }
 
 void Player::RenderPlayer(SDL_Renderer *gameRenderer)
@@ -110,14 +122,19 @@ void Player::RenderPlayer(SDL_Renderer *gameRenderer)
     }
     SDL_DestroyTexture(playertexture);
 
-    for (auto projectile : projArray)
+    for (auto projectile : projArray) // render projectiles
     {
         projectile->RenderProjectile(gameRenderer, playerProjectileSpriteSheet, PLAYER_PROJECTILE_SPRITESHEET_SIZE);
     }
 
-    if (isUsingJetPack)
+    if (isUsingJetPack) // render jet pack fire
     {
         RenderJetPackFire(gameRenderer);
+    }
+
+    if (isRenderingBloodSplash) // render blood splash
+    {
+        RenderBloodSplash(gameRenderer);
     }
 }
 
@@ -179,6 +196,7 @@ void Player::ClearProjArray()
 void Player::GetDamage(double amount)
 {
     health -= amount;
+    isRenderingBloodSplash = true;
     if (health <= 0.0)
     {
         if (extraLives > 0)
@@ -200,10 +218,11 @@ void Player::UseJetPack(double deltaTime)
     playerPosition.y -= playerSpeed.y * deltaTime;
 }
 
-bool Player::CheckCollision(SDL_Rect other) const
+bool Player::CheckCollision(SDL_Rect other)
 {
     if (SDL_HasIntersection(&playerRect, &other))
     {
+        SDL_IntersectRect(&playerRect, &other, collisionRect);
         return true;
     }
     return false;
@@ -250,12 +269,12 @@ void Player::DeactivateFireRateBoost()
 
 void Player::RenderJetPackFire(SDL_Renderer *renderer)
 {
-    SDL_Surface *surf = IMG_Load(playerJetPackSpriteSheet[jetPackSpriteSheetIndex]);
-    if (static_cast<int>(jetPackAnimCounter) % PLAYER_JETPACK_SPRITESHEET_SIZE == jetPackModCounter)
+    if (static_cast<int>(jetPackSpriteSheetIndex) > 2)
     {
-        jetPackSpriteSheetIndex = jetPackSpriteSheetIndex >= (PLAYER_JETPACK_SPRITESHEET_SIZE - 1) ? 0 : jetPackSpriteSheetIndex + 1;
-        jetPackModCounter = jetPackModCounter >= (PLAYER_JETPACK_SPRITESHEET_SIZE - 1) ? 0 : jetPackModCounter + 1;
+        jetPackSpriteSheetIndex = 0.0;
     }
+
+    SDL_Surface *surf = IMG_Load(playerJetPackSpriteSheet[static_cast<int>(jetPackSpriteSheetIndex)]);
     SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
     SDL_FreeSurface(surf);
     SDL_Rect jetPackFireRect = {static_cast<int>(playerPosition.x), static_cast<int>(playerPosition.y), 128, 128};
@@ -271,4 +290,20 @@ void Player::RenderJetPackFire(SDL_Renderer *renderer)
     }
 
     SDL_DestroyTexture(tex);
+}
+
+void Player::RenderBloodSplash(SDL_Renderer *renderer)
+{
+    SDL_Surface *surf = IMG_Load(playerBloodSplashSpriteSheet[static_cast<int>(bloodSplashSpriteSheetIndex)]);
+    SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
+    SDL_FreeSurface(surf);
+    SDL_Rect bloodSplashRect = {static_cast<int>(collisionRect->x), static_cast<int>(collisionRect->y), 64, 64};
+    SDL_RenderCopy(renderer, tex, NULL, &bloodSplashRect);
+    SDL_DestroyTexture(tex);
+
+    if (static_cast<int>(bloodSplashSpriteSheetIndex) == 3)
+    {
+        isRenderingBloodSplash = false;
+        bloodSplashSpriteSheetIndex = 0;
+    }
 }

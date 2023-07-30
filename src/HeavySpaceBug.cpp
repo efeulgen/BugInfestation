@@ -70,7 +70,7 @@ void HeavySpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
             fireCounter = 0.0;
       }
 
-      animCounter += deltaTime * 10.0;
+      heavyBugSpriteSheetIndex += deltaTime * 10.0;
 }
 
 void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
@@ -82,12 +82,12 @@ void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
       if (isDead)
             return;
 
-      SDL_Surface *surf = IMG_Load(heavyBugSpriteSheet[spriteSheetIndex]);
-      if (static_cast<int>(animCounter) % HEAVY_BUG_SPRITESHEET_SIZE == modCounter)
+      // render bug
+      if (static_cast<int>(heavyBugSpriteSheetIndex) > 3)
       {
-            spriteSheetIndex = spriteSheetIndex >= (HEAVY_BUG_SPRITESHEET_SIZE - 1) ? 0 : spriteSheetIndex + 1;
-            modCounter = modCounter >= (HEAVY_BUG_SPRITESHEET_SIZE - 1) ? 0 : modCounter + 1;
+            heavyBugSpriteSheetIndex = 0.0;
       }
+      SDL_Surface *surf = IMG_Load(heavyBugSpriteSheet[static_cast<int>(heavyBugSpriteSheetIndex)]);
       SDL_Texture *tex = SDL_CreateTextureFromSurface(gameRenderer, surf);
       SDL_FreeSurface(surf);
       spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};

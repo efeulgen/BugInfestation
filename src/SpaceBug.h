@@ -13,7 +13,6 @@
 #include "Logger/Logger.h"
 
 const double ANIM_SPEED = 10.0;
-const int BUG_SPRITESHEET_SIZE = 4;
 
 enum BugType
 {
@@ -26,7 +25,7 @@ class SpaceBug
 {
 private:
     SDL_Surface *spaceBugSurface = nullptr;
-    const char *bugSpriteSheet[BUG_SPRITESHEET_SIZE] = {"./assets/sprites/space_bug_2.png", "./assets/sprites/space_bug.png", "./assets/sprites/space_bug_1.png", "./assets/sprites/space_bug.png"};
+    const char *bugSpriteSheet[4] = {"./assets/sprites/space_bug_2.png", "./assets/sprites/space_bug.png", "./assets/sprites/space_bug_1.png", "./assets/sprites/space_bug.png"};
 
 protected:
     glm::vec2 spaceBugPos;
@@ -40,9 +39,7 @@ protected:
     bool isFlipped = true;
     bool isDestructible = false;
     bool canDamagePlayer = true;
-    double animCounter = 0;
-    int spriteSheetIndex = 0;
-    int modCounter = 0;
+    double spriteSheetIndex = 0.0;
 
 public:
     SpaceBug();

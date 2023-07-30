@@ -17,7 +17,6 @@ const double FIRE_RATE = 0.25;
 const double MAX_HEALTH = 100.0;
 const double GRAVITY = 200.0;
 const int PLAYER_PROJECTILE_SPRITESHEET_SIZE = 1;
-const int PLAYER_JETPACK_SPRITESHEET_SIZE = 3;
 const double JETPACK_ANIM_SPEED = 10.0;
 
 class Player
@@ -31,6 +30,7 @@ private:
     double gravityIncrement = 100.0;
     bool isUsingJetPack;
     bool isFlipped;
+    bool isRenderingBloodSplash = false;
 
     int extraLives;
     int rocketAmount;
@@ -43,13 +43,14 @@ private:
     glm::vec2 playerPosition;
     glm::vec2 playerSpeed;
     glm::vec2 firePos;
+    SDL_Rect *collisionRect;
 
     const char *playerProjectileSpriteSheet[PLAYER_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/sprites/PlayerProjectile.png"};
+    const char *playerBloodSplashSpriteSheet[4] = {"./assets/sprites/player_bloodSplash_1.png", "./assets/sprites/player_bloodSplash_2.png", "./assets/sprites/player_bloodSplash_3.png", "./assets/sprites/player_bloodSplash_4.png"};
+    const char *playerJetPackSpriteSheet[3] = {"./assets/sprites/player_jetpack_1.png", "./assets/sprites/player_jetpack_2.png", "./assets/sprites/player_jetpack_3.png"};
 
-    const char *playerJetPackSpriteSheet[PLAYER_JETPACK_SPRITESHEET_SIZE] = {"./assets/sprites/player_jetpack_1.png", "./assets/sprites/player_jetpack_2.png", "./assets/sprites/player_jetpack_3.png"};
-    double jetPackAnimCounter = 0.0;
-    int jetPackModCounter = 0;
-    int jetPackSpriteSheetIndex = 0;
+    double jetPackSpriteSheetIndex = 0.0;
+    double bloodSplashSpriteSheetIndex = 0.0;
 
     SDL_Rect playerRect;
     std::vector<Projectile *> projArray;
@@ -71,7 +72,7 @@ public:
     void ClearProjArray();
     void GetDamage(double amount);
     void UseJetPack(double deltaTime);
-    bool CheckCollision(SDL_Rect other) const;
+    bool CheckCollision(SDL_Rect other);
     void HealPlayer();
     void GainExtraLife();
     void GainRokcet();
@@ -81,8 +82,8 @@ public:
     void DeactivateFireRateBoost();
 
 private:
-    void
-    RenderJetPackFire(SDL_Renderer *renderer);
+    void RenderJetPackFire(SDL_Renderer *renderer);
+    void RenderBloodSplash(SDL_Renderer *renderer);
 
     // **********************************************************************************************
     // *************** getters & setters ************************************************************

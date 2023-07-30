@@ -51,6 +51,7 @@ public:
       DroneType GetDroneType() { return droneType; }
       std::vector<Projectile *> GetProjectiles() { return projectiles; }
       double GetProjectileDamage() { return projectileDamage; }
+      SDL_Rect GetDroneRect() const { return droneRect; }
 };
 
 #endif
