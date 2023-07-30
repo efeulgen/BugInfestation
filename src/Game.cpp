@@ -70,10 +70,12 @@ void Game::SetupGameAssets()
     bugScreamSound = Mix_LoadWAV("./audio/scream.wav");
     explosionSound = Mix_LoadWAV("./audio/Minor_Explosion.wav");
     playerHurtSound = Mix_LoadWAV("./audio/player_hurt.wav");
+    majorExplosionSound = Mix_LoadMUS("./audio/Major_Explosion.mp3");
     if (audio == NULL || gameOverSound == NULL || bugSplashSound == NULL || bugScreamSound == NULL || explosionSound == NULL || playerHurtSound == nullptr)
     {
         Logger::Err("Failed to load audio.");
     }
+
     Mix_PlayChannel(-1, audio, -1);
 
     // managers
@@ -244,16 +246,17 @@ void Game::UpdateGameAssets()
                 if (bug->GetBugType() == BugType::Bladed)
                 {
                     Mix_PlayChannel(-1, playerHurtSound, 0);
+
                     mainPlayer->GetDamage(20.0);
                     bug->SetCanDamagePlayer(false);
                 }
                 else
                 {
+                    Mix_PlayChannel(-1, playerHurtSound, 0);
+
                     bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
                     bug->Destroy();
                     bug = nullptr;
-
-                    Mix_PlayChannel(-1, playerHurtSound, 0);
                     mainPlayer->GetDamage(20.0);
                 }
                 break;
@@ -265,11 +268,44 @@ void Game::UpdateGameAssets()
                 {
                     if (mainPlayer->CheckCollision(proj->GetProjectileRect()))
                     {
+                        Mix_PlayChannel(-1, playerHurtSound, 0);
+
                         bug->EraseElementFromProjarray(proj);
                         proj->Destroy();
                         proj = nullptr;
-                        Mix_PlayChannel(-1, playerHurtSound, 0);
                         mainPlayer->GetDamage(5.0);
+                        break;
+                    }
+                }
+            }
+        }
+
+        for (auto drone : drones)
+        {
+            if (drone->CheckCollision(mainPlayer->GetPlayerRect()))
+            {
+                Mix_PlayChannel(-1, playerHurtSound, 0);
+                Mix_PlayMusic(majorExplosionSound, 0);
+                mainPlayer->GetDamage(40.0f);
+
+                drones.erase(std::remove(drones.begin(), drones.end(), drone), drones.end());
+                drone->DestroyDrone();
+                drone = nullptr;
+                break;
+            }
+
+            if (drone->GetDroneType() == DroneType::DT_FighterDrone || drone->GetDroneType() == DroneType::DT_TrippleLaserShootingDrone)
+            {
+                for (auto proj : drone->GetProjectiles())
+                {
+                    if (mainPlayer->CheckCollision(proj->GetProjectileRect()))
+                    {
+                        Mix_PlayChannel(-1, playerHurtSound, 0);
+
+                        drone->EraseElementFromProjarray(proj);
+                        proj->Destroy();
+                        proj = nullptr;
+                        mainPlayer->GetDamage(drone->GetProjectileDamage());
                         break;
                     }
                 }
@@ -413,6 +449,11 @@ void Game::Destroy()
     Mix_FreeChunk(audio);
     Mix_FreeChunk(bugScreamSound);
     Mix_FreeChunk(bugSplashSound);
+    Mix_FreeChunk(explosionSound);
+    Mix_FreeChunk(gameOverSound);
+    Mix_FreeChunk(playerHurtSound);
+    Mix_FreeMusic(majorExplosionSound);
+
     audio = nullptr;
     bugScreamSound = nullptr;
     bugSplashSound = nullptr;
@@ -486,7 +527,9 @@ void Game::GenerateDrones()
     int randomDroneSelector = rand() % 3;
 
     // *************** debug ******************************************************************************************
-    drones.push_back(new SeekAndDestroyDrone(glm::vec2(0.0, 0.0), glm::vec2(1.0, 0.0), mainPlayer));
+    glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
+    glm::vec2 direction = randomXPos == 1380.0 ? glm::vec2(-1.0, 0.0) : glm::vec2(1.0, 0.0);
+    drones.push_back(new FighterDrone(initPos, direction));
     // *************** debug ******************************************************************************************
 
     /*

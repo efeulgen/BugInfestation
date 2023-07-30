@@ -2,9 +2,7 @@
 #ifndef TRIPPLELASERSHOOTINGDRONE_H
 #define TRIPPLELASERSHOOTINGDRONE_H
 
-#include <vector>
 #include "Drone.h"
-#include "../Projectile.h"
 
 const int TRIPPLELASERSHOOTINGDRONE_PROJ_SPRITESHEET_SIZE = 1;
 const double TRIPPLELASERSHOOTINGDRONE_FIRE_RATE = 0.1;
@@ -13,7 +11,6 @@ const double TRIPPLELASERSHOOTINGDRONE_FIRE_INTERVAL = 3.0;
 class TrippleLaserShootingDrone : public Drone
 {
 private:
-      std::vector<Projectile *> projectiles;
       const char *spritesheet[TRIPPLELASERSHOOTINGDRONE_PROJ_SPRITESHEET_SIZE] = {"./assets/sprites/TrippleLaserDroneLaser.png"};
       double fireCounter;
       double fireIntervalCounter;

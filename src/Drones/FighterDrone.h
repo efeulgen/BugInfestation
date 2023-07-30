@@ -3,11 +3,9 @@
 #define FIGHTERDRONE_H
 
 #include <iostream>
-#include <vector>
 #include <cstdlib>
 #include <SDL2/SDL_mixer.h>
 #include "Drone.h"
-#include "../Projectile.h"
 
 const int FIGHTERDRONE_PROJ_SPRITESHEET_SIZE = 1;
 const double FIGHTERDRONE_FIRE_RATE = 2.5;
@@ -15,7 +13,6 @@ const double FIGHTERDRONE_FIRE_RATE = 2.5;
 class FighterDrone : public Drone
 {
 private:
-      std::vector<Projectile *> projectiles;
       const char *spritesheet[FIGHTERDRONE_PROJ_SPRITESHEET_SIZE] = {"./assets/sprites/PlayerProjectile.png"}; // for debug: change later
       double fireCounter;
       bool isRtoL;

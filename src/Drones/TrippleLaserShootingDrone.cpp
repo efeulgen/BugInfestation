@@ -9,6 +9,7 @@ TrippleLaserShootingDrone::TrippleLaserShootingDrone(glm::vec2 pos, glm::vec2 di
       droneRectSize = 64;
       droneType = DroneType::DT_TrippleLaserShootingDrone;
       droneSpeed = 120.0;
+      projectileDamage = 2.0;
 
       fireCounter = TRIPPLELASERSHOOTINGDRONE_FIRE_RATE;
       fireIntervalCounter = 0.0;

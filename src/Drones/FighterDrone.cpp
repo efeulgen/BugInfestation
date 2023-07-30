@@ -9,6 +9,7 @@ FighterDrone::FighterDrone(glm::vec2 pos, glm::vec2 dir) : Drone(pos, dir)
       droneRectSize = 150;
       droneType = DroneType::DT_FighterDrone;
       droneSpeed = 200.0;
+      projectileDamage = 10.0;
 
       fireCounter = FIGHTERDRONE_FIRE_RATE - 0.5;
       isRtoL = pos.x >= 1300.0 ? true : false;

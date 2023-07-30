@@ -57,3 +57,8 @@ bool Drone::CheckCollision(SDL_Rect other) const
       }
       return false;
 }
+
+void Drone::EraseElementFromProjarray(Projectile *proj)
+{
+      projectiles.erase(std::remove(projectiles.begin(), projectiles.end(), proj), projectiles.end());
+}
