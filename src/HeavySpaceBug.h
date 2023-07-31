@@ -13,7 +13,6 @@ class HeavySpaceBug : public SpaceBug
 {
 private:
       double fireCounter;
-      bool isDead = false;
       double heavyBugSpriteSheetIndex = 0.0;
 
       const char *heavyBugSpriteSheet[4] = {"./assets/sprites/heavy_space_bug_2.png", "./assets/sprites/heavy_space_bug.png", "./assets/sprites/heavy_space_bug_1.png", "./assets/sprites/heavy_space_bug.png"};

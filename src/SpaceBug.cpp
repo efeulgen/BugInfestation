@@ -19,6 +19,11 @@ SpaceBug::~SpaceBug()
 
 void SpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
 {
+    if (isDead)
+    {
+        explodeAnimIndex += deltaTime * ANIM_SPEED;
+        return;
+    }
     spaceBugPos.x += spaceBugDirection.x * deltaTime;
     spaceBugPos.y += spaceBugDirection.y * deltaTime;
     if (spaceBugPos.x <= 0 || spaceBugPos.x >= (1280 - 64))
@@ -37,11 +42,29 @@ void SpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
 
 void SpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 {
+    if (isDead)
+    {
+        if (!donePlayingExplodeAnim)
+        {
+            SDL_Surface *surf = IMG_Load(bugExplodeSpriteSheet[static_cast<int>(explodeAnimIndex)]);
+            SDL_Texture *tex = SDL_CreateTextureFromSurface(gameRenderer, surf);
+            SDL_FreeSurface(surf);
+            spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};
+            SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
+            SDL_DestroyTexture(tex);
+
+            if (static_cast<int>(explodeAnimIndex) >= 6)
+            {
+                donePlayingExplodeAnim = true;
+                isDestructible = true;
+            }
+        }
+        return;
+    }
     if (static_cast<int>(spriteSheetIndex) > 3)
     {
         spriteSheetIndex = 0.0;
     }
-
     spaceBugSurface = IMG_Load(bugSpriteSheet[static_cast<int>(spriteSheetIndex)]);
     SDL_Texture *spaceBugTexture = SDL_CreateTextureFromSurface(gameRenderer, spaceBugSurface);
     SDL_FreeSurface(spaceBugSurface);
@@ -64,7 +87,7 @@ void SpaceBug::GetDamage()
     health--;
     if (health <= 0)
     {
-        isDestructible = true;
+        isDead = true;
         canDamagePlayer = false;
     }
 }

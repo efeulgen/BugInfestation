@@ -19,6 +19,7 @@ Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gr
     }
 
     collisionRect = new SDL_Rect();
+    weaponState = PlayerWeaponState::PWS_Normal;
 }
 
 Player::~Player()

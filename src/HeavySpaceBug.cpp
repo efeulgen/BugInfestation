@@ -80,7 +80,9 @@ void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
             proj->RenderProjectile(gameRenderer, bugProjectileSpritesheet, BUG_PROJECTILE_SPRITESHEET_SIZE);
       }
       if (isDead)
+      {
             return;
+      }
 
       // render bug
       if (static_cast<int>(heavyBugSpriteSheetIndex) > 3)

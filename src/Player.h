@@ -19,6 +19,12 @@ const double GRAVITY = 200.0;
 const int PLAYER_PROJECTILE_SPRITESHEET_SIZE = 1;
 const double JETPACK_ANIM_SPEED = 10.0;
 
+enum PlayerWeaponState
+{
+    PWS_Normal,
+    PWS_RocketLauncher
+};
+
 class Player
 {
 private:
@@ -54,6 +60,8 @@ private:
 
     SDL_Rect playerRect;
     std::vector<Projectile *> projArray;
+
+    PlayerWeaponState weaponState;
 
     // audio
     Mix_Chunk *laserSound = nullptr;

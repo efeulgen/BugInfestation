@@ -26,6 +26,7 @@ class SpaceBug
 private:
     SDL_Surface *spaceBugSurface = nullptr;
     const char *bugSpriteSheet[4] = {"./assets/sprites/space_bug_2.png", "./assets/sprites/space_bug.png", "./assets/sprites/space_bug_1.png", "./assets/sprites/space_bug.png"};
+    const char *bugExplodeSpriteSheet[7] = {"./assets/sprites/spaceBug_explode_1.png", "./assets/sprites/spaceBug_explode_2.png", "./assets/sprites/spaceBug_explode_3.png", "./assets/sprites/spaceBug_explode_4.png", "./assets/sprites/spaceBug_explode_5.png", "./assets/sprites/spaceBug_explode_6.png", "./assets/sprites/spaceBug_explode_7.png"};
 
 protected:
     glm::vec2 spaceBugPos;
@@ -37,9 +38,13 @@ protected:
 
     int health;
     bool isFlipped = true;
+    bool isDead = false;
     bool isDestructible = false;
     bool canDamagePlayer = true;
     double spriteSheetIndex = 0.0;
+
+    double explodeAnimIndex = 0.0;
+    bool donePlayingExplodeAnim = false;
 
 public:
     SpaceBug();
