@@ -282,7 +282,7 @@ void Game::UpdateGameAssets()
 
         for (auto drone : drones)
         {
-            if (mainPlayer->CheckCollision(drone->GetDroneRect()))
+            if (mainPlayer->CheckCollision(drone->GetDroneRect()) && !drone->GetIsDead())
             {
                 Mix_PlayChannel(-1, playerHurtSound, 0);
                 Mix_PlayMusic(majorExplosionSound, 0);

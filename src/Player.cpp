@@ -301,9 +301,9 @@ void Player::RenderBloodSplash(SDL_Renderer *renderer)
     SDL_RenderCopy(renderer, tex, NULL, &bloodSplashRect);
     SDL_DestroyTexture(tex);
 
-    if (static_cast<int>(bloodSplashSpriteSheetIndex) == 3)
+    if (static_cast<int>(bloodSplashSpriteSheetIndex) >= 3)
     {
         isRenderingBloodSplash = false;
-        bloodSplashSpriteSheetIndex = 0;
+        bloodSplashSpriteSheetIndex = 0.0;
     }
 }

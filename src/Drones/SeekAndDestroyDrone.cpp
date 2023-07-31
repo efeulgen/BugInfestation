@@ -28,7 +28,11 @@ void SeekAndDestroyDrone::UpdateDrone(double deltaTime)
 
       if (isDead)
       {
-            isDestructible = true;
+            majorExplosionAnimCounter += deltaTime * 8.0;
+            if (donePlayingMajorExplosion)
+            {
+                  isDestructible = true;
+            }
       }
 
       Drone::UpdateDrone(deltaTime);
@@ -36,6 +40,26 @@ void SeekAndDestroyDrone::UpdateDrone(double deltaTime)
 
 void SeekAndDestroyDrone::RenderDrone(SDL_Renderer *renderer)
 {
+      if (isDead)
+      {
+            if (!donePlayingMajorExplosion)
+            {
+                  SDL_Surface *surf = IMG_Load(majorExplosionSpriteSheet[static_cast<int>(majorExplosionAnimCounter)]);
+                  SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
+                  SDL_FreeSurface(surf);
+                  SDL_Rect rect = {static_cast<int>(position.x), static_cast<int>(position.y), droneRectSize, droneRectSize};
+                  SDL_RenderCopy(renderer, tex, NULL, &rect);
+                  SDL_DestroyTexture(tex);
+
+                  if (static_cast<int>(majorExplosionAnimCounter) >= 3)
+                  {
+                        donePlayingMajorExplosion = true;
+                  }
+            }
+
+            return;
+      }
+
       Drone::RenderDrone(renderer);
 }
 

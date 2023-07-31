@@ -43,7 +43,9 @@ void TrippleLaserShootingDrone::UpdateDrone(double deltaTime)
       if (isDead)
       {
             canFire = false;
-            if (projectiles.empty())
+            majorExplosionAnimCounter += deltaTime * 8.0;
+
+            if (projectiles.empty() && donePlayingMajorExplosion)
             {
                   isDestructible = true;
             }
@@ -98,6 +100,20 @@ void TrippleLaserShootingDrone::RenderDrone(SDL_Renderer *renderer)
 
       if (isDead)
       {
+            if (!donePlayingMajorExplosion)
+            {
+                  SDL_Surface *surf = IMG_Load(majorExplosionSpriteSheet[static_cast<int>(majorExplosionAnimCounter)]);
+                  SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
+                  SDL_FreeSurface(surf);
+                  SDL_Rect rect = {static_cast<int>(position.x), static_cast<int>(position.y), droneRectSize, droneRectSize};
+                  SDL_RenderCopy(renderer, tex, NULL, &rect);
+                  SDL_DestroyTexture(tex);
+
+                  if (static_cast<int>(majorExplosionAnimCounter) >= 3)
+                  {
+                        donePlayingMajorExplosion = true;
+                  }
+            }
             return;
       }
 
