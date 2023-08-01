@@ -207,7 +207,7 @@ void Game::UpdateGameAssets()
                     Mix_PlayChannel(-1, bugScreamSound, 0);
                     Mix_PlayChannel(-1, bugSplashSound, 0);
 
-                    bug->GetDamage();
+                    bug->GetDamage(1);
                     mainPlayer->EraseElementFromProjarray(projectile);
                     projectile->Destroy();
                     projectile = nullptr;
@@ -254,9 +254,7 @@ void Game::UpdateGameAssets()
                 {
                     Mix_PlayChannel(-1, playerHurtSound, 0);
 
-                    bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
-                    bug->Destroy();
-                    bug = nullptr;
+                    bug->GetDamage(100);
                     mainPlayer->GetDamage(20.0);
                 }
                 break;

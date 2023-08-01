@@ -82,9 +82,9 @@ void SpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
     SDL_DestroyTexture(spaceBugTexture);
 }
 
-void SpaceBug::GetDamage()
+void SpaceBug::GetDamage(int amount)
 {
-    health--;
+    health -= amount;
     if (health <= 0)
     {
         isDead = true;

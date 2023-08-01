@@ -52,7 +52,7 @@ public:
     virtual ~SpaceBug();
     virtual void UpdateSpaceBug(double deltaTime, Player *player = nullptr);
     virtual void RenderSpaceBug(SDL_Renderer *gameRenderer);
-    virtual void GetDamage();
+    virtual void GetDamage(int amount);
     bool CheckCollision(SDL_Rect other) const;
     void Destroy();
     void EraseElementFromProjarray(Projectile *proj);

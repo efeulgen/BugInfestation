@@ -13,17 +13,13 @@ HeavySpaceBug::HeavySpaceBug(glm::vec2 pos, glm::vec2 dir) : SpaceBug(pos, dir),
       type = BugType::Heavy;
 }
 
-void HeavySpaceBug::GetDamage()
+void HeavySpaceBug::GetDamage(int amount)
 {
-      health--;
+      health -= amount;
       if (health <= 0)
       {
             isDead = true;
             canDamagePlayer = false;
-            if (projArray.empty())
-            {
-                  isDestructible = true;
-            }
       }
 }
 
@@ -51,7 +47,8 @@ void HeavySpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
 
       if (isDead)
       {
-            if (projArray.empty())
+            explodeAnimIndex += deltaTime * 10.0;
+            if (projArray.empty() && donePlayingExplodeAnim)
             {
                   isDestructible = true;
             }
@@ -81,6 +78,20 @@ void HeavySpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
       }
       if (isDead)
       {
+            if (!donePlayingExplodeAnim)
+            {
+                  SDL_Surface *surf = IMG_Load(bugExplodeSpriteSheet[static_cast<int>(explodeAnimIndex)]);
+                  SDL_Texture *tex = SDL_CreateTextureFromSurface(gameRenderer, surf);
+                  SDL_FreeSurface(surf);
+                  spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 64, 64};
+                  SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
+                  SDL_DestroyTexture(tex);
+
+                  if (static_cast<int>(explodeAnimIndex) >= 6)
+                  {
+                        donePlayingExplodeAnim = true;
+                  }
+            }
             return;
       }
 
