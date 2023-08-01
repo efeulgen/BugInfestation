@@ -4,7 +4,6 @@
 
 #include <iostream>
 #include <cstdlib>
-#include <SDL2/SDL_mixer.h>
 #include "Drone.h"
 
 const int FIGHTERDRONE_PROJ_SPRITESHEET_SIZE = 1;

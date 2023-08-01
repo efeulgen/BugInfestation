@@ -29,6 +29,7 @@ const int MILLISECS_PER_FRAME = 1000 / FPS;
 const int SPACE_BUG_INIT_AMOUNT = 5;
 const int SPACE_BUG_INIT_MIN_SPEED = 100;
 const int SPACE_BUG_INIT_MAX_SPEED = 150;
+const double GENERATE_DRONE_RATE = 7.5;
 
 enum WaveType
 {
@@ -59,7 +60,7 @@ private:
     int wave = 0;
     WaveType waveType = WaveType::RegularWave;
 
-    double generateDroneCounter = 7.5;
+    double generateDroneCounter;
 
     // sounds
     Mix_Chunk *audio = nullptr;

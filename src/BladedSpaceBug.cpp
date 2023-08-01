@@ -78,6 +78,11 @@ void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
                   canDamagePlayerCounter = 0.0;
             }
       }
+
+      if (isDead)
+      {
+            isDestructible = true;
+      }
 }
 
 void BladedSpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)

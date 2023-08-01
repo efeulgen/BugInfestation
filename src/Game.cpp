@@ -4,6 +4,8 @@
 Game::Game() : spaceBugMinSpeed{SPACE_BUG_INIT_MIN_SPEED}, spaceBugMaxSpeed{SPACE_BUG_INIT_MAX_SPEED}
 {
     Logger::Log("Game Constructor");
+
+    generateDroneCounter = GENERATE_DRONE_RATE;
 }
 
 Game::~Game()
@@ -196,7 +198,7 @@ void Game::UpdateGameAssets()
     // *************** check collisions ****************************************************************************************************
 
     // *************** check if bugs/drones collide with player projectile ******************************
-    if (mainPlayer && (!bugs.empty() || !mainPlayer->GetProjectileArray().empty()) && !isGameOver && !isWaveComplete && isGameStarted)
+    if (mainPlayer && !isGameOver && !isWaveComplete && isGameStarted)
     {
         for (auto bug : bugs)
         {
@@ -225,7 +227,7 @@ void Game::UpdateGameAssets()
                 {
                     Mix_PlayChannel(-1, explosionSound, 0);
 
-                    drone->GetDamage();
+                    drone->GetDamage(1);
                     mainPlayer->EraseElementFromProjarray(projectile);
                     projectile->Destroy();
                     projectile = nullptr;
@@ -237,7 +239,7 @@ void Game::UpdateGameAssets()
     }
 
     // *************** check if player gets damage ******************************
-    if (!bugs.empty() && mainPlayer && !isGameOver && !isWaveComplete && isGameStarted)
+    if (mainPlayer && !isGameOver && !isWaveComplete && isGameStarted)
     {
         for (auto bug : bugs)
         {
@@ -286,9 +288,7 @@ void Game::UpdateGameAssets()
                 Mix_PlayMusic(majorExplosionSound, 0);
                 mainPlayer->GetDamage(40.0f);
 
-                drones.erase(std::remove(drones.begin(), drones.end(), drone), drones.end());
-                drone->DestroyDrone();
-                drone = nullptr;
+                drone->GetDamage(100);
                 break;
             }
 
@@ -525,12 +525,9 @@ void Game::GenerateDrones()
     int randomDroneSelector = rand() % 3;
 
     // *************** debug ******************************************************************************************
-    glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
-    glm::vec2 direction = randomXPos == 1380.0 ? glm::vec2(-1.0, 0.0) : glm::vec2(1.0, 0.0);
-    drones.push_back(new FighterDrone(initPos, direction));
+    // drones.push_back(new SeekAndDestroyDrone(glm::vec2(0.0, 0.0), glm::vec2(1.0, 0.0), mainPlayer));
     // *************** debug ******************************************************************************************
 
-    /*
     if (randomDroneSelector == 0)
     {
         glm::vec2 initPos = glm::vec2(randomXPos, randomYPos);
@@ -542,23 +539,36 @@ void Game::GenerateDrones()
         glm::vec2 dir = glm::normalize(glm::vec2(windowWidth / 2, windowHeight / 2) - glm::vec2(randomXPos, randomYPos));
         drones.push_back(new TrippleLaserShootingDrone(glm::vec2(randomXPos, randomYPos), dir));
     }
-    else if (randomDroneSelector == 3)
+    else if (randomDroneSelector == 2)
     {
         drones.push_back(new SeekAndDestroyDrone(glm::vec2(0.0, 0.0), glm::vec2(1.0, 0.0), mainPlayer));
     }
-    */
 }
 
 void Game::ResetGame()
 {
-    if (bugs.size() > 0)
+    if (!bugs.empty())
     {
         for (auto bug : bugs)
         {
+            bugs.erase(std::remove(bugs.begin(), bugs.end(), bug), bugs.end());
             bug->Destroy();
             bug = nullptr;
         }
         bugs.clear();
+        Logger::Log("Bug vector cleared.");
+    }
+
+    if (!drones.empty())
+    {
+        for (auto drone : drones)
+        {
+            drones.erase(std::remove(drones.begin(), drones.end(), drone), drones.end());
+            drone->DestroyDrone();
+            drone = nullptr;
+        }
+        drones.clear();
+        Logger::Log("Drone vector cleared.");
     }
 
     if (pickup)
@@ -570,9 +580,10 @@ void Game::ResetGame()
     spaceBugAmount = SPACE_BUG_INIT_AMOUNT;
     spaceBugMinSpeed = SPACE_BUG_INIT_MIN_SPEED;
     spaceBugMaxSpeed = SPACE_BUG_INIT_MAX_SPEED;
-    GenerateSpaceBugs(spaceBugAmount, spaceBugMinSpeed, spaceBugMaxSpeed);
+    generateDroneCounter = GENERATE_DRONE_RATE;
     score = 0;
     wave = 0;
+    GenerateSpaceBugs(spaceBugAmount, spaceBugMinSpeed, spaceBugMaxSpeed);
     mainPlayer = new Player();
     isGameOver = false;
     isWaveComplete = false;
@@ -586,6 +597,7 @@ void Game::BringNextWave()
     }
 
     wave++;
+    generateDroneCounter = GENERATE_DRONE_RATE;
 
     if (wave != 0 && wave % 3 == 0)
     {

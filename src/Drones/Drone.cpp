@@ -53,9 +53,9 @@ void Drone::DestroyDrone()
       delete this;
 }
 
-void Drone::GetDamage()
+void Drone::GetDamage(int amount)
 {
-      health--;
+      health -= amount;
       isRenderingMinorExplosion = true;
       if (health <= 0)
       {

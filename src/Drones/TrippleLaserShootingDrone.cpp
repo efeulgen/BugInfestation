@@ -19,11 +19,19 @@ TrippleLaserShootingDrone::TrippleLaserShootingDrone(glm::vec2 pos, glm::vec2 di
       up = glm::normalize(glm::vec2(0, -1));
       bottomL = glm::normalize(glm::vec2(-1, 1));
       bottomR = glm::normalize(glm::vec2(1, 1));
+
+      trippleLaserDroneLaser = Mix_LoadMUS("./audio/fighter_drone_laser.wav");
+      if (trippleLaserDroneLaser == NULL)
+      {
+            Logger::Err("Failed to load music.");
+      }
 }
 
 TrippleLaserShootingDrone::~TrippleLaserShootingDrone()
 {
       std::cout << "TrippleLaserShootingDrone Destructor" << std::endl;
+
+      Mix_FreeMusic(trippleLaserDroneLaser);
 }
 
 void TrippleLaserShootingDrone::UpdateDrone(double deltaTime)
@@ -105,7 +113,7 @@ void TrippleLaserShootingDrone::RenderDrone(SDL_Renderer *renderer)
                   SDL_Surface *surf = IMG_Load(majorExplosionSpriteSheet[static_cast<int>(majorExplosionAnimCounter)]);
                   SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
                   SDL_FreeSurface(surf);
-                  SDL_Rect rect = {static_cast<int>(position.x), static_cast<int>(position.y), droneRectSize, droneRectSize};
+                  SDL_Rect rect = {static_cast<int>(position.x), static_cast<int>(position.y), droneRectSize * 2, droneRectSize * 2};
                   SDL_RenderCopy(renderer, tex, NULL, &rect);
                   SDL_DestroyTexture(tex);
 
@@ -124,6 +132,11 @@ void TrippleLaserShootingDrone::RenderDrone(SDL_Renderer *renderer)
       rectCenter = glm::vec2(position.x + static_cast<double>(droneRectSize) / 2.0, position.y + static_cast<double>(droneRectSize) / 2.0);
       SDL_RenderCopyEx(renderer, tex, NULL, &droneRect, angle, NULL, SDL_FLIP_NONE);
       SDL_DestroyTexture(tex);
+
+      if (isRenderingMinorExplosion)
+      {
+            Drone::RenderMinorExplosion(renderer);
+      }
 }
 
 void TrippleLaserShootingDrone::ShootLaser()
@@ -131,14 +144,17 @@ void TrippleLaserShootingDrone::ShootLaser()
       Projectile *newProj1 = new Projectile(up, 1000.0, 5);
       newProj1->SetProjectilePosition(rectCenter);
       projectiles.push_back(newProj1);
+      Mix_PlayMusic(trippleLaserDroneLaser, 0);
 
       Projectile *newProj2 = new Projectile(bottomL, 1000.0, 5);
       newProj2->SetProjectilePosition(rectCenter);
       projectiles.push_back(newProj2);
+      Mix_PlayMusic(trippleLaserDroneLaser, 0);
 
       Projectile *newProj3 = new Projectile(bottomR, 1000.0, 5);
       newProj3->SetProjectilePosition(rectCenter);
       projectiles.push_back(newProj3);
+      Mix_PlayMusic(trippleLaserDroneLaser, 0);
 }
 
 void TrippleLaserShootingDrone::UpdateLaserFirePoints()

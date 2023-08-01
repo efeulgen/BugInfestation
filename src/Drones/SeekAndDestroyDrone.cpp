@@ -47,7 +47,7 @@ void SeekAndDestroyDrone::RenderDrone(SDL_Renderer *renderer)
                   SDL_Surface *surf = IMG_Load(majorExplosionSpriteSheet[static_cast<int>(majorExplosionAnimCounter)]);
                   SDL_Texture *tex = SDL_CreateTextureFromSurface(renderer, surf);
                   SDL_FreeSurface(surf);
-                  SDL_Rect rect = {static_cast<int>(position.x), static_cast<int>(position.y), droneRectSize, droneRectSize};
+                  SDL_Rect rect = {static_cast<int>(position.x), static_cast<int>(position.y), droneRectSize * 2, droneRectSize * 2};
                   SDL_RenderCopy(renderer, tex, NULL, &rect);
                   SDL_DestroyTexture(tex);
 

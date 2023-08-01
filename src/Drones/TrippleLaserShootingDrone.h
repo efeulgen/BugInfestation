@@ -20,6 +20,8 @@ private:
       double angle = 0.0;
       double rotationSpeed = 30.0;
 
+      Mix_Music *trippleLaserDroneLaser = nullptr;
+
       glm::vec2 rectCenter;
       glm::vec2 up;
       glm::vec2 bottomL;

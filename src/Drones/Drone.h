@@ -6,6 +6,7 @@
 #include <vector>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <glm/glm.hpp>
 #include "../Projectile.h"
 #include "../Logger/Logger.h"
@@ -47,7 +48,7 @@ public:
       virtual void UpdateDrone(double deltaTime);
       virtual void RenderDrone(SDL_Renderer *renderer);
       void DestroyDrone();
-      void GetDamage();
+      void GetDamage(int amount);
       bool CheckCollision(SDL_Rect other) const;
       void EraseElementFromProjarray(Projectile *proj);
       void RenderMinorExplosion(SDL_Renderer *renderer);
