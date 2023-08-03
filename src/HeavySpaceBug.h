@@ -7,7 +7,6 @@
 #include <vector>
 
 const double BUG_FIRE_RATE = 3.0;
-const int BUG_PROJECTILE_SPRITESHEET_SIZE = 4;
 
 class HeavySpaceBug : public SpaceBug
 {
@@ -18,7 +17,7 @@ private:
       bool donePlayingExplodeAnim = false;
 
       const char *heavyBugSpriteSheet[4] = {"./assets/sprites/heavy_space_bug_2.png", "./assets/sprites/heavy_space_bug.png", "./assets/sprites/heavy_space_bug_1.png", "./assets/sprites/heavy_space_bug.png"};
-      const char *bugProjectileSpritesheet[BUG_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/sprites/heavyBug_projectile_1.png", "./assets/sprites/heavyBug_projectile_2.png", "./assets/sprites/heavyBug_projectile_3.png", "./assets/sprites/heavyBug_projectile_4.png"};
+      std::vector<std::string> bugProjectileSpritesheet = {"./assets/sprites/heavyBug_projectile_1.png", "./assets/sprites/heavyBug_projectile_2.png", "./assets/sprites/heavyBug_projectile_3.png", "./assets/sprites/heavyBug_projectile_4.png"};
       const char *bugExplodeSpriteSheet[7] = {"./assets/sprites/heavySpaceBug_explode_1.png", "./assets/sprites/heavySpaceBug_explode_2.png", "./assets/sprites/heavySpaceBug_explode_3.png", "./assets/sprites/heavySpaceBug_explode_4.png", "./assets/sprites/heavySpaceBug_explode_5.png", "./assets/sprites/heavySpaceBug_explode_6.png", "./assets/sprites/heavySpaceBug_explode_7.png"};
 
 public:

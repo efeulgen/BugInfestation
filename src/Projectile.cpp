@@ -4,12 +4,15 @@
 #include <iostream>
 #include <SDL2/SDL_image.h>
 
-Projectile::Projectile(glm::vec2 direction, double speed, int size) : projectileDirection{direction}, projectileSpeed{speed}
+Projectile::Projectile(glm::vec2 direction, double speed, std::vector<std::string> sprites, int size, bool flip, ProjectileType t) : projectileDirection{direction}, projectileSpeed{speed}, projectileRect{0, 0, 0, 0}
 {
     // std::cout << "Projectile Constructor" << std::endl;
 
     projectilePosition = glm::vec2(0.0, 0.0);
     projRectSize = size;
+    spriteSheet = sprites;
+    isFlipped = flip;
+    type = t;
 }
 
 Projectile::~Projectile()
@@ -17,25 +20,33 @@ Projectile::~Projectile()
     // std::cout << "Projectile Destructor" << std::endl;
 }
 
-void Projectile::RenderProjectile(SDL_Renderer *gameRenderer, const char *spriteSheet[], const int spriteSheetSize)
+void Projectile::RenderProjectile(SDL_Renderer *gameRenderer)
 {
-    if (spriteSheetSize == 1)
+    if (spriteSheet.size() == 1)
     {
-        projectileSurface = IMG_Load(spriteSheet[0]);
+        projectileSurface = IMG_Load(spriteSheet[0].c_str());
     }
     else
     {
-        if (static_cast<int>(spriteSheetIndex) > spriteSheetSize - 1)
+        if (static_cast<int>(spriteSheetIndex) > spriteSheet.size() - 1)
         {
             spriteSheetIndex = 0.0;
         }
-        projectileSurface = IMG_Load(spriteSheet[static_cast<int>(spriteSheetIndex)]);
+        projectileSurface = IMG_Load(spriteSheet[static_cast<int>(spriteSheetIndex)].c_str());
     }
 
     SDL_Texture *projectileTexture = SDL_CreateTextureFromSurface(gameRenderer, projectileSurface);
     SDL_FreeSurface(projectileSurface);
     projectileRect = {static_cast<int>(projectilePosition.x), static_cast<int>(projectilePosition.y), projRectSize, projRectSize};
-    SDL_RenderCopy(gameRenderer, projectileTexture, NULL, &projectileRect);
+    if (isFlipped)
+    {
+        SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+        SDL_RenderCopyEx(gameRenderer, projectileTexture, NULL, &projectileRect, 0.0, NULL, flip);
+    }
+    else
+    {
+        SDL_RenderCopy(gameRenderer, projectileTexture, NULL, &projectileRect);
+    }
     SDL_DestroyTexture(projectileTexture);
 }
 

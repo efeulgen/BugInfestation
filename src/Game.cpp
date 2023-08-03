@@ -99,9 +99,17 @@ void Game::ProcessInput()
             {
                 isRunning = false;
             }
-            if (gameEvent.key.keysym.sym == SDLK_RETURN && mainPlayer && mainPlayer->GetCanFire())
+            if (gameEvent.key.keysym.sym == SDLK_RETURN && mainPlayer && mainPlayer->GetWeaponState() == PlayerWeaponState::PWS_Normal && mainPlayer->GetCanFire())
             {
                 mainPlayer->Fire();
+            }
+            if (gameEvent.key.keysym.sym == SDLK_RETURN && mainPlayer && mainPlayer->GetWeaponState() == PlayerWeaponState::PWS_RocketLauncher)
+            {
+                mainPlayer->FireRocket();
+            }
+            if (gameEvent.key.keysym.sym == SDLK_1 && mainPlayer)
+            {
+                mainPlayer->ToggleWeaponState();
             }
             if (gameEvent.key.keysym.sym == SDLK_y)
             {
@@ -209,7 +217,14 @@ void Game::UpdateGameAssets()
                     Mix_PlayChannel(-1, bugScreamSound, 0);
                     Mix_PlayChannel(-1, bugSplashSound, 0);
 
-                    bug->GetDamage(1);
+                    if (projectile->GetProjectileType() == ProjectileType::PT_Heavy)
+                    {
+                        bug->GetDamage(10);
+                    }
+                    else
+                    {
+                        bug->GetDamage(1);
+                    }
                     mainPlayer->EraseElementFromProjarray(projectile);
                     projectile->Destroy();
                     projectile = nullptr;
@@ -227,7 +242,14 @@ void Game::UpdateGameAssets()
                 {
                     Mix_PlayChannel(-1, explosionSound, 0);
 
-                    drone->GetDamage(1);
+                    if (projectile->GetProjectileType() == ProjectileType::PT_Heavy)
+                    {
+                        drone->GetDamage(10);
+                    }
+                    else
+                    {
+                        drone->GetDamage(1);
+                    }
                     mainPlayer->EraseElementFromProjarray(projectile);
                     projectile->Destroy();
                     projectile = nullptr;

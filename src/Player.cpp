@@ -13,13 +13,15 @@ Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gr
     rocketAmount = 0;
 
     laserSound = Mix_LoadWAV("./audio/player_laser.wav");
-    if (laserSound == NULL)
+    rocketSound = Mix_LoadWAV("./audio/rocketLauncher_sound.wav");
+    if (laserSound == NULL || rocketSound == NULL)
     {
-        Logger::Err("Laser sound isn't loaded.");
+        Logger::Err("SFX isn't loaded.");
     }
 
     collisionRect = new SDL_Rect();
     weaponState = PlayerWeaponState::PWS_Normal;
+    spriteToRender = normalWeaponStateSprtie;
 }
 
 Player::~Player()
@@ -28,6 +30,9 @@ Player::~Player()
 
     delete collisionRect;
     collisionRect = nullptr;
+
+    Mix_FreeChunk(laserSound);
+    Mix_FreeChunk(rocketSound);
 }
 
 void Player::Update(double deltaTime)
@@ -107,7 +112,7 @@ void Player::Update(double deltaTime)
 void Player::RenderPlayer(SDL_Renderer *gameRenderer)
 {
 
-    SDL_Surface *playerSurface = IMG_Load("./assets/sprites/astro-K-47.png");
+    SDL_Surface *playerSurface = IMG_Load(spriteToRender);
     SDL_Texture *playertexture = SDL_CreateTextureFromSurface(gameRenderer, playerSurface);
     SDL_FreeSurface(playerSurface);
     playerRect = {static_cast<int>(playerPosition.x), static_cast<int>(playerPosition.y), 128, 128};
@@ -125,7 +130,7 @@ void Player::RenderPlayer(SDL_Renderer *gameRenderer)
 
     for (auto projectile : projArray) // render projectiles
     {
-        projectile->RenderProjectile(gameRenderer, playerProjectileSpriteSheet, PLAYER_PROJECTILE_SPRITESHEET_SIZE);
+        projectile->RenderProjectile(gameRenderer);
     }
 
     if (isUsingJetPack) // render jet pack fire
@@ -155,12 +160,27 @@ void Player::Fire()
     Mix_PlayChannel(-1, laserSound, 0);
     double projSpeed = isFlipped ? -1000.0 : 1000.0;
     firePos = isFlipped ? glm::vec2(-40.0, 64.0) : glm::vec2(105.0, 64.0);
-    Projectile *newProjectile = new Projectile(glm::vec2(1, 0), projSpeed);
+    Projectile *newProjectile = new Projectile(glm::vec2(1, 0), projSpeed, playerProjectileSpriteSheet);
     newProjectile->SetProjectilePosition(playerPosition + firePos);
     projArray.push_back(newProjectile);
 
     canFire = false;
     fireCounter = 0.0;
+}
+
+void Player::FireRocket()
+{
+    if (rocketAmount > 0)
+    {
+        Mix_PlayChannel(-1, rocketSound, 0);
+        double projSpeed = isFlipped ? -700.0 : 700.0;
+        firePos = isFlipped ? glm::vec2(-40.0, 64.0) : glm::vec2(105.0, 64.0);
+        Projectile *newProjectile = new Projectile(glm::vec2(1, 0), projSpeed, playerRocketLauncgerSprtieSheet, 60, isFlipped, ProjectileType::PT_Heavy);
+        newProjectile->SetProjectilePosition(playerPosition + firePos);
+        projArray.push_back(newProjectile);
+
+        rocketAmount--;
+    }
 }
 
 void Player::UpdateProjectiles(double deltaTime)
@@ -306,5 +326,19 @@ void Player::RenderBloodSplash(SDL_Renderer *renderer)
     {
         isRenderingBloodSplash = false;
         bloodSplashSpriteSheetIndex = 0.0;
+    }
+}
+
+void Player::ToggleWeaponState()
+{
+    if (weaponState == PlayerWeaponState::PWS_Normal)
+    {
+        weaponState = PlayerWeaponState::PWS_RocketLauncher;
+        spriteToRender = rocketLauncherWeaponStateSprite;
+    }
+    else if (weaponState == PlayerWeaponState::PWS_RocketLauncher)
+    {
+        weaponState = PlayerWeaponState::PWS_Normal;
+        spriteToRender = normalWeaponStateSprtie;
     }
 }

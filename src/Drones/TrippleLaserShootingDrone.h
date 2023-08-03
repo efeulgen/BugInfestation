@@ -4,14 +4,13 @@
 
 #include "Drone.h"
 
-const int TRIPPLELASERSHOOTINGDRONE_PROJ_SPRITESHEET_SIZE = 1;
 const double TRIPPLELASERSHOOTINGDRONE_FIRE_RATE = 0.1;
 const double TRIPPLELASERSHOOTINGDRONE_FIRE_INTERVAL = 3.0;
 
 class TrippleLaserShootingDrone : public Drone
 {
 private:
-      const char *spritesheet[TRIPPLELASERSHOOTINGDRONE_PROJ_SPRITESHEET_SIZE] = {"./assets/sprites/TrippleLaserDroneLaser.png"};
+      std::vector<std::string> spritesheet = {"./assets/sprites/TrippleLaserDroneLaser.png"};
       double fireCounter;
       double fireIntervalCounter;
       double fireIntervalSetBackCounter;

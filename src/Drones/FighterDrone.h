@@ -6,13 +6,12 @@
 #include <cstdlib>
 #include "Drone.h"
 
-const int FIGHTERDRONE_PROJ_SPRITESHEET_SIZE = 1;
 const double FIGHTERDRONE_FIRE_RATE = 2.5;
 
 class FighterDrone : public Drone
 {
 private:
-      const char *spritesheet[FIGHTERDRONE_PROJ_SPRITESHEET_SIZE] = {"./assets/sprites/PlayerProjectile.png"}; // for debug: change later
+      std::vector<std::string> spritesheet = {"./assets/sprites/PlayerProjectile.png"}; // for debug: change later
       double fireCounter;
       bool isRtoL;
 

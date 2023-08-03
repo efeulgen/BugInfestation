@@ -16,7 +16,6 @@
 const double FIRE_RATE = 0.25;
 const double MAX_HEALTH = 100.0;
 const double GRAVITY = 200.0;
-const int PLAYER_PROJECTILE_SPRITESHEET_SIZE = 1;
 const double JETPACK_ANIM_SPEED = 10.0;
 
 enum PlayerWeaponState
@@ -51,7 +50,13 @@ private:
     glm::vec2 firePos;
     SDL_Rect *collisionRect;
 
-    const char *playerProjectileSpriteSheet[PLAYER_PROJECTILE_SPRITESHEET_SIZE] = {"./assets/sprites/PlayerProjectile.png"};
+    const char *normalWeaponStateSprtie = "./assets/sprites/astro-K-47.png";
+    const char *rocketLauncherWeaponStateSprite = "./assets/sprites/astro-RocketLauncher.png";
+    const char *spriteToRender;
+
+    std::vector<std::string> playerProjectileSpriteSheet = {"./assets/sprites/PlayerProjectile.png"};
+    std::vector<std::string> playerRocketLauncgerSprtieSheet = {"./assets/sprites/Missile.png"};
+
     const char *playerBloodSplashSpriteSheet[4] = {"./assets/sprites/player_bloodSplash_1.png", "./assets/sprites/player_bloodSplash_2.png", "./assets/sprites/player_bloodSplash_3.png", "./assets/sprites/player_bloodSplash_4.png"};
     const char *playerJetPackSpriteSheet[3] = {"./assets/sprites/player_jetpack_1.png", "./assets/sprites/player_jetpack_2.png", "./assets/sprites/player_jetpack_3.png"};
 
@@ -65,6 +70,7 @@ private:
 
     // audio
     Mix_Chunk *laserSound = nullptr;
+    Mix_Chunk *rocketSound = nullptr;
 
 public:
     Player();
@@ -75,6 +81,7 @@ public:
     void MoveRight(double deltaTime);
     void MoveLeft(double deltaTime);
     void Fire();
+    void FireRocket();
     void UpdateProjectiles(double deltaTime);
     void EraseElementFromProjarray(Projectile *proj);
     void ClearProjArray();
@@ -88,6 +95,7 @@ public:
     void DeactivateSpeedBoost();
     void ActivateFireRateBoost();
     void DeactivateFireRateBoost();
+    void ToggleWeaponState();
 
 private:
     void RenderJetPackFire(SDL_Renderer *renderer);
@@ -113,6 +121,8 @@ public:
 
     int GetExtraLives() const { return extraLives; }
     int GetRocketAmount() const { return rocketAmount; }
+
+    PlayerWeaponState GetWeaponState() const { return weaponState; }
 };
 
 #endif

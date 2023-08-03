@@ -77,7 +77,7 @@ void FighterDrone::RenderDrone(SDL_Renderer *renderer)
 {
       for (auto projectile : projectiles)
       {
-            projectile->RenderProjectile(renderer, spritesheet, FIGHTERDRONE_PROJ_SPRITESHEET_SIZE);
+            projectile->RenderProjectile(renderer);
       }
 
       if (isDead)
@@ -105,7 +105,7 @@ void FighterDrone::RenderDrone(SDL_Renderer *renderer)
 void FighterDrone::ShootLaser()
 {
       Mix_PlayChannel(-1, laserSound, 0);
-      Projectile *newProj = isRtoL ? new Projectile(glm::vec2(-1, 0), 1000.0) : new Projectile(glm::vec2(1, 0), 1000.0);
+      Projectile *newProj = isRtoL ? new Projectile(glm::vec2(-1, 0), 1000.0, spritesheet) : new Projectile(glm::vec2(1, 0), 1000.0, spritesheet);
       glm::vec2 fireOffset = isRtoL ? glm::vec2(0.0, 75.0) : glm::vec2(150.0, 75.0);
       newProj->SetProjectilePosition(position + fireOffset);
       projectiles.push_back(newProj);

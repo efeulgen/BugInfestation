@@ -103,7 +103,7 @@ void TrippleLaserShootingDrone::RenderDrone(SDL_Renderer *renderer)
 {
       for (auto projectile : projectiles)
       {
-            projectile->RenderProjectile(renderer, spritesheet, TRIPPLELASERSHOOTINGDRONE_PROJ_SPRITESHEET_SIZE);
+            projectile->RenderProjectile(renderer);
       }
 
       if (isDead)
@@ -141,17 +141,17 @@ void TrippleLaserShootingDrone::RenderDrone(SDL_Renderer *renderer)
 
 void TrippleLaserShootingDrone::ShootLaser()
 {
-      Projectile *newProj1 = new Projectile(up, 1000.0, 5);
+      Projectile *newProj1 = new Projectile(up, 1000.0, spritesheet, 5);
       newProj1->SetProjectilePosition(rectCenter);
       projectiles.push_back(newProj1);
       Mix_PlayMusic(trippleLaserDroneLaser, 0);
 
-      Projectile *newProj2 = new Projectile(bottomL, 1000.0, 5);
+      Projectile *newProj2 = new Projectile(bottomL, 1000.0, spritesheet, 5);
       newProj2->SetProjectilePosition(rectCenter);
       projectiles.push_back(newProj2);
       Mix_PlayMusic(trippleLaserDroneLaser, 0);
 
-      Projectile *newProj3 = new Projectile(bottomR, 1000.0, 5);
+      Projectile *newProj3 = new Projectile(bottomR, 1000.0, spritesheet, 5);
       newProj3->SetProjectilePosition(rectCenter);
       projectiles.push_back(newProj3);
       Mix_PlayMusic(trippleLaserDroneLaser, 0);
