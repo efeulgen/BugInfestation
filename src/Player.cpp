@@ -57,9 +57,9 @@ void Player::Update(double deltaTime)
     {
         playerPosition.y = 0.0;
     }
-    if (playerPosition.y >= 720.0)
+    if (playerPosition.y >= 900.0)
     {
-        playerPosition.y = 720.0;
+        GetDamage(1000.0);
     }
     if (playerPosition.x <= 0.0)
     {
