@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 #include <glm/glm.hpp>
 #include "Projectile.h"
-#include "./Logger/Logger.h"
+#include "Logger/Logger.h"
 
 const double FIRE_RATE = 0.25;
 const double MAX_HEALTH = 100.0;

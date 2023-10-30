@@ -5,12 +5,20 @@
 
 HeavySpaceBug::HeavySpaceBug()
 {
+      Logger::Log("HeavySpaceBug Constructor");
 }
 
 HeavySpaceBug::HeavySpaceBug(glm::vec2 pos, glm::vec2 dir) : SpaceBug(pos, dir), fireCounter(BUG_FIRE_RATE)
 {
+      Logger::Log("HeavySpaceBug Constructor");
+
       health = 3;
       type = BugType::Heavy;
+}
+
+HeavySpaceBug::~HeavySpaceBug()
+{
+      Logger::Log("HeavySpaceBug Destructor");
 }
 
 void HeavySpaceBug::GetDamage(int amount)

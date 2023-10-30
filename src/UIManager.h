@@ -10,6 +10,7 @@
 #include <SDL2/SDL_ttf.h>
 #include <glm/glm.hpp>
 
+#include "Logger/Logger.h"
 #include "Player.h"
 #include "Pickup.h"
 

@@ -4,12 +4,12 @@
 
 UIManager::UIManager()
 {
-    std::cout << "UIManager Constructor" << std::endl;
+    Logger::Log("UIManager Constructor");
 }
 
 UIManager::~UIManager()
 {
-    std::cout << "UIManager Destructor" << std::endl;
+    Logger::Log("UIManager Destructor");
 }
 
 void UIManager::RenderText(SDL_Renderer *renderer, const std::string &text, glm::vec2 textPos, Uint8 r, Uint8 g, Uint8 b)

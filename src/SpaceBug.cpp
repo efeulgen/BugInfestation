@@ -3,7 +3,7 @@
 
 SpaceBug::SpaceBug()
 {
-    std::cout << "SpaceBug Constructor" << std::endl;
+    Logger::Log("SpaceBug Constructor");
 }
 
 SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{initPos}, spaceBugDirection{initDirection}, spaceBugRect{0, 0, 0, 0}
@@ -14,7 +14,7 @@ SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{ini
 
 SpaceBug::~SpaceBug()
 {
-    std::cout << "SpaceBug Destructor" << std::endl;
+    Logger::Log("SpaceBug Destructor");
 }
 
 void SpaceBug::UpdateSpaceBug(double deltaTime, Player *player)

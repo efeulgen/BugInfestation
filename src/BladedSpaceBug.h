@@ -16,6 +16,9 @@ enum BladedSpaceBugState
       Attacking
 };
 
+const double ATTACK_DURATION = 1.5;
+const double PATROL_DURATION = 5.0;
+
 class BladedSpaceBug : public SpaceBug
 {
 private:
@@ -31,6 +34,9 @@ private:
       double canDamagePlayerCounter = 0.0;
 
       BladedSpaceBugState state = BladedSpaceBugState::Patroling;
+
+      double bladedSpaceBugAnimIndex = 0.0;
+      const char *bladedSpaceBugSpriteSheet[4] = {"./assets/sprites/BladedSpaceBug_2.png", "./assets/sprites/BladedSpaceBug_1.png", "./assets/sprites/BladedSpaceBug_3.png", "./assets/sprites/BladedSpaceBug_1.png"};
 
 public:
       BladedSpaceBug(glm::vec2 initPos, glm::vec2 initVelocity);

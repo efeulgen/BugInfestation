@@ -3,7 +3,7 @@
 
 SeekAndDestroyDrone::SeekAndDestroyDrone(glm::vec2 pos, glm::vec2 dir, Player *player) : Drone(pos, dir)
 {
-      std::cout << "SeekAndDestroyDrone Constructor" << std::endl;
+      Logger::Log("SeekAndDestroyDrone Constructor");
 
       imgPath = "./assets/sprites/TrippleLaserDrone.png"; // for debugging change later
       droneRectSize = 64;
@@ -15,7 +15,7 @@ SeekAndDestroyDrone::SeekAndDestroyDrone(glm::vec2 pos, glm::vec2 dir, Player *p
 
 SeekAndDestroyDrone::~SeekAndDestroyDrone()
 {
-      std::cout << "SeekAndDestroyDrone Destructor" << std::endl;
+      Logger::Log("SeekAndDestroyDrone Destructor");
 }
 
 void SeekAndDestroyDrone::UpdateDrone(double deltaTime)

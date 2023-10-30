@@ -3,7 +3,7 @@
 
 TrippleLaserShootingDrone::TrippleLaserShootingDrone(glm::vec2 pos, glm::vec2 dir) : Drone(pos, dir)
 {
-      std::cout << "TrippleLaserShootingDrone Constructor" << std::endl;
+      Logger::Log("TrippleLaserShootingDrone Constructor");
 
       imgPath = "./assets/sprites/TrippleLaserDrone.png";
       droneRectSize = 64;
@@ -29,7 +29,7 @@ TrippleLaserShootingDrone::TrippleLaserShootingDrone(glm::vec2 pos, glm::vec2 di
 
 TrippleLaserShootingDrone::~TrippleLaserShootingDrone()
 {
-      std::cout << "TrippleLaserShootingDrone Destructor" << std::endl;
+      Logger::Log("TrippleLaserShootingDrone Destructor");
 
       Mix_FreeMusic(trippleLaserDroneLaser);
 }

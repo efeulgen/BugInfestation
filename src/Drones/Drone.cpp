@@ -3,14 +3,14 @@
 
 Drone::Drone(glm::vec2 pos, glm::vec2 dir) : position{pos}, direction{dir}, droneRect{0, 0, 0, 0}
 {
-      std::cout << "Drone Constructor" << std::endl;
+      Logger::Log("Drone Constructor");
 
       collisionRect = new SDL_Rect();
 }
 
 Drone::~Drone()
 {
-      std::cout << "Drone Destructor" << std::endl;
+      Logger::Log("Drone Destructor");
 }
 
 void Drone::UpdateDrone(double deltaTime)

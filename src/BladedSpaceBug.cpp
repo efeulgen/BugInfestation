@@ -3,16 +3,16 @@
 
 BladedSpaceBug::BladedSpaceBug(glm::vec2 initPos, glm::vec2 initVelocity)
 {
-      std::cout << "BladedSpaceBug Constructor" << std::endl;
+      Logger::Log("BladedSpaceBug Constructor");
 
       spaceBugPos = initPos;
-      health = 5; // debug; 40
+      health = 15;
       type = BugType::Bladed;
 
-      normalSpeed = 100.0;
-      attackSpeed = 800.0;
-      attackDuration = 1.0;
-      patrolDuration = 7.5; // TODO : randomize
+      normalSpeed = 200.0;
+      attackSpeed = 1200.0;
+      attackDuration = ATTACK_DURATION;
+      patrolDuration = PATROL_DURATION;
 
       pointsToFollow.push_back(glm::vec2(640, 360)); // update these values
       currentTarget = pointsToFollow[pointsToFollowIndex];
@@ -24,7 +24,7 @@ BladedSpaceBug::BladedSpaceBug(glm::vec2 initPos, glm::vec2 initVelocity)
 
 BladedSpaceBug::~BladedSpaceBug()
 {
-      std::cout << "BladedSpaceBug Destructor" << std::endl;
+      Logger::Log("BladedSpaceBug Destructor");
 }
 
 void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
@@ -41,14 +41,14 @@ void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
       {
             FillPointsToFollow(deltaTime, player);
 
-            if (glm::distance(currentTarget, spaceBugPos) < 1.0f)
+            if (glm::distance(currentTarget, spaceBugPos) < 10.0f)
             {
                   SetNewDirection();
             }
             patrolDuration -= deltaTime;
             if (patrolDuration <= 0.0)
             {
-                  patrolDuration = 7.5;
+                  patrolDuration = PATROL_DURATION;
                   Attack(player);
             }
       }
@@ -57,10 +57,10 @@ void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
             attackDuration -= deltaTime;
             if (attackDuration <= 0.0)
             {
-                  attackDuration = 3.5;
+                  attackDuration = ATTACK_DURATION;
                   state = BladedSpaceBugState::Patroling;
 
-                  pointsToFollow.push_back(glm::vec2(640, 360));
+                  pointsToFollow.push_back(player->GetPlayerPos());
                   currentTarget = pointsToFollow[pointsToFollowIndex];
 
                   spaceBugDirection = glm::normalize(currentTarget - spaceBugPos);
@@ -79,19 +79,55 @@ void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
             }
       }
 
+      // flip
+      isFlipped = spaceBugDirection.x > 0 ? true : false;
+
+      // bound checking
+      if (spaceBugPos.x < -100.0 || spaceBugPos.x > 1400.0 || spaceBugPos.y < -100.0 || spaceBugPos.y > 900.0)
+      {
+            pointsToFollow.clear();
+            pointsToFollowIndex = 0;
+            fillCounter = 0.0;
+
+            attackDuration = ATTACK_DURATION;
+            state = BladedSpaceBugState::Patroling;
+
+            pointsToFollow.push_back(player->GetPlayerPos());
+            currentTarget = pointsToFollow[pointsToFollowIndex];
+
+            spaceBugDirection = glm::normalize(currentTarget - spaceBugPos);
+            spaceBugDirection.x *= normalSpeed;
+            spaceBugDirection.y *= normalSpeed;
+      }
+
       if (isDead)
       {
             isDestructible = true;
       }
+
+      // anim
+      bladedSpaceBugAnimIndex += deltaTime * 5;
 }
 
 void BladedSpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 {
-      SDL_Surface *surf = IMG_Load("./assets/sprites/BladedSpaceBug.png");
+      if (static_cast<int>(bladedSpaceBugAnimIndex) > 3)
+      {
+            bladedSpaceBugAnimIndex = 0.0;
+      }
+      SDL_Surface *surf = IMG_Load(bladedSpaceBugSpriteSheet[static_cast<int>(bladedSpaceBugAnimIndex)]);
       SDL_Texture *tex = SDL_CreateTextureFromSurface(gameRenderer, surf);
       SDL_FreeSurface(surf);
-      spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 100, 100};
-      SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
+      spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 120, 120};
+      if (isFlipped)
+      {
+            SDL_RendererFlip flip = SDL_FLIP_HORIZONTAL;
+            SDL_RenderCopyEx(gameRenderer, tex, NULL, &spaceBugRect, 0.0, NULL, flip);
+      }
+      else
+      {
+            SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
+      }
       SDL_DestroyTexture(tex);
 }
 

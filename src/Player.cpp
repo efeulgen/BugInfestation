@@ -3,7 +3,7 @@
 
 Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gravityFactor{GRAVITY}, isUsingJetPack{false}, isFlipped{false}
 {
-    std::cout << "Player Constructor" << std::endl;
+    Logger::Log("Player Constructor");
 
     playerPosition = glm::vec2(40.0, 40.0);
     playerSpeed = glm::vec2(300.0, 350.0);
@@ -26,7 +26,7 @@ Player::Player() : health{MAX_HEALTH}, fireCounter{FIRE_RATE}, isDead{false}, gr
 
 Player::~Player()
 {
-    std::cout << "Player Destructor" << std::endl;
+    Logger::Log("Player Destructor");
 
     delete collisionRect;
     collisionRect = nullptr;

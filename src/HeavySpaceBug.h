@@ -23,6 +23,7 @@ private:
 public:
       HeavySpaceBug();
       HeavySpaceBug(glm::vec2 pos, glm::vec2 dir);
+      ~HeavySpaceBug();
 
       void GetDamage(int amount) override;
       void ShootProjectile(Player *player);

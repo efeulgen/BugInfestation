@@ -3,7 +3,7 @@
 
 FighterDrone::FighterDrone(glm::vec2 pos, glm::vec2 dir) : Drone(pos, dir)
 {
-      std::cout << "FighterDrone Constructor" << std::endl;
+      Logger::Log("FighterDrone Constructor");
 
       imgPath = "./assets/sprites/AlienFighterJet_body.png";
       droneRectSize = 150;
@@ -23,7 +23,7 @@ FighterDrone::FighterDrone(glm::vec2 pos, glm::vec2 dir) : Drone(pos, dir)
 
 FighterDrone::~FighterDrone()
 {
-      std::cout << "FighterDrone Destructor" << std::endl;
+      Logger::Log("FighterDrone Destructor");
 
       Mix_FreeChunk(laserSound);
 }
