@@ -8,6 +8,8 @@ SpaceBug::SpaceBug()
 
 SpaceBug::SpaceBug(glm::vec2 initPos, glm::vec2 initDirection) : spaceBugPos{initPos}, spaceBugDirection{initDirection}, spaceBugRect{0, 0, 0, 0}
 {
+    Logger::Log("SpaceBug Constructor");
+
     health = 1;
     type = BugType::Regular;
 }

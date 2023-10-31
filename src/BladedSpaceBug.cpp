@@ -29,6 +29,15 @@ BladedSpaceBug::~BladedSpaceBug()
 
 void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
 {
+      // animations
+      if (isDead)
+      {
+            bladedSpaceBugDeathAnimIndex += deltaTime * 8;
+            return;
+      }
+      bladedSpaceBugAnimIndex += deltaTime * 5;
+
+      // update position
       spaceBugPos.x += spaceBugDirection.x * deltaTime;
       spaceBugPos.y += spaceBugDirection.y * deltaTime;
 
@@ -99,18 +108,32 @@ void BladedSpaceBug::UpdateSpaceBug(double deltaTime, Player *player)
             spaceBugDirection.x *= normalSpeed;
             spaceBugDirection.y *= normalSpeed;
       }
-
-      if (isDead)
-      {
-            isDestructible = true;
-      }
-
-      // anim
-      bladedSpaceBugAnimIndex += deltaTime * 5;
 }
 
 void BladedSpaceBug::RenderSpaceBug(SDL_Renderer *gameRenderer)
 {
+      // render bladedSpaceBugDeathSpriteSheet
+      if (isDead)
+      {
+            if (!donePlayingExplodeAnim)
+            {
+                  SDL_Surface *surf = IMG_Load(bladedSpaceBugDeathSpriteSheet[static_cast<int>(bladedSpaceBugDeathAnimIndex)]);
+                  SDL_Texture *tex = SDL_CreateTextureFromSurface(gameRenderer, surf);
+                  SDL_FreeSurface(surf);
+                  spaceBugRect = {static_cast<int>(spaceBugPos.x), static_cast<int>(spaceBugPos.y), 120, 120};
+                  SDL_RenderCopy(gameRenderer, tex, NULL, &spaceBugRect);
+                  SDL_DestroyTexture(tex);
+
+                  if (static_cast<int>(bladedSpaceBugDeathAnimIndex) >= 5)
+                  {
+                        donePlayingExplodeAnim = true;
+                        isDestructible = true;
+                  }
+            }
+            return;
+      }
+
+      // render bladedSpaceBugSpriteSheet
       if (static_cast<int>(bladedSpaceBugAnimIndex) > 3)
       {
             bladedSpaceBugAnimIndex = 0.0;

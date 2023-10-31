@@ -38,6 +38,9 @@ private:
       double bladedSpaceBugAnimIndex = 0.0;
       const char *bladedSpaceBugSpriteSheet[4] = {"./assets/sprites/BladedSpaceBug_2.png", "./assets/sprites/BladedSpaceBug_1.png", "./assets/sprites/BladedSpaceBug_3.png", "./assets/sprites/BladedSpaceBug_1.png"};
 
+      double bladedSpaceBugDeathAnimIndex = 0.0;
+      const char *bladedSpaceBugDeathSpriteSheet[6] = {"./assets/sprites/BladedSpaceBug_death_1.png", "./assets/sprites/BladedSpaceBug_death_2.png", "./assets/sprites/BladedSpaceBug_death_3.png", "./assets/sprites/BladedSpaceBug_death_4.png", "./assets/sprites/BladedSpaceBug_death_5.png", "./assets/sprites/BladedSpaceBug_death_6.png"};
+
 public:
       BladedSpaceBug(glm::vec2 initPos, glm::vec2 initVelocity);
       ~BladedSpaceBug();

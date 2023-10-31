@@ -2,13 +2,34 @@
 #ifndef LOGGER_H
 #define LOGGER_H
 
+#include <iostream>
+#include <vector>
 #include <string>
+#include <chrono>
+#include <ctime>
+
+enum LogType
+{
+      LOG_INFO,
+      LOG_WARNING,
+      LOG_ERROR
+};
+
+struct LogEntry
+{
+      LogType type;
+      std::string message;
+};
 
 class Logger
 {
 public:
-    static void Log(const std::string &message);
-    static void Err(const std::string &message);
+      static std::vector<LogEntry> entries;
+      static void Log(const std::string &message);
+      static void Log(const std::string &message, int num);
+      static void Warn(const std::string &message);
+      static void Err(const std::string &message);
+      static void Err(const std::string &message, int num);
 };
 
 #endif
